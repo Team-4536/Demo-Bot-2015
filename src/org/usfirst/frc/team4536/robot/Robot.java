@@ -2,34 +2,31 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 
 
 public class Robot extends IterativeRobot {
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
+	DriveTrain driveTrain;
+	Joystick leftStick;
+	Joystick rightStick;
+	
+	
     public void robotInit() {
-
+    	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, Constants.RIGHT_TALON_CHANNEL);
+    	leftStick = new Joystick(Constants.LEFT_STICK_PORT);
+    	rightStick = new Joystick(Constants.RIGHT_STICK_PORT);
     }
 
-    /**
-     * This function is called periodically during autonomous
-     */
     public void autonomousPeriodic() {
 
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
+
     public void teleopPeriodic() {
         
     }
     
-    /**
-     * This function is called periodically during test mode
-     */
+
     public void testPeriodic() {
     
     }
