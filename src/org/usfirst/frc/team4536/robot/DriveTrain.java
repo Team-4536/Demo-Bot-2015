@@ -46,4 +46,5 @@ public class DriveTrain {
 		leftTalon.set(leftTalonThrottle);
 		rightTalon.set(rightTalonThrottle);
 	}
+	
 }

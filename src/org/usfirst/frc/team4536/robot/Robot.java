@@ -1,8 +1,9 @@
-// I have edited a comment and can use github (noah)
+// I have made a comment and can use github
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends IterativeRobot {
@@ -25,10 +26,14 @@ public class Robot extends IterativeRobot {
     	double forwardThrottle = mainStick.getY();
     	double turnThrottle = mainStick.getX();
     	
-    	driveTrain.drive(forwardThrottle, turnThrottle);
+    	driveTrain.drive(Utilities.deadZone(forwardThrottle, Constants.DEAD_ZONE), Utilities.deadZone(turnThrottle, Constants.DEAD_ZONE));
+        
+    	SmartDashboard.putNumber("Y joystick Value + 1", mainStick.getY() + 1);
+    	SmartDashboard.putNumber("Forward Throttle with dead zone", Utilities.deadZone(forwardThrottle, Constants.DEAD_ZONE));
     }
     
-
+    
+    
     public void testPeriodic() {
     
     }
