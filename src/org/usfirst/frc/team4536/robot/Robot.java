@@ -23,8 +23,13 @@ public class Robot extends IterativeRobot {
 
 
     public void teleopPeriodic() {
-    	double forwardThrottle = mainStick.getY();
-    	double turnThrottle = mainStick.getX();
+    	// Gets X and Y values from mainStick and puts a dead zone on them
+      	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
+    	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
+    	
+    	// Sets throttle values based on mainStick X and Y values (with dead zone).
+    	double forwardThrottle = mainStickX;
+    	double turnThrottle = mainStickY;
     	
     	driveTrain.drive(Utilities.deadZone(forwardThrottle, Constants.DEAD_ZONE), 
     					 Utilities.deadZone(turnThrottle, Constants.DEAD_ZONE));
