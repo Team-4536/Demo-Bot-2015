@@ -7,7 +7,7 @@ public class DriveTrain {
 	Talon leftTalon;
 	Talon rightTalon;
 		
-	/**
+	/*
      * This function is the constructor for the DriveTrain class
      * It takes in two arguments - the two PWM channels for the Talons.
      */
@@ -17,7 +17,7 @@ public class DriveTrain {
 	}
 	
 	
-	/**
+	/*
      * This function is called in order to make the robot drive
      * It takes in two arguments - the amount of forward throttle (-1 to 1)
      * and the amount of turn throttle (-1 to 1). 
@@ -25,24 +25,16 @@ public class DriveTrain {
 	public void drive(double forwardThrottle, double turnThrottle) {
 		double leftTalonThrottle = forwardThrottle + turnThrottle;
 		double rightTalonThrottle = -forwardThrottle + turnThrottle;
-		
-		
-		/**
-	     * Set of if statements to ensure values going to the Talons are between -1 and 1.
+				
+		/*
+	     * Makes sure that the two Talon throttles are between -1 and 1
 	     */
-		if(leftTalonThrottle > 1) {
-			leftTalonThrottle = 1;
-		}
-		if(leftTalonThrottle < -1) {
-			leftTalonThrottle = -1;
-		}
-		if(rightTalonThrottle > 1) {
-			rightTalonThrottle = 1;
-		}
-		if(rightTalonThrottle < -1) {
-			rightTalonThrottle = 1;
-		}
-		
+		Utilities.limit(leftTalonThrottle);
+		Utilities.limit(rightTalonThrottle);
+			
+		/*
+		 * These two lines set the values for the Talons based on the two throttle values
+		 */
 		leftTalon.set(leftTalonThrottle);
 		rightTalon.set(rightTalonThrottle);
 	}
