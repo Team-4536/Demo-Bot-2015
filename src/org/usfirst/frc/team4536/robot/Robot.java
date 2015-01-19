@@ -12,7 +12,7 @@ public class Robot extends IterativeRobot {
 	
 	public void robotInit() {
     		driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
-    								Constants.RIGHT_TALON_CHANNEL);
+    					    Constants.RIGHT_TALON_CHANNEL);
         	mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     		secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	}
