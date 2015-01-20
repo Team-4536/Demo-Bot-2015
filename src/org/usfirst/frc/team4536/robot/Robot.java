@@ -26,6 +26,10 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
+    	// Puts a speed curve on the X and Y values from the mainStick 
+    	mainStickY = Utilities.speedCurve(mainStick.getY(), Constants.SPEED_CURVE);
+    	mainStickX = Utilities.speedCurve(mainStick.getX(), Constants.SPEED_CURVE);
+    	
     	// Sets throttle values based on mainStick X and Y values (with dead zone).
     	double forwardThrottle = mainStickX;
     	double turnThrottle = mainStickY;
