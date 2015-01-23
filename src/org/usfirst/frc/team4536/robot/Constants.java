@@ -15,4 +15,8 @@ public class Constants {
 	
 	// This constant controls the exponent for speed curve used on the joysticks.
 	public static final double SPEED_CURVE = 2;
+	
+	//Teleop Constants
+	public static final double FORWARD_ACCELERATION_LIMIT = 0.05;
+	public static final double TURN_ACCELERATION_LIMIT = 0.05; 
 }
