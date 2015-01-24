@@ -3,8 +3,6 @@ package org.usfirst.frc.team4536.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class Robot extends IterativeRobot {
 	DriveTrain driveTrain;
@@ -12,25 +10,17 @@ public class Robot extends IterativeRobot {
 	Joystick secondaryStick;
 	Compressor compressor;
 	
-	double currentForwardThrottle;
-	double currentTurnThrottle;
 	double prevForwardThrottle;
 	double prevTurnThrottle;
-	double finalForwardThrottle;
-	double finalTurnThrottle;
-	
+
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	compressor = new Compressor();
-    	currentForwardThrottle = 0;
-    	currentTurnThrottle = 0;
     	prevForwardThrottle = 0;
     	prevTurnThrottle = 0;
-    	finalForwardThrottle = 0;
-    	finalTurnThrottle = 0;
     	
     	System.out.println("YOU ARE CONNECTED 'MON, IT'S BOBSLED TIME!");
     }
@@ -39,6 +29,9 @@ public class Robot extends IterativeRobot {
 		compressor.start();
 		}
 
+	public void teleopInit() {
+		
+	}
 	public void teleopPeriodic() {
 		compressor.start();
 		
@@ -51,38 +44,42 @@ public class Robot extends IterativeRobot {
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
-    	mainStickY = Utilities.speedCurve(mainStick.getY(), Constants.SPEED_CURVE);
-    	mainStickX = Utilities.speedCurve(mainStick.getX(), Constants.SPEED_CURVE);
-    	
-    	// Sets throttle values based on mainStick X and Y values (with dead zone).
-    	double forwardThrottle = mainStickY;
-    	double turnThrottle = mainStickX;
-    	
-    	driveTrain.drive(forwardThrottle, turnThrottle);
+    	mainStickY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
+    	mainStickX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
     	
     	//Acceleration Limit
-    	double currentForwardThrottle = forwardThrottle;
-    	double currentTurnThrottle = turnThrottle;
+
+    	double finalForwardThrottle;
+    	double finalTurnThrottle;
     	
-    	double throttleForwardDiff = currentForwardThrottle - prevForwardThrottle;
-    	double throttleTurnDiff = currentForwardThrottle - prevTurnThrottle;
+    	double throttleForwardDiff = mainStickY - prevForwardThrottle;
+    	double throttleTurnDiff = mainStickX - prevTurnThrottle;
+    	double forwardAccelerationLimit = 0.02 / Constants.FORWARD_FULL_SPEED_TIME; //Sets forwardAccelerationLimit to the proper double to make the robot reach its top speed in the given FORWARD_FULL_SPEED_TIME
+    	double turnAccelerationLimit = 0.02 / Constants.TURN_FULL_SPEED_TIME; //Sets turnAccelerationLimit to the proper double to make the robot reach its top speed in the given TURN_FULL_SPEED_TIME
     	
-    	if (throttleForwardDiff > Constants.FORWARD_ACCELERATION_LIMIT) {
-    		finalForwardThrottle = prevForwardThrottle + Constants.FORWARD_ACCELERATION_LIMIT;
+    	//forward throttle of robot can increase only by + or - forwardAccelerationLimit per cycle (20ms)
+    	if (throttleForwardDiff > forwardAccelerationLimit) {
+    		finalForwardThrottle = prevForwardThrottle + forwardAccelerationLimit;
+    	} else if (throttleForwardDiff < -forwardAccelerationLimit) {
+    		finalForwardThrottle = prevForwardThrottle - forwardAccelerationLimit;
     	} else {
-    		finalForwardThrottle = currentForwardThrottle;
+    		finalForwardThrottle = mainStickY;
     	}
     	
-    	if (throttleTurnDiff > Constants.TURN_ACCELERATION_LIMIT) {
-    		finalTurnThrottle = prevTurnThrottle + Constants.TURN_ACCELERATION_LIMIT;
+    	//turning throttle of robot can increase only by + or - turnAccelerationLimit per cycle (20ms)
+    	if (throttleTurnDiff > turnAccelerationLimit) {
+    		finalTurnThrottle = prevTurnThrottle + turnAccelerationLimit;
+    	} else if (throttleTurnDiff < -turnAccelerationLimit) {
+    		finalTurnThrottle = prevTurnThrottle - turnAccelerationLimit;
     	} else {
-    		finalTurnThrottle = currentTurnThrottle;
+    		finalTurnThrottle = mainStickX;
     	}
     	
     	driveTrain.drive(finalForwardThrottle, finalTurnThrottle);
     	
-    	double prevForwardThrottle = currentForwardThrottle;
-    	double prevTurnThrottle = currentTurnThrottle;
+    	//prev variables are redefined after the code is executed in a cycle
+    	prevForwardThrottle = finalForwardThrottle;
+    	prevTurnThrottle = finalTurnThrottle;
     	    	
     	
     }

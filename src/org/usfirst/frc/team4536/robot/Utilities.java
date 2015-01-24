@@ -66,4 +66,6 @@ public class Utilities {
         
         return output;
     }
+	
+	public static double accelerationLimit()
 }

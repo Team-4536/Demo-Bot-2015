@@ -11,12 +11,13 @@ public class Constants {
 	public static final int RIGHT_TALON_CHANNEL = 1;
 	
 	// Dead zone constant. Currently, a 12% dead zone on the joysticks.
-	public static final double DEAD_ZONE = 0.12;
+	public static final double DEAD_ZONE = 0.05;
 	
 	// This constant controls the exponent for speed curve used on the joysticks.
 	public static final double SPEED_CURVE = 2;
 	
-	//Teleop Constants
-	public static final double FORWARD_ACCELERATION_LIMIT = 0.05;
-	public static final double TURN_ACCELERATION_LIMIT = 0.05; 
+	//Teleop Constants 
+	
+	public static final double FORWARD_FULL_SPEED_TIME = 10;
+	public static final double TURN_FULL_SPEED_TIME = 1;
 }
