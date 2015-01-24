@@ -44,16 +44,19 @@ public class Robot extends IterativeRobot {
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
-    	mainStickY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
-    	mainStickX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
+    	double throttleY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
+    	double throttleX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
     	
     	//Acceleration Limit
     	
-    	driveTrain.drive(Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, mainStickY, prevForwardThrottle), Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, mainStickX, prevTurnThrottle));
+    	double finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevForwardThrottle);
+    	double finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevTurnThrottle);
+    	
+    	driveTrain.drive(finalThrottleY, finalThrottleX);
     	
     	//prev variables are redefined after the code is executed in a cycle
-    	prevForwardThrottle = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, mainStickY, prevForwardThrottle);
-    	prevTurnThrottle = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, mainStickX, prevTurnThrottle);
+    	prevForwardThrottle = finalThrottleY;
+    	prevTurnThrottle = finalThrottleX;
     	    	
     	
     }
