@@ -48,32 +48,6 @@ public class Robot extends IterativeRobot {
     	mainStickX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
     	
     	//Acceleration Limit
-/*
-    	double finalForwardThrottle;
-    	double finalTurnThrottle;
-    	
-    	double throttleForwardDiff = mainStickY - prevForwardThrottle;
-    	double throttleTurnDiff = mainStickX - prevTurnThrottle;
-    	double forwardAccelerationLimit = 0.02 / Constants.FORWARD_FULL_SPEED_TIME; //Sets forwardAccelerationLimit to the proper double to make the robot reach its top speed in the given FORWARD_FULL_SPEED_TIME
-    	double turnAccelerationLimit = 0.02 / Constants.TURN_FULL_SPEED_TIME; //Sets turnAccelerationLimit to the proper double to make the robot reach its top speed in the given TURN_FULL_SPEED_TIME
-    	*/
-    	//forward throttle of robot can increase only by + or - forwardAccelerationLimit per cycle (20ms)
-    	/*if (throttleForwardDiff > forwardAccelerationLimit) {
-    		finalForwardThrottle = prevForwardThrottle + forwardAccelerationLimit;
-    	} else if (throttleForwardDiff < -forwardAccelerationLimit) {
-    		finalForwardThrottle = prevForwardThrottle - forwardAccelerationLimit;
-    	} else {
-    		finalForwardThrottle = mainStickY;
-    	}*/
-    	
-    	//turning throttle of robot can increase only by + or - turnAccelerationLimit per cycle (20ms)
-    	/*if (throttleTurnDiff > turnAccelerationLimit) {
-    		finalTurnThrottle = prevTurnThrottle + turnAccelerationLimit;
-    	} else if (throttleTurnDiff < -turnAccelerationLimit) {
-    		finalTurnThrottle = prevTurnThrottle - turnAccelerationLimit;
-    	} else {
-    		finalTurnThrottle = mainStickX;
-    	}*/
     	
     	driveTrain.drive(Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, mainStickY, prevForwardThrottle), Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, mainStickX, prevTurnThrottle));
     	
