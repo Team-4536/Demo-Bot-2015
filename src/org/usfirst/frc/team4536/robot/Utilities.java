@@ -72,7 +72,7 @@ public class Utilities {
 		double finalThrottle;
     	
     	double throttleDiff = throttle - prevValue;
-    	double accelerationLimit = 0.02 / Constants.FORWARD_FULL_SPEED_TIME; //Sets accelerationLimit to the proper double to make the robot reach its top speed in the given full speed time.    	
+    	double accelerationLimit = 0.02 / fullSpeedTime; //Sets accelerationLimit to the proper double to make the robot reach its top speed in the given full speed time.    	
     	//forward throttle of robot can increase only by + or - forwardAccelerationLimit per cycle (20ms)
     	if (throttleDiff > accelerationLimit) {
     		finalThrottle = prevValue + accelerationLimit;

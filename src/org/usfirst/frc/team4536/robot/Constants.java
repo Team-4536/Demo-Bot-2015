@@ -19,5 +19,13 @@ public class Constants {
 	//Teleop Constants 
 	
 	public static final double FORWARD_FULL_SPEED_TIME = 10;
-	public static final double TURN_FULL_SPEED_TIME = 1;
+	public static final double TURN_FULL_SPEED_TIME = 5;
+	
+	//Slow Mode Constants
+	
+	public static final double SLOW_FORWARD_FULL_SPEED_TIME = 40;
+	public static final double SLOW_TURN_FULL_SPEED_TIME = 20;
+	public static final double SLOW_SPEED_LIMIT = 0.5;
+	public static final double SLOW_SPEED_CURVE = 1;
+	
 }

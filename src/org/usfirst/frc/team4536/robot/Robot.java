@@ -10,17 +10,20 @@ public class Robot extends IterativeRobot {
 	Joystick secondaryStick;
 	Compressor compressor;
 	
-	double prevForwardThrottle;
-	double prevTurnThrottle;
-
+	double prevThrottleY;
+	double prevThrottleX;
+	double finalThrottleY;
+	double finalThrottleX;
+	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	compressor = new Compressor();
-    	prevForwardThrottle = 0;
-    	prevTurnThrottle = 0;
+
+    	prevThrottleY = 0;
+    	prevThrottleX = 0;
     	
     	System.out.println("YOU ARE CONNECTED 'MON, IT'S BOBSLED TIME!");
     }
@@ -35,30 +38,40 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		compressor.start();
 		
-		if (secondaryStick.getRawButton(3)) {
-			compressor.stop();
-		}
-		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
-    	double throttleY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
-    	double throttleX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
     	
-    	//Acceleration Limit
+    	//Drive code with acceleration limits and slow mode
     	
-    	double finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevForwardThrottle);
-    	double finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevTurnThrottle);
+    	if (mainStick.getRawButton(3) == true) { //Slow Mode
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_SPEED_CURVE) * 0.2;
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_SPEED_CURVE) * 0.2;
+        	
+    		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+        	finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    		
+    	} else { //Normal Acceleration Drive Mode
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
+        	
+    		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+        	finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+        	//prev variables are redefined after the code is executed in a cycle
+        	prevThrottleY = finalThrottleY;
+        	prevThrottleX = finalThrottleX;
+        	
+    	}    
     	
+    	//Drive
     	driveTrain.drive(finalThrottleY, finalThrottleX);
-    	
-    	//prev variables are redefined after the code is executed in a cycle
-    	prevForwardThrottle = finalThrottleY;
-    	prevTurnThrottle = finalThrottleX;
-    	    	
-    	
+    
     }
 	
 	public void disabledInit() {
