@@ -46,13 +46,16 @@ public class Robot extends IterativeRobot {
     	
     	//Drive code with acceleration limits and slow mode
     	
-    	if (mainStick.getRawButton(3) == true) { //Slow Mode
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_SPEED_CURVE) * 0.2;
-        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_SPEED_CURVE) * 0.2;
+    	if (mainStick.getRawButton(3) == true) { //Slow Mode - speed limit and lower acceleration limit
+    		//Speed limit
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
         	
+        	//Acceleration Limit
     		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
         	finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
     		
+        	//prev variables are redefined after the code is executed in a cycle
     		prevThrottleY = finalThrottleY;
     		prevThrottleX = finalThrottleX;
     		
@@ -60,10 +63,11 @@ public class Robot extends IterativeRobot {
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
         	double throttleX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
         	
+        	//Acceleration Limit
     		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
         	finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
     		
-        	//prev variables are redefined after the code is executed in a cycle
+        	//prev (previous) variables are redefined after the code is executed in a cycle
         	prevThrottleY = finalThrottleY;
         	prevThrottleX = finalThrottleX;
         	
