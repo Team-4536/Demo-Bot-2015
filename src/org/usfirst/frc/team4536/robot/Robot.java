@@ -9,11 +9,15 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	Compressor compressor;
+	Platform platform;
 	
 	double prevThrottleY;
 	double prevThrottleX;
 	double finalThrottleY;
 	double finalThrottleX;
+	
+	boolean prevJoystickButton3;
+	boolean prevJoystickButton2;
 	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -24,6 +28,12 @@ public class Robot extends IterativeRobot {
 
     	prevThrottleY = 0;
     	prevThrottleX = 0;
+    	
+    	prevJoystickButton3 = false;
+    	prevJoystickButton2 = false;
+    	
+    	platform = new Platform(1,0);
+    	platform.retract();
     	
     	System.out.println("YOU ARE CONNECTED 'MON, IT'S BOBSLED TIME!");
     }
@@ -46,7 +56,7 @@ public class Robot extends IterativeRobot {
     	
     	//Drive code with acceleration limits and slow mode
     	
-    	if (mainStick.getRawButton(3) == true) { //Slow Mode - speed limit and lower acceleration limit
+    	if (mainStick.getRawButton(4) == true) { //Slow Mode - speed limit and lower acceleration limit
     		//Speed limit
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
         	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
@@ -72,6 +82,18 @@ public class Robot extends IterativeRobot {
         	prevThrottleX = finalThrottleX;
         	
     	}    
+    	
+    	if (mainStick.getRawButton(3) == true && prevJoystickButton3 == false) { //Makes it so there is a limit of one flip 
+    		
+    		platform.flip(); //switches platform state between extended and retracted  		
+    	}
+    	
+    	prevJoystickButton3 = mainStick.getRawButton(3); //sets previous value after flip is executed
+    	
+    	/*else if (mainStick.getRawButton(2) == true) {
+    		
+    		platform.retract();
+    	}*/
     	
     	//Drive
     	driveTrain.drive(finalThrottleY, finalThrottleX);
