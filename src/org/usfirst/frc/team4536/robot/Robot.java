@@ -1,8 +1,10 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 	DriveTrain driveTrain;
@@ -10,11 +12,13 @@ public class Robot extends IterativeRobot {
 	Joystick secondaryStick;
 	Compressor compressor;
 	Platform platform;
+	DigitalInput hallEffectSensor;
 	
 	double prevThrottleY;
 	double prevThrottleX;
 	double finalThrottleY;
 	double finalThrottleX;
+	int trueCount;
 	
 	boolean prevJoystickButton3;
 	boolean prevJoystickButton2;
@@ -25,6 +29,7 @@ public class Robot extends IterativeRobot {
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	compressor = new Compressor();
+    	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
 
     	prevThrottleY = 0;
     	prevThrottleX = 0;
@@ -43,6 +48,7 @@ public class Robot extends IterativeRobot {
 		}
 
 	public void teleopInit() {
+		trueCount = 0;
 		
 	}
 	public void teleopPeriodic() {
@@ -52,7 +58,10 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	// Puts a speed curve on the X and Y values from the mainStick 
+    	//Hall Effect Sensor
+    	System.out.println(hallEffectSensor.get());
+    	
+    	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     	
     	//Drive code with acceleration limits and slow mode
     	
@@ -81,12 +90,25 @@ public class Robot extends IterativeRobot {
         	prevThrottleY = finalThrottleY;
         	prevThrottleX = finalThrottleX;
         	
-    	}    
+    	}   
     	
     	if (mainStick.getRawButton(3) == true && prevJoystickButton3 == false) { //Makes it so there is a limit of one flip 
     		
-    		platform.flip(); //switches platform state between extended and retracted  		
+    		platform.flip(); //switches platform state between extended and retracted  
     	}
+    	
+    	//COOL CODE DO NOT DELETE! FLIPS AFTER THE BUTTON HAS BEEN HELD DOWN AWHIE AND THEN RELEASED
+    	/*if (mainStick.getRawButton(3) == true && prevJoystickButton3 == true) {
+    		trueCount += 1;
+    	}
+    		
+    	System.out.println(trueCount);
+  
+    	if (mainStick.getRawButton(3) == false && prevJoystickButton3 == true && trueCount > Utilities.hold(Constants.HOLD_BUTTON_TIME)){
+    		platform.flip();
+    		trueCount = 0;
+    			
+    	}*/
     	
     	prevJoystickButton3 = mainStick.getRawButton(3); //sets previous value after flip is executed
     	

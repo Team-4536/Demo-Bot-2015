@@ -86,6 +86,12 @@ public class Utilities {
     	
 	}
 	
+	public static double hold(double holdTime) {
+		double holdButtonCycleTime =  holdTime/0.02; //Cycle (20ms
+				
+		return holdButtonCycleTime;
+	}
+	
 
 }
 
