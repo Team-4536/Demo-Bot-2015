@@ -54,12 +54,14 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		compressor.start();
 		
+		System.out.println(platform.get());
+		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	//Hall Effect Sensor
-    	System.out.println(hallEffectSensor.get());
+    	//System.out.println(hallEffectSensor.get());
     	
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     	

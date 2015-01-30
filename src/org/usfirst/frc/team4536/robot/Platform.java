@@ -13,6 +13,11 @@ public class Platform {
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
 	}	
 	
+	public boolean get() {
+		
+		return rightSolenoid.get(); // true = extended, false = retracted. This code works because the values must be opposite of each other and only come in 2 combinations.x
+	}
+	
 	public void extend() {
 		
 		rightSolenoid.set(true);
