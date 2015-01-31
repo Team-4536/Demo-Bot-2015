@@ -25,10 +25,12 @@ public class Robot extends IterativeRobot {
     }
 
 	public void autonomousPeriodic() {
-		
+		compressor.start();
     }
 
 	public void teleopPeriodic() {
+		compressor.start();
+		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
@@ -46,6 +48,14 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putBoolean("Limit_Switch_Value", !limitSwitch1.get());
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
+	
+	public void disabledInit() {
+		System.out.println("DIABLED");
+	}
+	
+	public void disabledPeriodic() {
+		compressor.stop();
+	}
     
     public void testPeriodic() {
     		
