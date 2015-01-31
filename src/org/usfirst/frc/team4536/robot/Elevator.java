@@ -19,7 +19,7 @@ public class Elevator {
 	}
 	
 	public void drive(double verticalThrottle) {
-		double elevatorTalonThrottle = verticalThrottle;
+		double elevatorTalonThrottle = -verticalThrottle;
 		
 		// Makes sure the elevator talon throttle is between -1 and 1
 		Utilities.limit(elevatorTalonThrottle);
@@ -28,12 +28,26 @@ public class Elevator {
 		topLimitSwitchValue = !topLimitSwitch.get();
 		bottomLimitSwitchValue = !bottomLimitSwitch.get();
 		
-		if(topLimitSwitchValue == true || bottomLimitSwitchValue == true) {
-			// If one of the limit switches is engaged, set the elevator talon throttle as 0
-			elevatorTalon.set(0);
+		if(topLimitSwitchValue == true) {
+			// If the top limit switch is engaged, the elevator motor can't go up
+			if(elevatorTalonThrottle > 0) {
+				elevatorTalon.set(0);
+			}
+			else {
+				elevatorTalon.set(elevatorTalonThrottle);
+			}
+		}
+		else if(bottomLimitSwitchValue == true) {
+			// If the bottom limit switch is engaged, the elevator motor can't go down
+			if(elevatorTalonThrottle < 0) {
+				elevatorTalon.set(0);
+			}
+			else {
+				elevatorTalon.set(elevatorTalonThrottle);
+			}
 		}
 		else {
-			// If neither limit switch is engaged, set the elevator talon throttle
+			// If neither limit switch is engaged, the elevator motor can go both up and down
 			elevatorTalon.set(elevatorTalonThrottle);
 		}
 	}
