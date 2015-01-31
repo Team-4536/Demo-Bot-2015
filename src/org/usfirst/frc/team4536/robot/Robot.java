@@ -53,22 +53,33 @@ public class Robot extends IterativeRobot {
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
-    	mainStickY = Utilities.speedCurve(mainStick.getY(), Constants.SPEED_CURVE);
-    	mainStickX = Utilities.speedCurve(mainStick.getX(), Constants.SPEED_CURVE);
+    	mainStickY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
+    	mainStickX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
     	
-    	// Sets throttle values based on mainStick X and Y values (with dead zone).
+    	// Sets throttle values based on mainStick X and Y values (with dead zone and speed curve).
     	double forwardThrottle = mainStickY;
     	double turnThrottle = mainStickX;
     	
     	driveTrain.drive(forwardThrottle, turnThrottle);
     	
-    	//Uses button 3 on the main stick as a toggle for the platform 
+    	// Gets Y value from secondaryStick and puts a dead zone on it
+    	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
+    	
+    	// Puts a speed curve on the Y value from the secondaryStick
+    	secondaryStickY = Utilities.speedCurve(secondaryStickY, Constants.SPEED_CURVE);
+    	
+    	// Sets the elevator throttle as the secondary stick Y value (with dead zone and speed curve)
+        double elevatorThrottle = secondaryStickY;
+        
+        elevator.drive(elevatorThrottle);
+    	
+    	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevMainStickButton3 == false) {
     		platform.flip();
     	}
-    	boolean prevMainStickButton3 = mainStick.getRawButton(3);
+    	prevMainStickButton3 = mainStick.getRawButton(3);
     	
-    	//Prints values of the Limit Switch and Hall Effect Sensor to Smart Dashboard
+    	// Prints values of the Limit Switch and Hall Effect Sensor to Smart Dashboard
     	SmartDashboard.putBoolean("Limit_Switch_Value", !limitSwitch1.get());
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
