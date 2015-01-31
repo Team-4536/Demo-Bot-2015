@@ -7,26 +7,31 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends IterativeRobot {
-	DriveTrain driveTrain;	
+	DriveTrain driveTrain;
+	Platform platform;
+	Elevator elevator;
+	
+	Compressor compressor;
+	
 	Joystick mainStick;
-	Joystick secondaryStick;	
+	Joystick secondaryStick;
+	
 	DigitalInput limitSwitch1;
 	DigitalInput hallEffectSensor;
-	Compressor compressor;
-	Platform platform;
 	
 	boolean prevMainStickButton3;
 	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
+    	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
+    	platform.retract();
+    	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL);
+    	
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	compressor = new Compressor();
-    	
-    	platform = new Platform(1,0);
-    	platform.retract();
     	
     	limitSwitch1 = new DigitalInput(Constants.LIMIT_SWITCH_1_CHANNEL);
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);

@@ -14,6 +14,13 @@ public class Constants {
 	public static final int HALL_EFFECT_SENSOR_CHANNEL = 0;
 	public static final int LIMIT_SWITCH_1_CHANNEL = 3;
 	
+	//Platform solenoid channels
+	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 1;
+	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 0;
+	
+	//Elevator motor channel
+	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
+	
 	// Dead zone constant. Currently, a 12% dead zone on the joysticks.
 	public static final double DEAD_ZONE = 0.12;
 	
