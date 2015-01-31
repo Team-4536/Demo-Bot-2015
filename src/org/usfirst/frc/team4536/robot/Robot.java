@@ -13,6 +13,9 @@ public class Robot extends IterativeRobot {
 	DigitalInput limitSwitch1;
 	DigitalInput hallEffectSensor;
 	Compressor compressor;
+	Platform platform;
+	
+	boolean prevMainStickButton3;
 	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -22,6 +25,9 @@ public class Robot extends IterativeRobot {
     	
     	compressor = new Compressor();
     	
+    	platform = new Platform(1,0);
+    	platform.retract();
+    	
     	limitSwitch1 = new DigitalInput(Constants.LIMIT_SWITCH_1_CHANNEL);
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
     }
@@ -29,6 +35,10 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		compressor.start();
     }
+	
+	public void teleopInit() {
+		
+	}
 
 	public void teleopPeriodic() {
 		compressor.start();
@@ -47,6 +57,13 @@ public class Robot extends IterativeRobot {
     	
     	driveTrain.drive(forwardThrottle, turnThrottle);
     	
+    	//Uses button 3 on the main stick as a toggle for the platform 
+    	if(mainStick.getRawButton(3) == true && prevMainStickButton3 == false) {
+    		platform.flip();
+    	}
+    	boolean prevMainStickButton3 = mainStick.getRawButton(3);
+    	
+    	//Prints values of the Limit Switch and Hall Effect Sensor to Smart Dashboard
     	SmartDashboard.putBoolean("Limit_Switch_Value", !limitSwitch1.get());
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
