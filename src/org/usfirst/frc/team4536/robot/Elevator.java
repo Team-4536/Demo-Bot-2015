@@ -28,23 +28,13 @@ public class Elevator {
 		topLimitSwitchValue = !topLimitSwitch.get();
 		bottomLimitSwitchValue = !bottomLimitSwitch.get();
 		
-		if(topLimitSwitchValue == true) {
-			// If the top limit switch is engaged, the elevator motor can't go up
-			if(elevatorTalonThrottle > 0) {
-				elevatorTalon.set(0);
-			}
-			else {
-				elevatorTalon.set(elevatorTalonThrottle);
-			}
+		if(topLimitSwitchValue == true && elevatorTalonThrottle > 0) {
+			// If the top limit switch is engaged, and the elevator is going up, set it as 0
+			elevatorTalon.set(0);
 		}
-		else if(bottomLimitSwitchValue == true) {
-			// If the bottom limit switch is engaged, the elevator motor can't go down
-			if(elevatorTalonThrottle < 0) {
-				elevatorTalon.set(0);
-			}
-			else {
-				elevatorTalon.set(elevatorTalonThrottle);
-			}
+		else if(bottomLimitSwitchValue == true && elevatorTalonThrottle < 0) {
+			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
+			elevatorTalon.set(0);
 		}
 		else {
 			// If neither limit switch is engaged, the elevator motor can go both up and down
