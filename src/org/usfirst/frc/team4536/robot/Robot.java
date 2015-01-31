@@ -16,7 +16,6 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	DigitalInput limitSwitch1;
 	DigitalInput hallEffectSensor;
 	
 	boolean prevMainStickButton3;
@@ -26,14 +25,15 @@ public class Robot extends IterativeRobot {
     					    		Constants.RIGHT_TALON_CHANNEL);
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
     	platform.retract();
-    	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL);
+    	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
+    							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
+    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
     	
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	compressor = new Compressor();
     	
-    	limitSwitch1 = new DigitalInput(Constants.LIMIT_SWITCH_1_CHANNEL);
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
     }
 
@@ -79,8 +79,7 @@ public class Robot extends IterativeRobot {
     	}
     	prevMainStickButton3 = mainStick.getRawButton(3);
     	
-    	// Prints values of the Limit Switch and Hall Effect Sensor to Smart Dashboard
-    	SmartDashboard.putBoolean("Limit_Switch_Value", !limitSwitch1.get());
+    	// Prints values of the Hall Effect Sensor to Smart Dashboard
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
 	
