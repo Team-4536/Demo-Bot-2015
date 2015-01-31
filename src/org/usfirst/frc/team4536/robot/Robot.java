@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
@@ -13,6 +14,7 @@ public class Robot extends IterativeRobot {
 	Compressor compressor;
 	Platform platform;
 	DigitalInput hallEffectSensor;
+	Gyro gyroSensor; 
 	
 	double prevThrottleY;
 	double prevThrottleX;
@@ -24,44 +26,65 @@ public class Robot extends IterativeRobot {
 	boolean prevJoystickButton2;
 	
 	public void robotInit() {
+		
+		//Drive
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
+    	
+    	//Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
+    	
+    	//Pneumatics
     	compressor = new Compressor();
+    	
+    	//Sensors
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
-
+    	gyroSensor = new Gyro(Constants.GYRO_SENSOR_CHANNEL);
+    	gyroSensor.initGyro();
+    	System.out.println("Gyro Init Value:" + gyroSensor.getAngle());
+    	
+    	//Previous Values
     	prevThrottleY = 0;
     	prevThrottleX = 0;
-    	
     	prevJoystickButton3 = false;
     	prevJoystickButton2 = false;
     	
+    	//Platform
     	platform = new Platform(1,0);
     	platform.retract();
     	
     	System.out.println("YOU ARE CONNECTED 'MON, IT'S BOBSLED TIME!");
     }
+	
+	public void autonomousInit(){
+		gyroSensor.reset();
+		System.out.println("Gyro Auto Init Value:" + gyroSensor.getAngle());
+		compressor.start();
+	}
 
 	public void autonomousPeriodic() {
-		compressor.start();
+		driveTrain.driveStraight(0.2, gyroSensor.getAngle());
 		}
 
 	public void teleopInit() {
+		
 		trueCount = 0;
+		gyroSensor.reset();
+		System.out.println("Gyro Teleop Gyro Init Value" + gyroSensor.getAngle());
 		
 	}
 	public void teleopPeriodic() {
 		compressor.start();
 		
-		System.out.println(platform.get());
+		//Gyro Code
+		SmartDashboard.putNumber("Gyro_Sensor_Value", gyroSensor.getAngle());
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	//Hall Effect Sensor
-    	//System.out.println(hallEffectSensor.get());
     	
     	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     	
@@ -92,7 +115,10 @@ public class Robot extends IterativeRobot {
         	prevThrottleY = finalThrottleY;
         	prevThrottleX = finalThrottleX;
         	
-    	}   
+    	} 
+    	
+    	//Drive
+    	driveTrain.drive(finalThrottleY, finalThrottleX);
     	
     	if (mainStick.getRawButton(3) == true && prevJoystickButton3 == false) { //Makes it so there is a limit of one flip 
     		
@@ -119,9 +145,6 @@ public class Robot extends IterativeRobot {
     		platform.retract();
     	}*/
     	
-    	//Drive
-    	driveTrain.drive(finalThrottleY, finalThrottleX);
-    
     }
 	
 	public void disabledInit() {
@@ -130,6 +153,11 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		compressor.stop();
+		gyroSensor.reset();
+	}
+	
+	public void testInit(){
+		
 	}
 
     public void testPeriodic() {

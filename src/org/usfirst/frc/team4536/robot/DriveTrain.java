@@ -34,4 +34,10 @@ public class DriveTrain {
 		rightTalon.set(rightTalonThrottle);
 	}
 	
+	public void driveStraight(double forwardThrottle, double angle) {
+		double adjustment = angle * Constants.PROPORTIONALITY_CONSTANT;
+		
+		this.drive(forwardThrottle, adjustment);		
+		
+	}
 }
