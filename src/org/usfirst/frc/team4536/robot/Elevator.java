@@ -12,12 +12,20 @@ public class Elevator {
 	boolean topLimitSwitchValue;
 	boolean bottomLimitSwitchValue;
 	
+	/*
+     * This function is the constructor for the Elevator class
+     * It takes in three arguments - one talon channel, and the channels of the top and bottom limit switches
+     */
 	public Elevator(int talonChannel, int topLimitSwitchChannel, int bottomLimitSwitchChannel) {
 		elevatorTalon = new Talon(talonChannel);
 		topLimitSwitch = new DigitalInput(topLimitSwitchChannel);
 		bottomLimitSwitch = new DigitalInput(bottomLimitSwitchChannel);
 	}
 	
+	/*
+     * This function is called in order to make the elevator drive
+     * It takes in one arguments - the amount of vertical throttle (-1 to 1)
+     */
 	public void drive(double verticalThrottle) {
 		double elevatorTalonThrottle = -verticalThrottle;
 		
@@ -40,5 +48,28 @@ public class Elevator {
 			// If neither limit switch is engaged, the elevator motor can go both up and down
 			elevatorTalon.set(elevatorTalonThrottle);
 		}
+	}
+	
+	/*
+	 * Returns the boolean value of the top limit switch
+	 */
+	public boolean getTopLimitSwitchValue() {
+		// Boolean value is reversed because the limit switch outputs false when not pressed
+		return !topLimitSwitch.get();
+	}
+	
+	/*
+	 * Returns the boolean value of the bottom limit switch
+	 */
+	public boolean getBottomLimitSwitchValue() {
+		// Boolean value is reversed because the limit switch outputs false when not pressed
+		return !bottomLimitSwitch.get();
+	}
+	
+	/*
+	 *  Returns the double throttle value of the elevator
+	 */
+	public double getThrottle() {
+		return elevatorTalon.get();
 	}
 }
