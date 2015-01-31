@@ -10,6 +10,10 @@ public class Constants {
 	public static final int LEFT_TALON_CHANNEL = 0;
 	public static final int RIGHT_TALON_CHANNEL = 1;
 	
+	//Sensor channels
+	public static final int HALL_EFFECT_SENSOR_CHANNEL = 0;
+	public static final int LIMIT_SWITCH_1_CHANNEL = 3;
+	
 	// Dead zone constant. Currently, a 12% dead zone on the joysticks.
 	public static final double DEAD_ZONE = 0.12;
 	

@@ -22,8 +22,8 @@ public class Robot extends IterativeRobot {
     	
     	compressor = new Compressor();
     	
-    	limitSwitch1 = new DigitalInput(3);
-    	hallEffectSensor = new DigitalInput(0);
+    	limitSwitch1 = new DigitalInput(Constants.LIMIT_SWITCH_1_CHANNEL);
+    	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
     }
 
 	public void autonomousPeriodic() {
@@ -52,7 +52,7 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void disabledInit() {
-		System.out.println("DIABLED");
+		System.out.println("DISABLED");
 	}
 	
 	public void disabledPeriodic() {
