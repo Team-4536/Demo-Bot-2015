@@ -20,6 +20,8 @@ public class Robot extends IterativeRobot {
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
+    	compressor = new Compressor();
+    	
     	limitSwitch1 = new DigitalInput(3);
     	hallEffectSensor = new DigitalInput(0);
     }
