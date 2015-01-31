@@ -4,12 +4,15 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends IterativeRobot {
-	DriveTrain driveTrain;
+	DriveTrain driveTrain;	
 	Joystick mainStick;
-	Joystick secondaryStick;
+	Joystick secondaryStick;	
 	DigitalInput limitSwitch1;
+	DigitalInput hallEffectSensor;
+	Compressor compressor;
 	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -18,6 +21,7 @@ public class Robot extends IterativeRobot {
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	limitSwitch1 = new DigitalInput(3);
+    	hallEffectSensor = new DigitalInput(0);
     }
 
 	public void autonomousPeriodic() {
@@ -40,6 +44,7 @@ public class Robot extends IterativeRobot {
     	driveTrain.drive(forwardThrottle, turnThrottle);
     	
     	SmartDashboard.putBoolean("Limit_Switch_Value", !limitSwitch1.get());
+    	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
     
     public void testPeriodic() {
