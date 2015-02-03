@@ -70,6 +70,8 @@ public class Robot extends IterativeRobot {
     	
     	// Sets the elevator throttle as the secondary stick Y value (with dead zone and speed curve)
         double elevatorThrottle = secondaryStickY;
+        
+        elevator.drive(elevatorThrottle);
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevMainStickButton3 == false) {
