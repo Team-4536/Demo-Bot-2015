@@ -20,13 +20,17 @@ public class Robot extends IterativeRobot {
 	
 	boolean prevMainStickButton3;
 	
+	double prevElevatorThrottle;
+	
 	public void robotInit() {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
     	platform.retract();
+    	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
+    							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
     	
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -35,6 +39,8 @@ public class Robot extends IterativeRobot {
     	compressor = new Compressor();
     	
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
+    	
+    	prevElevatorThrottle = 0;
     }
 
 	public void autonomousPeriodic() {
@@ -71,7 +77,20 @@ public class Robot extends IterativeRobot {
     	// Sets the elevator throttle as the secondary stick Y value (with dead zone and speed curve)
         double elevatorThrottle = secondaryStickY;
         
-        elevator.drive(elevatorThrottle);
+        elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
+        prevElevatorThrottle = elevatorThrottle; 
+        
+        /*
+         * If the platform is extended, use the driveSmallRange method, which forgets about the 
+         * bottom limit switch and begins sensing the middle limit switch.
+         * We don't want our elevator going down too far when the platform is out.
+         */
+        if(platform.get() != true) {
+        	elevator.driveFullRange(elevatorThrottle);
+        }
+        else {
+        	elevator.driveSmallRange(elevatorThrottle);
+        }
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevMainStickButton3 == false) {
