@@ -84,6 +84,7 @@ public class Robot extends IterativeRobot {
          * If the platform is extended, use the driveSmallRange method, which forgets about the 
          * bottom limit switch and begins sensing the middle limit switch.
          * We don't want our elevator going down too far when the platform is out.
+         * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
         if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
