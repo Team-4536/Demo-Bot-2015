@@ -26,6 +26,7 @@ public class DriveTrain {
 		double rightTalonThrottle = -forwardThrottle + turnThrottle;
 				
 	    // Makes sure that the two Talon throttles are between -1 and 1
+	    // These operations don't do anything, a value has to be assigned somewhere. Caleb
 		Utilities.limit(leftTalonThrottle);
 		Utilities.limit(rightTalonThrottle);
 			
