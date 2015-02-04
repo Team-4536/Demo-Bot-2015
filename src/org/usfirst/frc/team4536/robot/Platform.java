@@ -11,7 +11,7 @@ public class Platform {
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
 	
-	
+	//An initial value should be given to the solenoids in this constructor. Otherwise calling isExtended() could throw an error. Caleb
 	public Platform(int rightSolenoidChannel, int leftSolenoidChannel) {	
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
