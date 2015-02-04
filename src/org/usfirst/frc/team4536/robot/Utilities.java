@@ -6,44 +6,36 @@ public class Utilities {
 	
 	/*
 	 * Takes in values and makes them between -1 and 1
-	 *Suggested improvement: there is no need to have "output" in this method. Just use "return" in multiple places instead. Caleb
 	 */
-	public static double limit (double input) {
-		double output;
-		
+	public static double limit (double input) {;		
 		if(input > 1) {
-			output = 1;
+			return 1;
 		}
 		else if(input < -1) {
-			output = -1;
+			return -1;
 		}
 		else {
-			output = input;
+			return input;
 		}
-		
-		return output;
 	}
 		
 	/*
 	 * Takes in values and makes sure they are both above deadZone and below -deadZone
 	 * We use it to create a small region on our joysticks that outputs 0
 	 * Once the joystick gets outside of the dead zone, it outputs their actual values
-	 *Suggested improvement: Same as for limit(). Caleb
 	 */
-	public static double deadZone (double input, double deadZone) {
-        double output;
-		
+	public static double deadZone (double input, double deadZone) {		
 		if ((input < deadZone) && (input > -deadZone))      //if the input is within the dead zone, return 0
-            output = 0;
+            return 0;
         else
-            output = input;
-		
-		return output;
+            return input;
      	}
 	
 	
 	/*
-	 * Suggested improvement: have comments right here. Caleb
+	 * Takes in two values - the input and curve. Input is taken to the power of curve 
+	 * We use this method on our joysticks. It allows our driver to have more control over 
+	 * the robot using the joysick values closer to 0. 
 	 */
 	public static double speedCurve(double input, double curve) {
         double output;

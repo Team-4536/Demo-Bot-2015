@@ -85,7 +85,7 @@ public class Robot extends IterativeRobot {
          * bottom limit switch and begins sensing the middle limit switch.
          * We don't want our elevator going down too far when the platform is out.
          */
-        if(platform.get() != true) {
+        if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
         }
         else {
