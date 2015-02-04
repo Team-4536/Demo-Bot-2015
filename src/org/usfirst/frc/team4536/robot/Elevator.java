@@ -110,7 +110,7 @@ public class Elevator {
 	
 	/*
 	 *  Returns the double throttle value of the elevator
-	 *  Which way is which? Does a positive return value mean the elevator is driving up or down? 
+	 *  Which way is which? Does a positive return value mean the elevator is driving up or down? Caleb
 	 */
 	public double getThrottle() {
 		return elevatorTalon.get();
