@@ -10,6 +10,7 @@ public class Elevator {
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
 	
+	// Why do these need to be declared up here? If they do not need to store values between cycles of code, then you may as well declare them inside of a function to reduce clutter up here. Caleb
 	boolean topLimitSwitchValue;
 	boolean middleLimitSwitchValue;
 	boolean bottomLimitSwitchValue;
@@ -17,6 +18,7 @@ public class Elevator {
 	/*
      * This function is the constructor for the Elevator class
      * It takes in three arguments - one talon channel, and the channels of the top and bottom limit switches
+     * These comments need to be updated. Caleb
      */
 	public Elevator(int talonChannel, 
 					int topLimitSwitchChannel, 
@@ -32,6 +34,7 @@ public class Elevator {
 	/*
      * This function is called in order to make the elevator drive
      * It takes in one arguments - the amount of vertical throttle (-1 to 1)
+     * Which way is which? Does verticalThrottle=1 mean drive up or drive down? Caleb
      */
 	public void driveFullRange(double verticalThrottle) {
 		double elevatorTalonThrottle = verticalThrottle;
@@ -107,6 +110,7 @@ public class Elevator {
 	
 	/*
 	 *  Returns the double throttle value of the elevator
+	 *  Which way is which? Does a positive return value mean the elevator is driving up or down? 
 	 */
 	public double getThrottle() {
 		return elevatorTalon.get();
