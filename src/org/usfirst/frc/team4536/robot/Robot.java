@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
@@ -13,8 +12,7 @@ public class Robot extends IterativeRobot {
 	Joystick secondaryStick;
 	Compressor compressor;
 	Platform platform;
-	DigitalInput hallEffectSensor;
-	Gyro gyroSensor; 
+	DigitalInput hallEffectSensor; 
 	
 	double prevThrottleY;
 	double prevThrottleX;
@@ -40,9 +38,7 @@ public class Robot extends IterativeRobot {
     	
     	//Sensors
     	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
-    	gyroSensor = new Gyro(Constants.GYRO_SENSOR_CHANNEL);
-    	gyroSensor.initGyro();
-    	System.out.println("Gyro Init Value:" + gyroSensor.getAngle());
+    	driveTrain.startGyro();
     	
     	//Previous Values
     	prevThrottleY = 0;
@@ -58,27 +54,23 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void autonomousInit(){
-		gyroSensor.reset();
-		System.out.println("Gyro Auto Init Value:" + gyroSensor.getAngle());
+		driveTrain.resetGyro();
 		compressor.start();
 	}
 
 	public void autonomousPeriodic() {
-		driveTrain.driveStraight(0.2, gyroSensor.getAngle());
+		driveTrain.driveStraight(0.2,30);
 		}
 
 	public void teleopInit() {
 		
-		trueCount = 0;
-		gyroSensor.reset();
-		System.out.println("Gyro Teleop Gyro Init Value" + gyroSensor.getAngle());
-		
+		trueCount = 0;	
 	}
 	public void teleopPeriodic() {
 		compressor.start();
 		
 		//Gyro Code
-		SmartDashboard.putNumber("Gyro_Sensor_Value", gyroSensor.getAngle());
+		SmartDashboard.putNumber("Gyro_Sensor_Value", driveTrain.gyroSensor.getAngle());
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
@@ -153,7 +145,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		compressor.stop();
-		gyroSensor.reset();
+		driveTrain.resetGyro();
 	}
 	
 	public void testInit(){
