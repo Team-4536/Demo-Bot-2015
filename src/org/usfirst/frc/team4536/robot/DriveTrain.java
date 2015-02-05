@@ -63,61 +63,23 @@ public class DriveTrain {
 	}
 	
 	public void turnTo(double desiredAngle) {
-		double turnDirectionMagnitude = desiredAngle - gyroSensor.getAngle();
+		double angle;
+		double turn;
 		
-		while (desiredAngle > gyroSensor.getAngle() + 180) {
-			turnDirectionMagnitude = gyroSensor.getAngle() + 360;
+		angle = gyroSensor.getAngle();
+		turn  = desiredAngle - angle;
+		
+		while (angle > desiredAngle + 180) {
+			angle -= 360;
+			turn = angle;
 		}
-		
-		while (desiredAngle < gyroSensor.getAngle() - 180) {
-			turnDirectionMagnitude = gyroSensor.getAngle() - 360;
-		}
-		/*double gyroRawAngle;
-		double angleDiff;
-		
-		//Angle Adjustment
-		angle %= 360;
-		
-		if (angle > 180) {
-			angle = angle - 360;
-		} 
-		else if (angle < -180) {
-			angle = angle + 360;
-		}
-		
-		//Gyro adjustment
-		if ((gyroSensor.getAngle() > 180)) {
-			gyroRawAngle = angle - 360;
-		} 
-		else if ((gyroSensor.getAngle() < -180)) {
-			gyroRawAngle = angle + 360;
-		} else {
-			gyroRawAngle = gyroSensor.getAngle();
-		}
-		
-		if (Math.abs(angle - gyroRawAngle) > 180) {
-			if (angle > 0) {
-				angleDiff = gyroRawAngle - (angle - 180);
-			} else {
-				angleDiff = angle - (gyroRawAngle - 180); b
-			}
 			
-		} else {
-			if (angle > gyroRawAngle) {
-				angleDiff = angle - gyroRawAngle;
-			} else {
-				angleDiff = gyroRawAngle - angle;
-			}
+		while (angle < desiredAngle - 180) {
+			angle += 360;
+			turn = angle;
 		}
-		
-		double gyroCycleDiff = (360 - gyroRawAngle);
-		double gyroAngle = gyroRawAngle;
-		
-		double angleCycleDiff = (360 - angle);*/
-		
-		//double angleDiff = angle - ((gyroSensor.getAngle() % 360)- 180);
-		//double cycleDiff = (360 - ((gyroSensor.getAngle() % 360)) - 180) - (360 - angle);
-		double adjustment = turnDirectionMagnitude * Constants.PROPORTIONALITY_CONSTANT;
+
+		double adjustment = turn * Constants.PROPORTIONALITY_CONSTANT;
 		
 		this.drive(0, adjustment);
 		
