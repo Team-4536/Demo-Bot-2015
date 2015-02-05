@@ -31,7 +31,7 @@ public class Elevator {
      * To go up the value would be 1. To go down the value would be -1
      */
 	public void driveFullRange(double verticalThrottle) {
-		double elevatorTalonThrottle = verticalThrottle;
+		double elevatorTalonThrottle = -verticalThrottle;
 		
 		// Makes sure the elevator talon throttle is between -1 and 1
 		Utilities.limit(elevatorTalonThrottle);
@@ -55,7 +55,7 @@ public class Elevator {
 	}
 	
 	public void driveSmallRange(double verticalThrottle) {
-		double elevatorTalonThrottle = verticalThrottle;
+		double elevatorTalonThrottle = -verticalThrottle;
 		
 		// Makes sure the elevator talon throttle is between -1 and 1
 		Utilities.limit(elevatorTalonThrottle);
