@@ -10,15 +10,9 @@ public class Elevator {
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
 	
-	// Why do these need to be declared up here? If they do not need to store values between cycles of code, then you may as well declare them inside of a function to reduce clutter up here. Caleb
-	boolean topLimitSwitchValue;
-	boolean middleLimitSwitchValue;
-	boolean bottomLimitSwitchValue;
-	
 	/*
      * This function is the constructor for the Elevator class
      * It takes in four arguments - one talon channel, and the channels of the top, bottom, and middle limit switches
-     * These comments need to be updated. Caleb
      */
 	public Elevator(int talonChannel, 
 					int topLimitSwitchChannel, 
