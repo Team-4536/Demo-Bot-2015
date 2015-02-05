@@ -17,7 +17,7 @@ public class Elevator {
 	
 	/*
      * This function is the constructor for the Elevator class
-     * It takes in three arguments - one talon channel, and the channels of the top and bottom limit switches
+     * It takes in four arguments - one talon channel, and the channels of the top, bottom, and middle limit switches
      * These comments need to be updated. Caleb
      */
 	public Elevator(int talonChannel, 
@@ -33,8 +33,8 @@ public class Elevator {
 	
 	/*
      * This function is called in order to make the elevator drive
-     * It takes in one arguments - the amount of vertical throttle (-1 to 1)
-     * Which way is which? Does verticalThrottle=1 mean drive up or drive down? Caleb
+     * It takes in one arguments - the amount of vertical throttle (1 to -1)
+     * To go up the value would be 1. To go down the value would be -1
      */
 	public void driveFullRange(double verticalThrottle) {
 		double elevatorTalonThrottle = verticalThrottle;
@@ -43,8 +43,8 @@ public class Elevator {
 		Utilities.limit(elevatorTalonThrottle);
 		
 		// Boolean values are reversed because limit switches output false when not pressed
-		topLimitSwitchValue = !topLimitSwitch.get();
-		bottomLimitSwitchValue = !bottomLimitSwitch.get();
+		boolean topLimitSwitchValue = !topLimitSwitch.get();
+		boolean bottomLimitSwitchValue = !bottomLimitSwitch.get();
 		
 		if(topLimitSwitchValue == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
@@ -67,8 +67,8 @@ public class Elevator {
 		Utilities.limit(elevatorTalonThrottle);
 		
 		// Boolean values are reversed because limit switches output false when not pressed
-		topLimitSwitchValue = !topLimitSwitch.get();
-		middleLimitSwitchValue = !middleLimitSwitch.get();
+		boolean topLimitSwitchValue = !topLimitSwitch.get();
+		boolean middleLimitSwitchValue = !middleLimitSwitch.get();
 		
 		if(topLimitSwitchValue == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
@@ -110,7 +110,7 @@ public class Elevator {
 	
 	/*
 	 *  Returns the double throttle value of the elevator
-	 *  Which way is which? Does a positive return value mean the elevator is driving up or down? Caleb
+	 *  Positive return value means the elevator is going up
 	 */
 	public double getThrottle() {
 		return elevatorTalon.get();

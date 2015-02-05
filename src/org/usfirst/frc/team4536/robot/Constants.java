@@ -6,9 +6,12 @@ public class Constants {
 	public static final int LEFT_STICK_PORT = 0;
 	public static final int RIGHT_STICK_PORT = 1;
 	
-	// Talon ports
+	// Drive Talon ports
 	public static final int LEFT_TALON_CHANNEL = 0;
 	public static final int RIGHT_TALON_CHANNEL = 1; 
+	
+	// Elevator Talon ports
+	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
 	
 	// Limit Switch channels
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
@@ -20,10 +23,6 @@ public class Constants {
 	// Platform solenoid channels
 	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 1;
 	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 0;
-	
-	// Elevator motor channel
-	// Suggestion: put this constant up by the Talons. Caleb
-	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
 	
 	// Dead zone constant. Currently, a 12% dead zone on the joysticks. Usually at 0.12
 	public static final double DEAD_ZONE = 0.12;
