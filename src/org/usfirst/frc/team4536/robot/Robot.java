@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot {
     }
 
 	public void autonomousPeriodic() {
+		//Suggestion: move compressor code to the Init methods instead of the periodic methods. Caleb
 		compressor.start();
     }
 	
