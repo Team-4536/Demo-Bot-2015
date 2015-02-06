@@ -61,6 +61,7 @@ public class Elevator {
 		Utilities.limit(elevatorTalonThrottle);
 		
 		// Boolean values are reversed because limit switches output false when not pressed
+		// Suggestion: Eliminate these variables completely and just use the .get() methods right in the conditional statements. Caleb
 		boolean topLimitSwitchValue = !topLimitSwitch.get();
 		boolean middleLimitSwitchValue = !middleLimitSwitch.get();
 		
@@ -80,6 +81,7 @@ public class Elevator {
  	
 	/*
 	 * Returns the boolean value of the top limit switch
+	 * Question: What does a true return value from these methods indicate? These initial comments should address this. 
 	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
