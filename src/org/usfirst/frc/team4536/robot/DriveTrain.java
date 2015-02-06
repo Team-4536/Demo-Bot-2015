@@ -67,18 +67,17 @@ public class DriveTrain {
 		double turn;
 		
 		angle = gyroSensor.getAngle();
-		turn  = desiredAngle - angle;
 		
 		while (angle > desiredAngle + 180) {
 			angle -= 360;
-			turn = angle;
 		}
 			
 		while (angle < desiredAngle - 180) {
 			angle += 360;
-			turn = angle;
 		}
 
+		turn = desiredAngle - angle;
+		
 		double adjustment = turn * Constants.PROPORTIONALITY_CONSTANT;
 		
 		this.drive(0, adjustment);
