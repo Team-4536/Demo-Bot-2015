@@ -10,7 +10,8 @@ public class DriveTrain {
 	Talon rightTalon;
 	Gyro gyroSensor;
 	
-	double prevThrottle;
+	double prevForwardThrottle;
+	double prevTurnThrottle;
 		
 	/*
      * This function is the constructor for the DriveTrain class
@@ -64,7 +65,7 @@ public class DriveTrain {
 		
 	}
 	
-	public double turnTo(double desiredAngle) {
+	public void turnTo(double desiredAngle, double fullSpeedTime) {
 		double angle;
 		double turn;
 		
@@ -81,9 +82,11 @@ public class DriveTrain {
 		turn = desiredAngle - angle;
 		
 		double adjustment = turn * Constants.PROPORTIONALITY_CONSTANT;
+		double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
+		//return adjustment;
+		this.drive(0, accelAdjustment);
+		prevTurnThrottle = accelAdjustment;
 		
-		return adjustment;
-		//this.drive(0, Utilities.accelLimit(5, adjustment, prevValue));
 		
 		}	
 }

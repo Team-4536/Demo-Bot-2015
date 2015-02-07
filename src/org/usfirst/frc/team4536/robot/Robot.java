@@ -64,11 +64,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		//driveTrain.turnTo(30, prevValueX);
-		turningThrottle = driveTrain.turnTo(0);
-		turn = Utilities.accelLimit(Constants.AUTO_TURN_FULL_SPEED_TIME, turningThrottle, prevValueX); //This is the turnTo() method with an accel limit.
-		driveTrain.drive(0, turn);
-		prevValueX = turn;
+		driveTrain.turnTo(30, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
 
 	public void teleopInit() {
