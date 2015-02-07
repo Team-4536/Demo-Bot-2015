@@ -98,9 +98,6 @@ public class Robot extends IterativeRobot {
     		platform.flip();
     	}
     	prevMainStickButton3 = mainStick.getRawButton(3);
-    	
-    	// Prints values of the Hall Effect Sensor to Smart Dashboard
-    	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
     }
 	
 	public void disabledInit() {
