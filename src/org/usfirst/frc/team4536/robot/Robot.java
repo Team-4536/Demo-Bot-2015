@@ -59,14 +59,14 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void autonomousInit(){
-		driveTrain.resetGyro();
+		driveTrain.resetGyro(); //Gyro heading is set to zero.
 		compressor.start();
 	}
 
 	public void autonomousPeriodic() {
 		//driveTrain.turnTo(30, prevValueX);
 		turningThrottle = driveTrain.turnTo(0);
-		turn = Utilities.accelLimit(Constants.AUTO_FULL_SPEED_TIME_TURN, turningThrottle, prevValueX);
+		turn = Utilities.accelLimit(Constants.AUTO_TURN_FULL_SPEED_TIME, turningThrottle, prevValueX); //This is the turnTo() method with an accel limit.
 		driveTrain.drive(0, turn);
 		prevValueX = turn;
 		}
@@ -92,8 +92,8 @@ public class Robot extends IterativeRobot {
     	
     	if (mainStick.getRawButton(4) == true) { //Slow Mode - speed limit and lower acceleration limit
     		//Speed limit
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
-        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
         	
         	//Acceleration Limit
     		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
@@ -104,8 +104,8 @@ public class Robot extends IterativeRobot {
     		prevThrottleX = finalThrottleX;
     		
     	} else { //Normal Acceleration Drive Mode
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
-        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FOWARD_SPEED_CURVE);
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.TURN_SPEED_CURVE);
         	
         	//Acceleration Limit
     		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
