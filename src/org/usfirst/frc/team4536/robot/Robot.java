@@ -14,11 +14,15 @@ public class Robot extends IterativeRobot {
 	Platform platform;
 	DigitalInput hallEffectSensor; 
 	
+	double turn;
+	double turningThrottle;
+	
 	double prevThrottleY;
 	double prevThrottleX;
 	double finalThrottleY;
 	double finalThrottleX;
 	int trueCount;
+	double prevValueX;
 	
 	boolean prevJoystickButton3;
 	boolean prevJoystickButton2;
@@ -43,6 +47,7 @@ public class Robot extends IterativeRobot {
     	//Previous Values
     	prevThrottleY = 0;
     	prevThrottleX = 0;
+    	prevValueX = 0;
     	prevJoystickButton3 = false;
     	prevJoystickButton2 = false;
     	
@@ -59,11 +64,14 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		driveTrain.driveStraight(0.2,30);
+		//driveTrain.turnTo(30, prevValueX);
+		turningThrottle = driveTrain.turnTo(0);
+		turn = Utilities.accelLimit(Constants.AUTO_FULL_SPEED_TIME_TURN, turningThrottle, prevValueX);
+		driveTrain.drive(0, turn);
+		prevValueX = turn;
 		}
 
 	public void teleopInit() {
-		
 		trueCount = 0;	
 	}
 	public void teleopPeriodic() {

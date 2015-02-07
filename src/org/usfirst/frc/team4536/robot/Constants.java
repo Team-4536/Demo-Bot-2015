@@ -15,7 +15,7 @@ public class Constants {
 	public static final int GYRO_SENSOR_CHANNEL = 0;
 	
 	//Proportionality Constant
-	public static final double PROPORTIONALITY_CONSTANT = 0;
+	public static final double PROPORTIONALITY_CONSTANT = 0.005;
 	
 	// Dead zone constant. Currently, a 12% dead zone on the joysticks.
 	public static final double DEAD_ZONE = 0.05;
@@ -28,6 +28,9 @@ public class Constants {
 	public static final double FORWARD_FULL_SPEED_TIME = 10;
 	public static final double TURN_FULL_SPEED_TIME = 5;
 	public static final double HOLD_BUTTON_TIME = 1;
+	
+	//Autonomous Constants
+	public static final double AUTO_FULL_SPEED_TIME_TURN = 30;
 	
 	//Slow Mode Constants
 	
