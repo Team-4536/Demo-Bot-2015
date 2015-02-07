@@ -36,15 +36,12 @@ public class Elevator {
 		// Makes sure the elevator talon throttle is between -1 and 1
 		Utilities.limit(elevatorTalonThrottle);
 		
-		// Boolean values are reversed because limit switches output false when not pressed
-		boolean topLimitSwitchValue = !topLimitSwitch.get();
-		boolean bottomLimitSwitchValue = !bottomLimitSwitch.get();
-		
-		if(topLimitSwitchValue == true && elevatorTalonThrottle > 0) {
+		// limit switches are reversed, so that when it's pressed it outputs true
+		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
 			elevatorTalon.set(0);
 		}
-		else if(bottomLimitSwitchValue == true && elevatorTalonThrottle < 0) {
+		else if(!bottomLimitSwitch.get() && elevatorTalonThrottle < 0) {
 			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
 			elevatorTalon.set(0);
 		}
@@ -60,16 +57,12 @@ public class Elevator {
 		// Makes sure the elevator talon throttle is between -1 and 1
 		Utilities.limit(elevatorTalonThrottle);
 		
-		// Boolean values are reversed because limit switches output false when not pressed
-		// Suggestion: Eliminate these variables completely and just use the .get() methods right in the conditional statements. Caleb
-		boolean topLimitSwitchValue = !topLimitSwitch.get();
-		boolean middleLimitSwitchValue = !middleLimitSwitch.get();
-		
-		if(topLimitSwitchValue == true && elevatorTalonThrottle > 0) {
+		// limit switches are reversed, so that when it's pressed it outputs true
+		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
 			elevatorTalon.set(0);
 		}
-		else if(middleLimitSwitchValue == true && elevatorTalonThrottle < 0) {
+		else if(!middleLimitSwitch.get() == true && elevatorTalonThrottle < 0) {
 			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
 			elevatorTalon.set(0);
 		}
@@ -81,7 +74,7 @@ public class Elevator {
  	
 	/*
 	 * Returns the boolean value of the top limit switch
-	 * Question: What does a true return value from these methods indicate? These initial comments should address this. 
+	 * A return value of true indicates that the limit switch is pressed
 	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -90,6 +83,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the middle limit switch
+	 * A return value of true indicates that the limit switch is pressed
 	 */
 	public boolean middleLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -98,6 +92,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the bottom limit switch
+	 * A return value of true indicates that the limit switch is pressed
 	 */
 	public boolean bottomLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
