@@ -16,7 +16,7 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	boolean prevMainStickButton3;
+	boolean prevPlatformControllingButton;
 	
 	double prevElevatorThrottle;
 	
@@ -35,6 +35,8 @@ public class Robot extends IterativeRobot {
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	compressor = new Compressor();
+    	
+    	prevPlatformControllingButton = false;
     	
     	prevElevatorThrottle = 0;
     }
@@ -68,6 +70,12 @@ public class Robot extends IterativeRobot {
     	
     	driveTrain.drive(forwardThrottle, turnThrottle);
     	
+    	// Uses button 3 on the main stick as a toggle for the platform 
+    	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
+    		platform.flip();
+    	}
+    	prevPlatformControllingButton = mainStick.getRawButton(3);
+    	    	
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
     	
@@ -92,12 +100,6 @@ public class Robot extends IterativeRobot {
         else {
         	elevator.driveSmallRange(elevatorThrottle);
         }
-    	
-    	// Uses button 3 on the main stick as a toggle for the platform 
-    	if(mainStick.getRawButton(3) == true && prevMainStickButton3 == false) {
-    		platform.flip();
-    	}
-    	prevMainStickButton3 = mainStick.getRawButton(3);
     }
 	
 	public void disabledInit() {
