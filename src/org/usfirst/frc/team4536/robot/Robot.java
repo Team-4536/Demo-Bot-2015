@@ -64,7 +64,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		driveTrain.turnTo(30, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		driveTrain.driveStraight(0.5, 0, 5);
+		//driveTrain.turnTo(30, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
 
 	public void teleopInit() {

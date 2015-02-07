@@ -10,7 +10,6 @@ public class DriveTrain {
 	Talon rightTalon;
 	Gyro gyroSensor;
 	
-	double prevForwardThrottle;
 	double prevTurnThrottle;
 		
 	/*
@@ -56,12 +55,14 @@ public class DriveTrain {
 		rightTalon.set(rightTalonThrottle);
 	}
 	
-	public void driveStraight(double forwardThrottle, double angle) {
+	public void driveStraight(double forwardThrottle, double angle, double fullSpeedTime) {
 		
 		double angleDiff = angle - gyroSensor.getAngle();
 		double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
 		
-		this.drive(forwardThrottle, adjustment);		
+		this.drive(forwardThrottle, accelAdjustment);
+		prevTurnThrottle = accelAdjustment;
 		
 	}
 	
