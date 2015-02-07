@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,8 +10,7 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	Compressor compressor;
-	Platform platform;
-	DigitalInput hallEffectSensor; 
+	Platform platform; 
 	
 	double turn;
 	double turningThrottle;
@@ -41,7 +39,6 @@ public class Robot extends IterativeRobot {
     	compressor = new Compressor();
     	
     	//Sensors
-    	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
     	driveTrain.startGyro();
     	
     	//Previous Values
@@ -69,10 +66,10 @@ public class Robot extends IterativeRobot {
 		}
 
 	public void teleopInit() {
-		trueCount = 0;	
+		trueCount = 0;
+		compressor.start();
 	}
 	public void teleopPeriodic() {
-		compressor.start();
 		
 		//Gyro Code
 		SmartDashboard.putNumber("Gyro_Sensor_Value", driveTrain.gyroSensor.getAngle());
@@ -81,16 +78,12 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	//Hall Effect Sensor
-    	
-    	SmartDashboard.putBoolean("Hall_Effect_Sensor_Value", !hallEffectSensor.get());
-    	
     	//Drive code with acceleration limits and slow mode
     	
     	if (mainStick.getRawButton(4) == true) { //Slow Mode - speed limit and lower acceleration limit
     		//Speed limit
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
-        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * 0.2; //Speed limit (multiply by 0.2)
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORWARD_SPEED_LIMIT; //Speed limit (multiply by 0.2)
+        	double throttleX = Utilities.speedCurve(mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT; //Speed limit (multiply by 0.2)
         	
         	//Acceleration Limit
     		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
@@ -115,7 +108,13 @@ public class Robot extends IterativeRobot {
     	} 
     	
     	//Drive
-    	driveTrain.drive(finalThrottleY, finalThrottleX);
+		if (mainStick.getRawButton(7) == true && finalThrottleX == 0) {
+			driveTrain.turnTo(0, Constants.TURN_FULL_SPEED_TIME); //Turns robot to heading of 0.
+		} else {
+	    	driveTrain.drive(finalThrottleY, finalThrottleX);
+		}
+		
+    	//driveTrain.drive(finalThrottleY, finalThrottleX);
     	
     	if (mainStick.getRawButton(3) == true && prevJoystickButton3 == false) { //Makes it so there is a limit of one flip 
     		
