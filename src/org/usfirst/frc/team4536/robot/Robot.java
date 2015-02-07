@@ -50,12 +50,10 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void teleopInit() {
-		
-	}
-
-	public void teleopPeriodic() {
 		compressor.start();
-		
+	}
+	
+	public void teleopPeriodic() {
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
