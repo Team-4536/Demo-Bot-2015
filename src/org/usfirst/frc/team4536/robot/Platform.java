@@ -17,9 +17,7 @@ public class Platform {
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
 		
 		// Platform is initial retracted
-		// Suggestion: Use this.retract() instead. Saves you a line of code and is easier to read! Caleb
-		rightSolenoid.set(false);
-		leftSolenoid.set(true);	
+		this.retract();	
 	}	
 	
 	public boolean isExtended() {
