@@ -16,8 +16,6 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	DigitalInput hallEffectSensor;
-	
 	boolean prevMainStickButton3;
 	
 	double prevElevatorThrottle;
@@ -37,8 +35,6 @@ public class Robot extends IterativeRobot {
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	compressor = new Compressor();
-    	
-    	hallEffectSensor = new DigitalInput(Constants.HALL_EFFECT_SENSOR_CHANNEL);
     	
     	prevElevatorThrottle = 0;
     }
@@ -63,8 +59,8 @@ public class Robot extends IterativeRobot {
     	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
-    	mainStickY = Utilities.speedCurve(mainStickY, Constants.SPEED_CURVE);
-    	mainStickX = Utilities.speedCurve(mainStickX, Constants.SPEED_CURVE);
+    	mainStickY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE);
+    	mainStickX = Utilities.speedCurve(mainStickX, Constants.TURN_SPEED_CURVE);
     	
     	// Sets throttle values based on mainStick X and Y values (with dead zone and speed curve).
     	double forwardThrottle = mainStickY;
@@ -76,7 +72,7 @@ public class Robot extends IterativeRobot {
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the Y value from the secondaryStick
-    	secondaryStickY = Utilities.speedCurve(secondaryStickY, Constants.SPEED_CURVE);
+    	secondaryStickY = Utilities.speedCurve(secondaryStickY, Constants.ELEVATOR_SPEED_CURVE);
     	
     	// Sets the elevator throttle as the secondary stick Y value (with dead zone and speed curve)
         double elevatorThrottle = secondaryStickY;

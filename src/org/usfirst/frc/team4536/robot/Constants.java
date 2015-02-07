@@ -28,6 +28,7 @@ public class Constants {
 	// This constant controls the exponent for speed curve used on the joysticks. 
 	public static final double FORWARD_SPEED_CURVE = 2;
 	public static final double TURN_SPEED_CURVE = 2;
+	public static final double ELEVATOR_SPEED_CURVE = 2;
 	
 	// Full speed times (time it takes for something get to full speed during an acceleration limit)
 	// Measured in seconds
