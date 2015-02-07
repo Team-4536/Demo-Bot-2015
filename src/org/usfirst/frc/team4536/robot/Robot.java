@@ -42,10 +42,13 @@ public class Robot extends IterativeRobot {
     	
     	prevElevatorThrottle = 0;
     }
+	
+	public void autonomousInit() {
+		compressor.start();
+	}
 
 	public void autonomousPeriodic() {
-		//Suggestion: move compressor code to the Init methods instead of the periodic methods. Caleb
-		compressor.start();
+		
     }
 	
 	public void teleopInit() {
