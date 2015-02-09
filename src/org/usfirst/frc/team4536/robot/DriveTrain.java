@@ -58,17 +58,17 @@ public class DriveTrain {
 	public void driveStraight(double forwardThrottle, double angle, double fullSpeedTime) {
 		
 		double angleDiff = angle - gyroSensor.getAngle();
-		double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
-		double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
 		
-		this.drive(forwardThrottle, accelAdjustment);
-		prevTurnThrottle = accelAdjustment;
+		this.drive(forwardThrottle, turnThrottleAccel);
+		prevTurnThrottle = turnThrottleAccel;
 		
 	}
 	
 	public void turnTo(double desiredAngle, double fullSpeedTime) {
 		double angle;
-		double turn;
+		double angleDiff;
 		
 		angle = gyroSensor.getAngle();
 		
@@ -80,9 +80,9 @@ public class DriveTrain {
 			angle += 360;
 		}
 
-		turn = desiredAngle - angle;
+		angleDiff = desiredAngle - angle;
 		
-		double adjustment = turn * Constants.PROPORTIONALITY_CONSTANT;
+		double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
 		double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
 		//return adjustment;
 		this.drive(0, accelAdjustment);
