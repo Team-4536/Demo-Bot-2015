@@ -7,37 +7,49 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends IterativeRobot {
+	// Robot Systems
 	DriveTrain driveTrain;
 	Platform platform;
+	Tipper tipper;
 	Elevator elevator;
 	
 	Compressor compressor;
 	
+	// Joysticks
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
+	// Previous values used for toggles for the platform and tipper 
 	boolean prevPlatformControllingButton;
+	boolean prevTipperControllingButton;
 	
+	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
 	
 	public void robotInit() {
+		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
     	platform.retract();
-    	
+    	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+    	tipper.retract();    	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
     	
+    	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
     	
     	compressor = new Compressor();
     	
+    	// Previous values used for toggles for the platform and tipper  
     	prevPlatformControllingButton = false;
+    	prevTipperControllingButton = false;
     	
+    	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
     }
 	
@@ -55,8 +67,8 @@ public class Robot extends IterativeRobot {
 	
 	public void teleopPeriodic() {
     	// Gets X and Y values from mainStick and puts a dead zone on them
-      	double mainStickY = Utilities.deadZone(mainStick.getY(), Constants.DEAD_ZONE);
-    	double mainStickX = Utilities.deadZone(mainStick.getX(), Constants.DEAD_ZONE);
+      	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
+    	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
     	// Puts a speed curve on the X and Y values from the mainStick 
     	mainStickY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE);
@@ -66,6 +78,9 @@ public class Robot extends IterativeRobot {
     	double forwardThrottle = mainStickY;
     	double turnThrottle = mainStickX;
     	
+    	System.out.println("Forward Throttle: " + forwardThrottle);
+    	System.out.println("Turn Throttle: " + turnThrottle);
+    	
     	driveTrain.drive(forwardThrottle, turnThrottle);
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
@@ -73,6 +88,12 @@ public class Robot extends IterativeRobot {
     		platform.flip();
     	}
     	prevPlatformControllingButton = mainStick.getRawButton(3);
+    	
+    	// Uses button 2 on the main stick as a toggle for the tipper
+    	if(mainStick.getRawButton(2) == true && prevTipperControllingButton == false) {
+    		tipper.flip();
+    	}
+    	prevTipperControllingButton = mainStick.getRawButton(2);
     	    	
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
