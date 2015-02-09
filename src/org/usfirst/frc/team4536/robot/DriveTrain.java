@@ -82,11 +82,11 @@ public class DriveTrain {
 
 		angleDiff = desiredAngle - angle;
 		
-		double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
-		double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
-		//return adjustment;
-		this.drive(0, accelAdjustment);
-		prevTurnThrottle = accelAdjustment;
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
+		
+		this.drive(0, turnThrottleAccel);
+		prevTurnThrottle = turnThrottleAccel;
 		
 		
 		}	
