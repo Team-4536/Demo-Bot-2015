@@ -2,12 +2,14 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Gyro;
+//import edu.wpi.first.wpilibj.Gyro;
 
 public class DriveTrain {
 	Talon leftTalon;
 	Talon rightTalon;
-	Gyro gyroSensor;
+	//Gyro gyroSensor;
+	
+	double prevTurnThrottle;
 		
 	/*
      * This function is the constructor for the DriveTrain class
@@ -16,21 +18,21 @@ public class DriveTrain {
 	public DriveTrain(int leftTalonChannel, int rightTalonChannel) {
 		leftTalon = new Talon(leftTalonChannel);
 		rightTalon = new Talon(rightTalonChannel);
-		gyroSensor = new Gyro(Constants.GYRO_SENSOR_CHANNEL);
+		//gyroSensor = new Gyro(Constants.GYRO_SENSOR_CHANNEL);
 	}
 	
 	public void startGyro() {
-		gyroSensor.initGyro();
+		//gyroSensor.initGyro();
 	}
 	
 	public void resetGyro() {
-		gyroSensor.reset();
+		//gyroSensor.reset();
 	}
 	
-	public double gyroGetAngle() {
-		double angle = gyroSensor.getAngle();
-		return angle;
-	}
+	//public double gyroGetAngle() {
+		//double angle = gyroSensor.getAngle();
+		//return angle;
+	//}
 	
 	/*
      * This function is called in order to make the robot drive
@@ -38,16 +40,16 @@ public class DriveTrain {
      * and the amount of turn throttle (-1 to 1). 
      */
 	public void drive(double forwardThrottle, double turnThrottle) {
-		double leftTalonThrottle = forwardThrottle + turnThrottle;
-		double rightTalonThrottle = -forwardThrottle + turnThrottle;
+		//double leftTalonThrottle = forwardThrottle + turnThrottle;
+		//double rightTalonThrottle = -forwardThrottle + turnThrottle;
 				
 	    // Makes sure that the two Talon throttles are between -1 and 1
-		rightTalonThrottle = Utilities.limit(leftTalonThrottle);
-		leftTalonThrottle = Utilities.limit(rightTalonThrottle);
+		//rightTalonThrottle = Utilities.limit(leftTalonThrottle);
+		//leftTalonThrottle = Utilities.limit(rightTalonThrottle);
 			
 		// These two lines set the values for the Talons based on the two throttle values
-		leftTalon.set(leftTalonThrottle);
-		rightTalon.set(rightTalonThrottle);
+		//leftTalon.set(leftTalonThrottle);
+		//rightTalon.set(rightTalonThrottle);
 	}
 	
 	/*
@@ -55,10 +57,39 @@ public class DriveTrain {
 	 * It only works if the angle that is inputed is the current angle of the robot.
 	 */
 	public void driveStraight(double forwardThrottle, double angle) {
-		double angleDiff = angle - gyroSensor.getAngle();
-		double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		//double angleDiff = angle - gyroSensor.getAngle();
+		//double adjustment = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
 		
-		this.drive(forwardThrottle, adjustment);				
+		//this.drive(forwardThrottle, adjustment);				
 	}
 	
+	/*
+	 * This method can be used to turn to a specific angle
+	 * It takes in the angle that is desired and the time that it would take the motors to get to full speed
+	 * This time creates an acceleration limit, which we use to draw less current and save battery life.
+	 */
+	public void turnTo(double desiredAngle, double fullSpeedTime) {
+		//double angle;
+		//double turn;
+		
+		//angle = gyroSensor.getAngle();
+		
+		//while (angle > desiredAngle + 180) {
+		//	angle -= 360;
+		//}
+			
+		//while (angle < desiredAngle - 180) {
+		//	angle += 360;
+		//}
+
+		//turn = desiredAngle - angle;
+		
+		//double adjustment = turn * Constants.PROPORTIONALITY_CONSTANT;
+		//double accelAdjustment = Utilities.accelLimit(fullSpeedTime, adjustment, prevTurnThrottle);
+
+		//this.drive(0, accelAdjustment);
+		//prevTurnThrottle = accelAdjustment;
+		
+		
+	}	
 }

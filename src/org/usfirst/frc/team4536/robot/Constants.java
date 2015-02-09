@@ -14,8 +14,8 @@ public class Constants {
 	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
 	
 	// Platform solenoid channels
-	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 1;
-	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 0;
+	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
+	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 3;
 	
 	// Limit Switch channels
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
@@ -23,7 +23,7 @@ public class Constants {
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
 	
 	// Gyro Sensor channel
-	public static final int GYRO_SENSOR_CHANNEL = 2;
+	public static final int GYRO_SENSOR_CHANNEL = 0;
 	
 	//Proportionality Constant for PID loop
 	public static final double PROPORTIONALITY_CONSTANT = 0.005; 
