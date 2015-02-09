@@ -16,6 +16,8 @@ public class Constants {
 	// Platform solenoid channels
 	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
 	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 3;
+	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 0;
+	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 1;
 	
 	// Limit Switch channels
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
