@@ -12,18 +12,13 @@ public class Robot extends IterativeRobot {
 	Compressor compressor;
 	Platform platform; 
 	
-	double turn;
-	double turningThrottle;
-	
 	double prevThrottleY;
 	double prevThrottleX;
 	double finalThrottleY;
 	double finalThrottleX;
 	int trueCount;
-	double prevValueX;
 	
 	boolean prevJoystickButton3;
-	boolean prevJoystickButton2;
 	
 	public void robotInit() {
 		
@@ -38,15 +33,13 @@ public class Robot extends IterativeRobot {
     	//Pneumatics
     	compressor = new Compressor();
     	
-    	//Sensors
+    	//Starting the driveTrain gyro sensor
     	driveTrain.startGyro();
     	
     	//Previous Values
     	prevThrottleY = 0;
     	prevThrottleX = 0;
-    	prevValueX = 0;
     	prevJoystickButton3 = false;
-    	prevJoystickButton2 = false;
     	
     	//Platform
     	platform = new Platform(1,0);
@@ -120,6 +113,7 @@ public class Robot extends IterativeRobot {
     		
     		platform.flip(); //switches platform state between extended and retracted  
     	}
+    	prevJoystickButton3 = mainStick.getRawButton(3); //sets previous value after flip is executed
     	
     	//COOL CODE DO NOT DELETE! FLIPS AFTER THE BUTTON HAS BEEN HELD DOWN AWHIE AND THEN RELEASED
     	/*if (mainStick.getRawButton(3) == true && prevJoystickButton3 == true) {
@@ -133,17 +127,7 @@ public class Robot extends IterativeRobot {
     		trueCount = 0;
     			
     	}*/
-    	
-    	prevJoystickButton3 = mainStick.getRawButton(3); //sets previous value after flip is executed
-    	
-    	/*else if (mainStick.getRawButton(2) == true) {
-    		
-    		platform.retract();
-    	}*/
-    	
-    	
-    	System.out.println(platform.platformTimeSinceExtended());
-    	System.out.println(platform.isExtended());
+
     }
 	
 	public void disabledInit() {

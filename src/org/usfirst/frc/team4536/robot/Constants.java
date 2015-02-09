@@ -26,8 +26,8 @@ public class Constants {
 	
 	//Accel Limit Constants 
 		//(Teleop)
-		public static final double FORWARD_FULL_SPEED_TIME = 10; //Time it woud take to reach full speed. Put in Utilities.accelLimit()
-		public static final double TURN_FULL_SPEED_TIME = 5; 
+		public static final double FORWARD_FULL_SPEED_TIME = 0.5; //Time it woud take to reach full speed. Put in Utilities.accelLimit()
+		public static final double TURN_FULL_SPEED_TIME = 0.5; 
 		//(Auto)
 		public static final double AUTO_FORWARD_FULL_SPEED_TIME = 10; //Used in auto with turnTo() method
 		public static final double AUTO_TURN_FULL_SPEED_TIME = 30; //Used in auto with driveStraight() method
