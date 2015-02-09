@@ -17,6 +17,7 @@ public class Platform {
 	public Platform(int rightSolenoidChannel, int leftSolenoidChannel) {	
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
+		extendedTimer = new Timer();
 		
 		extendedTimer.start();
 		
