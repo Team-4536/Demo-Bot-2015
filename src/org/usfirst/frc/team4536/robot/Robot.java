@@ -141,6 +141,9 @@ public class Robot extends IterativeRobot {
     		platform.retract();
     	}*/
     	
+    	
+    	System.out.println(platform.platformTimeSinceExtended());
+    	System.out.println(platform.isExtended());
     }
 	
 	public void disabledInit() {
@@ -157,7 +160,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void testPeriodic() {
-    		
+
     }
     
 }

@@ -35,10 +35,9 @@ public boolean isExtended() {
 	
 	public double timeSinceExtended() {
 		if (this.isExtended() == true) {
-			extendedTimer.reset();
 			return extendedTimer.get();
 		} else {
-			extendedTimer.stop();
+			extendedTimer.reset();
 			return 0;
 		}
 	}

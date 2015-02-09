@@ -41,10 +41,9 @@ public class Platform {
 	
 	public double platformTimeSinceExtended() {
 		if (this.isExtended() == true) {
-			platformExtendedTimer.reset();
 			return platformExtendedTimer.get();
 		} else {
-			platformExtendedTimer.stop();
+			platformExtendedTimer.reset();
 			return 0;
 		}
 	}
