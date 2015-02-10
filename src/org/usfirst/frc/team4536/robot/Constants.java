@@ -34,15 +34,15 @@ public class Constants {
 	public static final double DEAD_ZONE = 0.10;
 	
 	// This constant controls the exponent for speed curve used on the joysticks. 
-	public static final double FORWARD_SPEED_CURVE = 2;
-	public static final double TURN_SPEED_CURVE = 2;
+	public static final double FORWARD_SPEED_CURVE = 1.5;
+	public static final double TURN_SPEED_CURVE = 1.5;
 	public static final double ELEVATOR_SPEED_CURVE = 2;
 	
 	// Full speed times (time it takes for something get to full speed during an acceleration limit)
 	// Measured in seconds
 	public static final double ELEVATOR_FULL_SPEED_TIME = 0.5;
-	public static final double FORWARD_FULL_SPEED_TIME = 0.5;
-	public static final double TURN_FULL_SPEED_TIME = 0.5;
+	public static final double FORWARD_FULL_SPEED_TIME = 0.25;
+	public static final double TURN_FULL_SPEED_TIME = 0.25;
 	
 	// Slow mode speed limit
 	public static final double SLOW_SPEED_LIMIT = 0.5;
