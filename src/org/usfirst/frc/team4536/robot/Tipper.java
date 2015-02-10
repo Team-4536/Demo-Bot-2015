@@ -33,6 +33,12 @@ public boolean isExtended() {
 		leftSolenoid.set(true);	
 	}
 	
+	public void flip() { //Switches state between extend and retract
+		
+		rightSolenoid.set(!rightSolenoid.get());
+		leftSolenoid.set(!leftSolenoid.get());	
+	}
+	
 	public double timeSinceExtended() {
 		if (this.isExtended() == true) {
 			return extendedTimer.get();
@@ -42,10 +48,5 @@ public boolean isExtended() {
 		}
 	}
 	
-	public void flip() { //Switches state between extend and retract
-		
-		rightSolenoid.set(!rightSolenoid.get());
-		leftSolenoid.set(!leftSolenoid.get());	
-	}
 
 }

@@ -7,20 +7,16 @@ public class Utilities {
 	/*
 	 * Takes in values and makes them between -1 and 1
 	 */
-	public static double limit (double input) {
-		double output;
-		
+	public static double limit (double input) {;		
 		if(input > 1) {
-			output = 1;
+			return 1;
 		}
 		else if(input < -1) {
-			output = -1;
+			return -1;
 		}
 		else {
-			output = input;
+			return input;
 		}
-		
-		return output;
 	}
 		
 	/*
@@ -28,20 +24,18 @@ public class Utilities {
 	 * We use it to create a small region on our joysticks that outputs 0
 	 * Once the joystick gets outside of the dead zone, it outputs their actual values
 	 */
-	public static double deadZone (double input, double deadZone) {
-        double output;
-		
+	public static double deadZone (double input, double deadZone) {		
 		if ((input < deadZone) && (input > -deadZone))      //if the input is within the dead zone, return 0
-            output = 0;
+            return 0;
         else
-            output = input;
-		
-		return output;
+            return input;
      	}
 	
 	
 	/*
-	 * 
+	 * Takes in two values - the input and curve. Input is taken to the power of curve 
+	 * We use this method on our joysticks. It allows our driver to have more control over 
+	 * the robot using the joysick values closer to 0. 
 	 */
 	public static double speedCurve(double input, double curve) {
         double output;
@@ -67,12 +61,11 @@ public class Utilities {
         return output;
     }
 	
-	public static double accelLimit(double fullSpeedTime, double throttle, double prevValue) {
-		
+	public static double accelLimit(double fullSpeedTime, double throttle, double prevValue) {		
 		double finalThrottle;
     	
     	double throttleDiff = throttle - prevValue;
-    	double accelerationLimit = 0.02 / fullSpeedTime; //Sets accelerationLimit to the proper double to make the robot reach its top speed in the given full speed time in seconds.    	
+    	double accelerationLimit = 0.02 / fullSpeedTime; //Sets accelerationLimit to the proper double to make the robot reach its top speed in the given full speed time.    	
     	//forward throttle of robot can increase only by + or - forwardAccelerationLimit per cycle (20ms)
     	if (throttleDiff > accelerationLimit) {
     		finalThrottle = prevValue + accelerationLimit;
@@ -83,15 +76,5 @@ public class Utilities {
     	}
     	
     	return finalThrottle;
-    	
 	}
-	
-	public static double hold(double holdTime) {
-		double holdButtonCycleTime =  holdTime/0.02; //Cycle (20ms
-				
-		return holdButtonCycleTime;
-	}
-	
-
 }
-

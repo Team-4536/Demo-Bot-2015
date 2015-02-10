@@ -6,42 +6,59 @@ public class Constants {
 	public static final int LEFT_STICK_PORT = 0;
 	public static final int RIGHT_STICK_PORT = 1;
 	
-	// Talon ports
-	public static final int LEFT_TALON_CHANNEL = 0;
-	public static final int RIGHT_TALON_CHANNEL = 1;
+	// Drive Talon ports
+	public static final int LEFT_TALON_CHANNEL = 1;
+	public static final int RIGHT_TALON_CHANNEL = 0; 
 	
-	// Sensor Ports
-	public static final int HALL_EFFECT_SENSOR_CHANNEL = 0;
+	// Elevator Talon ports
+	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
+	
+	// Platform solenoid channels
+	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
+	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 3;
+	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 1;
+	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 0;
+	
+	// Limit Switch channels
+	public static final int TOP_LIMIT_SWITCH_CHANNEL = 4;
+	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 5;
+	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
+	
+	// Gyro Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;
 	
 	//Proportionality Constant for PID loop
 	public static final double PROPORTIONALITY_CONSTANT = 0.005; 
 	
-	// Dead zone constant. Currently, a 12% dead zone on the joysticks.
-	public static final double DEAD_ZONE = 0.05;
+	// Dead zone constant. Currently, a 10% dead zone on the joysticks. 
+	public static final double DEAD_ZONE = 0.13;
 	
-	// This constant controls the exponent for speed curve used on the joysticks.
-	public static final double FOWARD_SPEED_CURVE = 2;
-	public static final double TURN_SPEED_CURVE = 1;
+	// This constant controls the exponent for speed curve used on the joysticks. 
+	public static final double FORWARD_SPEED_CURVE = 1.5;
+	public static final double TURN_SPEED_CURVE = 1.5;
+	public static final double ELEVATOR_SPEED_CURVE = 2;
 	
-	//Accel Limit Constants 
-		//(Teleop)
-		public static final double FORWARD_FULL_SPEED_TIME = 0.5; //Time it woud take to reach full speed. Put in Utilities.accelLimit()
-		public static final double TURN_FULL_SPEED_TIME = 0.5; 
-		//(Auto)
-		public static final double AUTO_FORWARD_FULL_SPEED_TIME = 10; //Used in auto with turnTo() method
-		public static final double AUTO_TURN_FULL_SPEED_TIME = 30; //Used in auto with driveStraight() method
-		//(Teleop - Slow)
-		public static final double SLOW_FORWARD_FULL_SPEED_TIME = 40; //Time it woud take to reach full speed. Put in Utilities.accelLimit()
-		public static final double SLOW_TURN_FULL_SPEED_TIME = 20;
+	// Full speed times (time it takes for something get to full speed during an acceleration limit)
+	// Measured in seconds
+	public static final double ELEVATOR_FULL_SPEED_TIME = 0.5;
+	public static final double FORWARD_FULL_SPEED_TIME = 1;
+	public static final double TURN_FULL_SPEED_TIME = 1;
 	
-	//Hold Button Method() Constants
-	public static final double HOLD_BUTTON_TIME = 1;
+	// Slow mode speed limit
+	public static final double SLOW_SPEED_LIMIT = 0.5;
 	
-	//Slow Mode Constants (teleop)
-	public static final double SLOW_FORWARD_SPEED_LIMIT = 0.5;
-	public static final double SLOW_TURN_SPEED_LIMIT = 0.5;
-	public static final double SLOW_FORWARD_SPEED_CURVE = 1;
-	public static final double SLOW_TURN_SPEED_CURVE = 1;
+	// These constants control the exponent for speed curves used on the joysticks. 
+	public static final double SLOW_FORWARD_SPEED_CURVE = 2;
+	public static final double SLOW_TURN_SPEED_CURVE = 2;
+	
+	// Slow mode full speed times (time it takes for something get to full speed during an acceleration limit)
+	// Measured in seconds
+	public static final double SLOW_FORWARD_FULL_SPEED_TIME = 0.5;
+	public static final double SLOW_TURN_FULL_SPEED_TIME = 0.5;
+	
+	// Auto full speed times (time it takes for something get to full speed during an acceleration limit)
+	// Measured in seconds
+	public static final double AUTO_FORWARD_FULL_SPEED_TIME = 0.5;
+	public static final double AUTO_TURN_FULL_SPEED_TIME = 0.5;
 	
 }

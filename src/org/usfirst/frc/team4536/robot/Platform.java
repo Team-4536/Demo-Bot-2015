@@ -1,19 +1,28 @@
 package org.usfirst.frc.team4536.robot;
-import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
+
+/*
+*Suggested improvement: There needs to be comments in this class! Caleb
+*/
 
 public class Platform {
 	
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
-	Timer platformExtendedTimer;
+	Timer extendedTimer;
 	
+	//An initial value should be given to the solenoids in this constructor. Otherwise calling isExtended() could throw an error. Caleb
 	public Platform(int rightSolenoidChannel, int leftSolenoidChannel) {	
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
-		platformExtendedTimer = new Timer();
+		extendedTimer = new Timer();
 		
-		platformExtendedTimer.start();
+		extendedTimer.start();
+		
+		// Platform is initial retracted
+		this.retract();	
 	}	
 	
 	public boolean isExtended() {
@@ -38,14 +47,13 @@ public class Platform {
 		rightSolenoid.set(!rightSolenoid.get());
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
-	
-	public double platformTimeSinceExtended() {
+
+	public double timeSinceExtended() {
 		if (this.isExtended() == true) {
-			return platformExtendedTimer.get();
+			return extendedTimer.get();
 		} else {
-			platformExtendedTimer.reset();
+			extendedTimer.reset();
 			return 0;
 		}
 	}
-
 }
