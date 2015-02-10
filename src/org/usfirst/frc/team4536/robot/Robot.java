@@ -26,10 +26,16 @@ public class Robot extends IterativeRobot {
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
 	
+	double prevThrottleY = 0;
+	double prevThrottleX = 0;
+	double finalThrottleY = 0;
+	double finalThrottleX = 0;
+	
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
+    	driveTrain.startGyro();
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
     	platform.retract();
     	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
@@ -70,18 +76,31 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	// Puts a speed curve on the X and Y values from the mainStick 
-    	mainStickY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE);
-    	mainStickX = Utilities.speedCurve(mainStickX, Constants.TURN_SPEED_CURVE);
+    	// If button 4 on the main stick is pressed slow mode is enabled
+    	if(mainStick.getRawButton(4) == true) {
+    		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    	}
+    	else {
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE);
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE);
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    	}
     	
-    	// Sets throttle values based on mainStick X and Y values (with dead zone and speed curve).
-    	double forwardThrottle = mainStickY;
-    	double turnThrottle = mainStickX;
+    	driveTrain.drive(finalThrottleY, finalThrottleX);
     	
-    	System.out.println("Forward Throttle: " + forwardThrottle);
-    	System.out.println("Turn Throttle: " + turnThrottle);
-    	
-    	driveTrain.drive(forwardThrottle, turnThrottle);
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
