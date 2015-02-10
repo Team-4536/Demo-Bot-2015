@@ -132,6 +132,9 @@ public class Robot extends IterativeRobot {
          * We don't want our elevator going down too far when the platform is out.
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
+        System.out.println(elevator.bottomLimitSwitchValue());
+        System.out.println(elevator.topLimitSwitchValue());
+        
         if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
         }

@@ -20,9 +20,9 @@ public class Constants {
 	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 0;
 	
 	// Limit Switch channels
-	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
+	public static final int TOP_LIMIT_SWITCH_CHANNEL = 4;
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 5;
-	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
+	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 	
 	// Gyro Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;
@@ -31,7 +31,7 @@ public class Constants {
 	public static final double PROPORTIONALITY_CONSTANT = 0.005; 
 	
 	// Dead zone constant. Currently, a 10% dead zone on the joysticks. 
-	public static final double DEAD_ZONE = 0.10;
+	public static final double DEAD_ZONE = 0.13;
 	
 	// This constant controls the exponent for speed curve used on the joysticks. 
 	public static final double FORWARD_SPEED_CURVE = 1.5;
@@ -41,8 +41,8 @@ public class Constants {
 	// Full speed times (time it takes for something get to full speed during an acceleration limit)
 	// Measured in seconds
 	public static final double ELEVATOR_FULL_SPEED_TIME = 0.5;
-	public static final double FORWARD_FULL_SPEED_TIME = 0.25;
-	public static final double TURN_FULL_SPEED_TIME = 0.25;
+	public static final double FORWARD_FULL_SPEED_TIME = 1;
+	public static final double TURN_FULL_SPEED_TIME = 1;
 	
 	// Slow mode speed limit
 	public static final double SLOW_SPEED_LIMIT = 0.5;
