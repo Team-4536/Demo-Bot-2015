@@ -10,6 +10,7 @@ public class DriveTrain {
 	Gyro gyroSensor;
 	
 	double prevTurnThrottle;
+	double angleChangeRate;
 		
 	/*
      * This function is the constructor for the DriveTrain class
@@ -30,8 +31,11 @@ public class DriveTrain {
 	}
 	
 	public double gyroGetAngle() {
-		double angle = gyroSensor.getAngle();
-		return angle;
+		return gyroSensor.getAngle(); //Returns degrees
+	}
+	
+	public double gyroGetRate() {
+		return gyroSensor.getRate(); // Returns units of degrees per second.
 	}
 	
 	/*
@@ -65,7 +69,7 @@ public class DriveTrain {
 		this.drive(forwardThrottle, turnThrottleAccel);
 		prevTurnThrottle = turnThrottleAccel;		
 	}
-	
+
 	/*
 	 * This method can be used to turn to a specific angle
 	 * It takes in the angle that is desired and the time that it would take the motors to get to full speed
@@ -74,6 +78,7 @@ public class DriveTrain {
 	public void turnTo(double desiredAngle, double fullSpeedTime) {
 		double angle;
 		double angleDiff;
+		double derivative;
 		
 		angle = gyroSensor.getAngle();
 		
@@ -87,7 +92,14 @@ public class DriveTrain {
 
 		angleDiff = desiredAngle - angle;
 		
-		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		if (angleDiff > 10 || angleDiff < -10) {
+			derivative = this.gyroGetRate() * Constants.DERIVATIVE_CONSTANT;
+		} else {
+			derivative = 0;
+		}
+		
+		
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT - derivative;
 		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
 		
 		this.drive(0, turnThrottleAccel);

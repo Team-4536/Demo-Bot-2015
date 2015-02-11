@@ -2,8 +2,6 @@ package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends IterativeRobot {
@@ -64,7 +62,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		
+		driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		System.out.println(driveTrain.gyroGetAngle());
+		//driveTrain.driveStraight(
     }
 	
 	public void teleopInit() {
@@ -79,8 +79,8 @@ public class Robot extends IterativeRobot {
     	// If button 4 on the main stick is pressed slow mode is enabled
     	if(mainStick.getRawButton(4) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_SPEED_LIMIT;
-    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_SPEED_LIMIT;
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORWARD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
     		
     		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
     		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
@@ -141,6 +141,7 @@ public class Robot extends IterativeRobot {
         else {
         	elevator.driveSmallRange(elevatorThrottle);
         }
+        
     }
 	
 	public void disabledInit() {
@@ -149,6 +150,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		compressor.stop();
+		driveTrain.gyroSensor.reset();
 	}
     
     public void testPeriodic() {
