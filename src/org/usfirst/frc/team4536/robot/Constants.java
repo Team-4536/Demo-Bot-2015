@@ -6,11 +6,9 @@ public class Constants {
 	public static final int LEFT_STICK_PORT = 0;
 	public static final int RIGHT_STICK_PORT = 1;
 	
-	// Drive Talon ports
+	// PWM ports
 	public static final int LEFT_TALON_CHANNEL = 1;
 	public static final int RIGHT_TALON_CHANNEL = 0; 
-	
-	// Elevator Talon ports
 	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
 	
 	// Platform solenoid channels
@@ -19,16 +17,22 @@ public class Constants {
 	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 1;
 	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 0;
 	
-	// Limit Switch channels
-	public static final int TOP_LIMIT_SWITCH_CHANNEL = 4;
-	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 5;
-	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
+	// Digital Switch channels
+	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
+	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
+	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
+	public static final int ENCODER_SENSOR_A_CHANNEL = 6;
+	public static final int ENCODER_SENSOR_B_CHANNEL = 5;
 	
-	// Gyro Sensor channel
+	// Analog Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;
 	
-	//Proportionality Constant for PID loop
+	// This is a conversion between the encoder ticks and inches
+	public static final double TICKS_PER_INCHES = 1;
+	
+	// Proportionality Constant for PID loop
 	public static final double PROPORTIONALITY_CONSTANT = 0.005; 
+	public static final double ELEVATOR_PROPORTIONALITY_CONSTANT = 0.005;
 	
 	// Dead zone constant. Currently, a 10% dead zone on the joysticks. 
 	public static final double DEAD_ZONE = 0.13;
@@ -60,5 +64,7 @@ public class Constants {
 	// Measured in seconds
 	public static final double AUTO_FORWARD_FULL_SPEED_TIME = 0.5;
 	public static final double AUTO_TURN_FULL_SPEED_TIME = 0.5;
+	
+	// Elevator Height Constants
 	
 }

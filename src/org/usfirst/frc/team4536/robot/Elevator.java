@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Elevator {
@@ -9,20 +10,38 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
+	Encoder elevatorEncoder;
+	
+	double currentHeight;
+	double correction;
 	
 	/*
      * This function is the constructor for the Elevator class
      * It takes in four arguments - one talon channel, and the channels of the top, bottom, and middle limit switches
      */
 	public Elevator(int talonChannel, 
+					int encoderAChannel,
+					int encoderBChannel,
 					int topLimitSwitchChannel, 
 					int middleLimitSwitchChannel,
 					int bottomLimitSwitchChannel) 
 	{
 		elevatorTalon = new Talon(talonChannel);
+		elevatorEncoder = new Encoder(encoderAChannel, encoderBChannel);
 		topLimitSwitch = new DigitalInput(topLimitSwitchChannel);
 		middleLimitSwitch = new DigitalInput(middleLimitSwitchChannel);
 		bottomLimitSwitch = new DigitalInput(bottomLimitSwitchChannel);
+		
+		currentHeight = 0;
+		correction = 0;
+	}
+
+	/*
+	 * Positive values will drive the elevator up
+	 * Negative values will drive the elevator down
+	 */
+	public void drive(double verticalThrottle) {	
+		elevatorTalon.set(-verticalThrottle);
 	}
 	
 	/*
@@ -31,44 +50,44 @@ public class Elevator {
      * To go up the value would be 1. To go down the value would be -1
      */
 	public void driveFullRange(double verticalThrottle) {
-		double elevatorTalonThrottle = -verticalThrottle;
+		double elevatorTalonThrottle = verticalThrottle;
 		
 		// Makes sure the elevator talon throttle is between -1 and 1
-		Utilities.limit(elevatorTalonThrottle);
+		elevatorTalonThrottle = Utilities.limit(elevatorTalonThrottle);
 		
 		// limit switches are reversed, so that when it's pressed it outputs true
 		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
-			elevatorTalon.set(0);
+			this.drive(0);
 		}
 		else if(!bottomLimitSwitch.get() && elevatorTalonThrottle < 0) {
 			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
-			elevatorTalon.set(0);
+			this.drive(0);
 		}
 		else {
 			// If neither limit switch is engaged, the elevator motor can go both up and down
-			elevatorTalon.set(elevatorTalonThrottle);
+			this.drive(elevatorTalonThrottle);
 		}
 	}
 	
 	public void driveSmallRange(double verticalThrottle) {
-		double elevatorTalonThrottle = -verticalThrottle;
+		double elevatorTalonThrottle = verticalThrottle;
 		
 		// Makes sure the elevator talon throttle is between -1 and 1
-		Utilities.limit(elevatorTalonThrottle);
+		elevatorTalonThrottle = Utilities.limit(elevatorTalonThrottle);
 		
 		// limit switches are reversed, so that when it's pressed it outputs true
 		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
 			// If the top limit switch is engaged, and the elevator is going up, set it as 0
-			elevatorTalon.set(0);
+			this.drive(0);
 		}
 		else if(!middleLimitSwitch.get() == true && elevatorTalonThrottle < 0) {
 			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
-			elevatorTalon.set(0);
+			this.drive(0);
 		}
 		else {
 			// If neither limit switch is engaged, the elevator motor can go both up and down
-			elevatorTalon.set(elevatorTalonThrottle);
+			this.drive(elevatorTalonThrottle);
 		}
 	}
  	
@@ -105,5 +124,39 @@ public class Elevator {
 	 */
 	public double getThrottle() {
 		return elevatorTalon.get();
+	}
+	
+	public void goToHeight(double desiredHeight){
+		double elevatorThrottle;
+		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)/Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
+		elevatorTalon.set(elevatorThrottle);
+	}
+	
+	public double getHeight(){
+		return currentHeight;
+	}
+	
+	/*
+	 * This method exists because the elevator won't always start at the very bottom position
+	 * however the encoder will always begin counting from 0.
+	 * This is the difference between the height of the elevator and the value from the encoder.
+	 */
+	public void setActualHeight(double actualHeight){
+		correction = actualHeight - elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
+	}
+	
+	public void update(){
+		System.out.println(elevatorEncoder.get());
+		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
+	}
+	
+	public void resetEncoder(){
+		elevatorEncoder.reset();
+	}
+	
+	public void printEncoderValue() {
+		//System.out.println("Raw " + elevatorEncoder.getRaw());
+		//System.out.println("Rate " + elevatorEncoder.getRate());
+		System.out.println(elevatorEncoder.getDistance());
 	}
 }

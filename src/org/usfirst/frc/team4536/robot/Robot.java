@@ -41,9 +41,12 @@ public class Robot extends IterativeRobot {
     	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
     	tipper.retract();    	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
+    							Constants.ENCODER_SENSOR_A_CHANNEL,
+    							Constants.ENCODER_SENSOR_B_CHANNEL,
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    	elevator.setActualHeight(0);
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -132,8 +135,6 @@ public class Robot extends IterativeRobot {
          * We don't want our elevator going down too far when the platform is out.
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
-        System.out.println(elevator.bottomLimitSwitchValue());
-        System.out.println(elevator.topLimitSwitchValue());
         
         if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
@@ -141,6 +142,8 @@ public class Robot extends IterativeRobot {
         else {
         	elevator.driveSmallRange(elevatorThrottle);
         }
+        
+        elevator.update();
     }
 	
 	public void disabledInit() {
