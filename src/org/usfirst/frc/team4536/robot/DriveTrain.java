@@ -10,6 +10,7 @@ public class DriveTrain {
 	Gyro gyroSensor;
 	
 	double prevTurnThrottle;
+	double prevForwardThrottle;
 	double angleChangeRate;
 		
 	/*
@@ -31,11 +32,11 @@ public class DriveTrain {
 	}
 	
 	public double gyroGetAngle() {
-		return gyroSensor.getAngle(); //Returns degrees
+		return gyroSensor.getAngle();
 	}
 	
 	public double gyroGetRate() {
-		return gyroSensor.getRate(); // Returns units of degrees per second.
+		return gyroSensor.getRate();
 	}
 	
 	/*
@@ -60,16 +61,20 @@ public class DriveTrain {
 	 * This method can be used to make the drive train drive straight at a certain angle. 
 	 * It only works if the angle that is inputed is the current angle of the robot.
 	 */
-	public void driveStraight(double forwardThrottle, double angle, double fullSpeedTime) {
+	public void driveStraight(double forwardThrottle, double desiredAngle, double fullSpeedTime) {
 		
-		double angleDiff = angle - gyroSensor.getAngle();
-		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
-		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
+		double angleDiff = desiredAngle - gyroSensor.getAngle();
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT; // creates turning based on how off the desired angle the robot is
+		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle); //Puts an acceleration limit on the turn throttle.
 		
-		this.drive(forwardThrottle, turnThrottleAccel);
-		prevTurnThrottle = turnThrottleAccel;		
+		double forwardThrottleAccel = Utilities.accelLimit(fullSpeedTime, forwardThrottle, prevForwardThrottle);
+		
+		//this.drive(forwardThrottle, turnThrottleAccel);
+		this.drive(forwardThrottleAccel, turnThrottleAccel);
+		prevTurnThrottle = turnThrottleAccel;
+		prevForwardThrottle = forwardThrottleAccel;
 	}
-
+	
 	/*
 	 * This method can be used to turn to a specific angle
 	 * It takes in the angle that is desired and the time that it would take the motors to get to full speed
@@ -97,7 +102,6 @@ public class DriveTrain {
 		} else {
 			derivative = 0;
 		}
-		
 		
 		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT - derivative;
 		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);

@@ -2,7 +2,10 @@ package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -10,6 +13,7 @@ public class Robot extends IterativeRobot {
 	Platform platform;
 	Tipper tipper;
 	Elevator elevator;
+	Timer teleopTimer;
 	
 	Compressor compressor;
 	
@@ -39,9 +43,14 @@ public class Robot extends IterativeRobot {
     	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
     	tipper.retract();    	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
+    							Constants.ENCODER_SENSOR_A_CHANNEL,
+    							Constants.ENCODER_SENSOR_B_CHANNEL,
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    	elevator.setActualHeight(0);
+    	teleopTimer = new Timer();
+    	teleopTimer.start();
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -62,13 +71,14 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		System.out.println(driveTrain.gyroGetAngle());
-		//driveTrain.driveStraight(
     }
 	
 	public void teleopInit() {
 		compressor.start();
+		teleopTimer.reset();
 	}
 	
 	public void teleopPeriodic() {
@@ -76,10 +86,13 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
+    	driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+    	System.out.println(driveTrain.gyroGetAngle());
+    	
     	// If button 4 on the main stick is pressed slow mode is enabled
-    	if(mainStick.getRawButton(4) == true) {
+    	/*if(mainStick.getRawButton(4) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORWARD_SPEED_LIMIT;
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
     		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
     		
     		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
@@ -89,8 +102,8 @@ public class Robot extends IterativeRobot {
     		prevThrottleX = finalThrottleX;
     	}
     	else {
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE);
-    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE);
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_FULL_SPEED_TIME;
     		
     		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
     		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
@@ -99,7 +112,7 @@ public class Robot extends IterativeRobot {
     		prevThrottleX = finalThrottleX;
     	}
     	
-    	driveTrain.drive(finalThrottleY, finalThrottleX);
+    	driveTrain.drive(finalThrottleY, finalThrottleX); */
     	
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
@@ -132,8 +145,6 @@ public class Robot extends IterativeRobot {
          * We don't want our elevator going down too far when the platform is out.
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
-        System.out.println(elevator.bottomLimitSwitchValue());
-        System.out.println(elevator.topLimitSwitchValue());
         
         if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
@@ -142,14 +153,34 @@ public class Robot extends IterativeRobot {
         	elevator.driveSmallRange(elevatorThrottle);
         }
         
+        elevator.update();
+        
+        if(mainStick.getRawButton(6)) {
+        	elevator.goToHeight(43);
+        }
+        else if(mainStick.getRawButton(7)) {
+        	elevator.goToHeight(23);
+        }
+        
+        //Automation of setting tote stack then backing up
+        /*
+        if (mainStick.getRawButton(11) == true) {
+        
+        }     */
+        
+        /*if (teleopTimer.get() > 133){
+        	tipper.extend();
+        	elevator.setHeight(0);
+        }*/
     }
 	
 	public void disabledInit() {
 		System.out.println("DISABLED");
+		compressor.stop();
+		teleopTimer.stop();
 	}
 	
 	public void disabledPeriodic() {
-		compressor.stop();
 		driveTrain.gyroSensor.reset();
 	}
     
