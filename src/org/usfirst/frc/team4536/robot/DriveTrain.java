@@ -10,6 +10,8 @@ public class DriveTrain {
 	Gyro gyroSensor;
 	
 	double prevTurnThrottle;
+	double prevForwardThrottle;
+	double angleChangeRate;
 		
 	/*
      * This function is the constructor for the DriveTrain class
@@ -30,8 +32,11 @@ public class DriveTrain {
 	}
 	
 	public double gyroGetAngle() {
-		double angle = gyroSensor.getAngle();
-		return angle;
+		return gyroSensor.getAngle();
+	}
+	
+	public double gyroGetRate() {
+		return gyroSensor.getRate();
 	}
 	
 	/*
@@ -56,14 +61,18 @@ public class DriveTrain {
 	 * This method can be used to make the drive train drive straight at a certain angle. 
 	 * It only works if the angle that is inputed is the current angle of the robot.
 	 */
-	public void driveStraight(double forwardThrottle, double angle, double fullSpeedTime) {
+	public void driveStraight(double forwardThrottle, double desiredAngle, double fullSpeedTime) {
 		
-		double angleDiff = angle - gyroSensor.getAngle();
-		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
-		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
+		double angleDiff = desiredAngle - gyroSensor.getAngle();
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT; // creates turning based on how off the desired angle the robot is
+		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle); //Puts an acceleration limit on the turn throttle.
 		
-		this.drive(forwardThrottle, turnThrottleAccel);
-		prevTurnThrottle = turnThrottleAccel;		
+		double forwardThrottleAccel = Utilities.accelLimit(fullSpeedTime, forwardThrottle, prevForwardThrottle);
+		
+		//this.drive(forwardThrottle, turnThrottleAccel);
+		this.drive(forwardThrottleAccel, turnThrottleAccel);
+		prevTurnThrottle = turnThrottleAccel;
+		prevForwardThrottle = forwardThrottleAccel;
 	}
 	
 	/*
@@ -74,6 +83,7 @@ public class DriveTrain {
 	public void turnTo(double desiredAngle, double fullSpeedTime) {
 		double angle;
 		double angleDiff;
+		double derivative;
 		
 		angle = gyroSensor.getAngle();
 		
@@ -87,7 +97,13 @@ public class DriveTrain {
 
 		angleDiff = desiredAngle - angle;
 		
-		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT;
+		if (angleDiff > 10 || angleDiff < -10) {
+			derivative = this.gyroGetRate() * Constants.DERIVATIVE_CONSTANT;
+		} else {
+			derivative = 0;
+		}
+		
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT - derivative;
 		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
 		
 		this.drive(0, turnThrottleAccel);

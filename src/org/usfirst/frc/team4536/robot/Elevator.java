@@ -14,6 +14,7 @@ public class Elevator {
 	
 	double currentHeight;
 	double correction;
+	double prevElevatorThrottle;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -34,6 +35,7 @@ public class Elevator {
 		
 		currentHeight = 0;
 		correction = 0;
+		prevElevatorThrottle = 0;
 	}
 
 	/*
@@ -128,8 +130,12 @@ public class Elevator {
 	
 	public void goToHeight(double desiredHeight){
 		double elevatorThrottle;
-		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)/Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
-		elevatorTalon.set(elevatorThrottle);
+		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
+		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
+		
+		this.drive(elevatorThrottle);
+		
+		prevElevatorThrottle = elevatorThrottle;
 	}
 	
 	public double getHeight(){
@@ -146,8 +152,8 @@ public class Elevator {
 	}
 	
 	public void update(){
-		System.out.println(elevatorEncoder.get());
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
+		System.out.println(currentHeight);
 	}
 	
 	public void resetEncoder(){
