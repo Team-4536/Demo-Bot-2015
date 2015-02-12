@@ -14,6 +14,9 @@ public class Robot extends IterativeRobot {
 	Tipper tipper;
 	Elevator elevator;
 	Timer teleopTimer;
+	Timer autoTimer;
+	Auto auto;
+	int autoNumber;
 	
 	Compressor compressor;
 	
@@ -64,16 +67,46 @@ public class Robot extends IterativeRobot {
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
+    	
+
+    	autoTimer = new Timer();
+    	auto = new Auto(driveTrain);
+    	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
+		autoNumber = (int) auto.autoNumber();	
     }
 	
 	public void autonomousInit() {
 		compressor.start();
+
+		autoTimer.reset();
+		autoTimer.start();
 	}
 
 	public void autonomousPeriodic() {
 		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		System.out.println(driveTrain.gyroGetAngle());
+		/*driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		System.out.println(driveTrain.gyroGetAngle());*/		
+
+		double autoTime = autoTimer.get();
+		
+		//Can't have autoNumber since that would be the value when the code's deployed
+		switch ((int) auto.autoNumber()){
+			case 1: auto.driveForward(autoTime);
+					break;
+			case 2: auto.driveForwardWithRecyclingContainer(autoTime);
+					break;
+			case 3: auto.driveForwardPushingTote(autoTime);
+					break;
+			case 4: auto.twoTote(autoTime);
+					break;
+			case 5: auto.twoRecyclingContainers(autoTime);
+					break;
+			case 6: auto.doNothing();
+					break;
+			default: auto.doNothing();
+					 break;
+		
+		}
     }
 	
 	public void teleopInit() {
@@ -86,8 +119,8 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-    	System.out.println(driveTrain.gyroGetAngle());
+    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+    	//System.out.println(driveTrain.gyroGetAngle());
     	
     	// If button 4 on the main stick is pressed slow mode is enabled
     	/*if(mainStick.getRawButton(4) == true) {
@@ -172,6 +205,34 @@ public class Robot extends IterativeRobot {
         	tipper.extend();
         	elevator.setHeight(0);
         }*/
+        
+        if(secondaryStick.getRawButton(1)) {
+        	
+        }
+        else if(secondaryStick.getRawButton(2)) {
+        	elevator.goToHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+        }
+        else if(secondaryStick.getRawButton(3)) {
+        	elevator.goToHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+        }
+        else if(secondaryStick.getRawButton(4)) {
+        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
+        }
+        else if(secondaryStick.getRawButton(5)) {
+         	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
+        }
+        else if(secondaryStick.getRawButton(6)) {
+        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+        }
+        else if(secondaryStick.getRawButton(7)) {
+        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+        }
+        else if(secondaryStick.getRawButton(8)) {
+        	
+        }
+        else if(secondaryStick.getRawButton(9)) {
+        	
+        }
     }
 	
 	public void disabledInit() {
