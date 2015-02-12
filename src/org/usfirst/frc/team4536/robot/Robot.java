@@ -165,11 +165,17 @@ public class Robot extends IterativeRobot {
         //Automation of setting tote stack then backing up
         /*
         if (mainStick.getRawButton(11) == true) {
-        
+        	platform.retract();
+        	if (platform.isExtended == false) {
+        	if (elevator.bottomLimitSwitch == true) {
+        	driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME
+        	} 
+        	}
         }     */
         
         /*if (teleopTimer.get() > 133){
         	tipper.extend();
+        	platform.retract();
         	elevator.setHeight(0);
         }*/
     }
