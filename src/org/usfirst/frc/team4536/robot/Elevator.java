@@ -40,60 +40,25 @@ public class Elevator {
 		desiredHeight = 0;
 	}
 
-	/*
-	 * Positive values will drive the elevator up
-	 * Negative values will drive the elevator down
-	 */
-	public void drive(double verticalThrottle) {	
-		elevatorTalon.set(-verticalThrottle);
-	}
 	
 	/*
      * This function is called in order to make the elevator drive
      * It takes in one arguments - the amount of vertical throttle (1 to -1)
      * To go up the value would be 1. To go down the value would be -1
      */
-	public void driveFullRange(double verticalThrottle) {
-		double elevatorTalonThrottle = verticalThrottle;
+	public void drive(double verticalThrottle) {
+		double elevatorTalonThrottle = -verticalThrottle;
 		
-		// Makes sure the elevator talon throttle is between -1 and 1
-		elevatorTalonThrottle = Utilities.limit(elevatorTalonThrottle);
+		elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 		
-		// limit switches are reversed, so that when it's pressed it outputs true
-		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
-			// If the top limit switch is engaged, and the elevator is going up, set it as 0
-			this.drive(0);
+		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
+			elevatorTalon.set(0);
 		}
-		else if(!bottomLimitSwitch.get() && elevatorTalonThrottle < 0) {
-			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
-			this.drive(0);
-		}
-		else {
-			// If neither limit switch is engaged, the elevator motor can go both up and down
-			this.drive(elevatorTalonThrottle);
+		else if((!bottomLimitSwitch.get() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
+			elevatorTalon.set(0);
 		}
 	}
-	
-	public void driveSmallRange(double verticalThrottle) {
-		double elevatorTalonThrottle = verticalThrottle;
-		
-		// Makes sure the elevator talon throttle is between -1 and 1
-		elevatorTalonThrottle = Utilities.limit(elevatorTalonThrottle);
-		
-		// limit switches are reversed, so that when it's pressed it outputs true
-		if(!topLimitSwitch.get() == true && elevatorTalonThrottle > 0) {
-			// If the top limit switch is engaged, and the elevator is going up, set it as 0
-			this.drive(0);
-		}
-		else if(!middleLimitSwitch.get() == true && elevatorTalonThrottle < 0) {
-			// If the bottom limit switch is engaged, and the elevator motor is going down, set it as 0
-			this.drive(0);
-		}
-		else {
-			// If neither limit switch is engaged, the elevator motor can go both up and down
-			this.drive(elevatorTalonThrottle);
-		}
-	}
+ 	
  	
 	/*
 	 * Returns the boolean value of the top limit switch
@@ -144,7 +109,7 @@ public class Elevator {
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
-		this.driveFullRange(elevatorThrottle);
+		this.drive(elevatorThrottle);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}

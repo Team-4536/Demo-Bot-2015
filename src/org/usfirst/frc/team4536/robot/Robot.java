@@ -17,6 +17,7 @@ public class Robot extends IterativeRobot {
 	Timer autoTimer;
 	Auto auto;
 	int autoNumber;
+	DigitalInput toteLimitSwitch;
 	
 	Compressor compressor;
 	
@@ -68,11 +69,12 @@ public class Robot extends IterativeRobot {
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
     	
+    	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
     	auto = new Auto(driveTrain);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
-		autoNumber = (int) auto.autoNumber();	
+		autoNumber = (int) auto.autoNumber();
     }
 	
 	public void autonomousInit() {
@@ -200,6 +202,17 @@ public class Robot extends IterativeRobot {
         elevator.update();
         
         if(secondaryStick.getRawButton(1)) {
+        	if (!toteLimitSwitch.get()
+        		&& (elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        		|| elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5)){
+        		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+        	}
+        	else if (!toteLimitSwitch.get()  
+        		&& (elevator.getHeight() <= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5
+        		|| elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION -0.5)){        		
+        			elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+        		}
+        	
         	
         }
         else if(secondaryStick.getRawButton(3)) {
@@ -228,7 +241,7 @@ public class Robot extends IterativeRobot {
         }
         
         if (secondaryStick.getRawButton(6)){
-        	elevator.driveFullRange(secondaryStickY);
+        	elevator.drive(secondaryStickY);
         	elevator.setDesiredHeight(elevator.getHeight());
         }
         

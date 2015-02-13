@@ -21,6 +21,7 @@ public class Constants {
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
+	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 2;
 	public static final int ENCODER_SENSOR_A_CHANNEL = 6;
 	public static final int ENCODER_SENSOR_B_CHANNEL = 5;
 	
@@ -74,7 +75,7 @@ public class Constants {
 	// Elevator Height Constants
 	public static final double 	ELEVATOR_HEIGHT_FOR_STEP = 20;
 	public static final double 	ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
-	public static final double 	ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 9.5;
+	public static final double 	ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 9;
 	public static final double 	ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
 	public static final double 	ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double 	ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
