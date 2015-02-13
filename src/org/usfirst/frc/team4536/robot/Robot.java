@@ -72,7 +72,7 @@ public class Robot extends IterativeRobot {
     	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain);
+    	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
     }
@@ -124,30 +124,47 @@ public class Robot extends IterativeRobot {
     	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
     	//System.out.println(driveTrain.gyroGetAngle());
     	
-    	// If button 4 on the main stick is pressed slow mode is enabled
-    	/*if(mainStick.getRawButton(4) == true) {
-    		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
-    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
-    		
-    		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
-    		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
-    		
-    		prevThrottleY = finalThrottleY;
-    		prevThrottleX = finalThrottleX;
+    	/*
+    	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
+    	 */
+    	if(mainStick.getRawButton(7)) {	
+    		if(elevator.getHeight() < Constants.TOP_LIMIT_SWITCH_HEIGHT - 0.5
+        	|| elevator.getHeight() > Constants.TOP_LIMIT_SWITCH_HEIGHT + 0.5) {
+    			tipper.extend();
+    			if(tipper.timeSinceExtended() > 1) {
+    				elevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+    			}
+    		}    	
+    		else {
+    			tipper.retract();
+    		}
     	}
     	else {
-    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
-    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_FULL_SPEED_TIME;
-    		
-    		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
-    		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
-    		
-    		prevThrottleY = finalThrottleY;
-    		prevThrottleX = finalThrottleX;
+    		// If button 4 on the main stick is pressed slow mode is enabled
+    		if(mainStick.getRawButton(4) == true) {
+        		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
+        		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
+        		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
+        		
+        		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+        		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+        		
+        		prevThrottleY = finalThrottleY;
+        		prevThrottleX = finalThrottleX;
+        	}
+        	else {
+        		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
+        		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_FULL_SPEED_TIME;
+        		
+        		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+        		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+        		
+        		prevThrottleY = finalThrottleY;
+        		prevThrottleX = finalThrottleX;
+        	}
+        	
+        	driveTrain.drive(finalThrottleY, finalThrottleX); 
     	}
-    	
-    	driveTrain.drive(finalThrottleY, finalThrottleX); */
     	
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
@@ -173,22 +190,6 @@ public class Robot extends IterativeRobot {
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
        
-        /*
-         * This is code for the override button. When button 6 is pressed it allows the secondary 
-         * driver to manually drive the elevator with the joystick. In this case you need to set the 
-         * desired height as the current height so that it doesn't recoil to the previous desired height
-         * when the driver lets off of the button.
-         */
-        if (secondaryStick.getRawButton(6)){
-        	elevator.drive(elevatorThrottle);
-        	elevator.setDesiredHeight(elevator.getHeight());
-        }      
-        else elevator.goToHeight();
-        
-        prevElevatorThrottle = elevatorThrottle;
-              
-        elevator.update();
-        
         if(secondaryStick.getRawButton(1)) {
         	if (!toteLimitSwitch.get()
         		&& (elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
@@ -236,6 +237,23 @@ public class Robot extends IterativeRobot {
         else if(secondaryStick.getRawButton(9)) {
         	
         }
+        
+        /*
+         * This is code for the override button. When button 6 is pressed it allows the secondary 
+         * driver to manually drive the elevator with the joystick. In this case you need to set the 
+         * desired height as the current height so that it doesn't recoil to the previous desired height
+         * when the driver lets off of the button.
+         */
+        if (secondaryStick.getRawButton(6)){
+        	elevator.drive(elevatorThrottle);
+        	elevator.setDesiredHeight(elevator.getHeight());
+        }      
+        else elevator.goToHeight();
+        
+        prevElevatorThrottle = elevatorThrottle;
+              
+        elevator.update();
+        System.out.println(elevator.getHeight());
     }
 	
 	public void disabledInit() {

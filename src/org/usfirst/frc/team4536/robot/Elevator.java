@@ -104,7 +104,7 @@ public class Elevator {
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}*/
-	public void goToHeight(){
+	public void goToHeight(){ // this method goes to the height set by desiredHeight
 		double elevatorThrottle;
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
@@ -114,9 +114,8 @@ public class Elevator {
 		prevElevatorThrottle = elevatorThrottle;
 	}
 	
-	public double setDesiredHeight (double teleopDesiredHeight){
+	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that the goToHeight() method goes to
 		desiredHeight = teleopDesiredHeight;
-		return desiredHeight;
 	}
 	
 	
@@ -136,6 +135,18 @@ public class Elevator {
 	public void update(){
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
 		System.out.println(currentHeight);
+		
+		if (this.bottomLimitSwitchValue() == true) {
+			setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+		}
+		
+		if (this.middleLimitSwitchValue()) {
+			setActualHeight(Constants.MIDDLE_LIMIT_SWITCH_HEIGHT);
+		}
+			
+		if (this.topLimitSwitchValue()) {
+			setActualHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+		}
 	}
 	
 	public void resetEncoder(){

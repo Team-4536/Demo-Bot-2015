@@ -73,14 +73,15 @@ public class Constants {
 	public static final double AUTO_TURN_FULL_SPEED_TIME = 0.2;
 	
 	// Elevator Height Constants
-	public static final double 	ELEVATOR_HEIGHT_FOR_STEP = 20;
-	public static final double 	ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
-	public static final double 	ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 9;
-	public static final double 	ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
-	public static final double 	ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
-	public static final double 	ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
-	public static final double  BOTTOM_LIMIT_SWITCH_HEIGHT = -1;
-	public static final double  MIDDLE_LIMIT_SWITCH_HEIGHT = 8;
-	public static final double  TOP_LIMIT_SWITCH_HEIGHT = 49;
+	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20;
+	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
+	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 9;
+	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
+	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
+	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
+	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_BIN = 22;
+	public static final double BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //Inches
+	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
+	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches
 	
 }

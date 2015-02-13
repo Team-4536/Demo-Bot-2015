@@ -6,9 +6,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class Auto { 
 	DriveTrain autoDriveTrain;
+	Elevator autoElevator;
 	
-	public Auto(DriveTrain autoConstructerDriveTrain){		
-		autoDriveTrain = autoConstructerDriveTrain;		
+	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator){		
+		autoDriveTrain = autoConstructerDriveTrain;
+		autoElevator = elevator;
 	
 	}
 	
