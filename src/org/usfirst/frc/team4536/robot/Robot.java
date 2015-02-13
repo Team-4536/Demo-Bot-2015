@@ -172,21 +172,34 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-        prevElevatorThrottle = elevatorThrottle; 
-        
+       
         /*
-         * If the platform is extended, use the driveSmallRange method, which forgets about the 
-         * bottom limit switch and begins sensing the middle limit switch.
-         * We don't want our elevator going down too far when the platform is out.
-         * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
+         * This is code for the override button. When button 6 is pressed it allows the secondary 
+         * driver to manually drive the elevator with the joystick. In this case you need to set the 
+         * desired height as the current height so that it doesn't recoil to the previous desired height
+         * when the driver lets off of the button.
          */
+        if (secondaryStick.getRawButton(6)){
+        	elevator.drive(elevatorThrottle);
+        	elevator.setDesiredHeight(elevator.getHeight());
+        }      
+        else elevator.goToHeight();
         
-        /*if(platform.isExtended() != true) {
-        	elevator.driveFullRange(elevatorThrottle);
+        prevElevatorThrottle = elevatorThrottle;
+              
+        elevator.update();
+        
+        if(secondaryStick.getRawButton(1)) {
+        	if (!toteLimitSwitch.get()
+        		&& (elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        		|| elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5)){
+        		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+        	}
+        	else if (!toteLimitSwitch.get()){        		
+        			elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+        	}
         }
-        else {
-        	elevator.driveSmallRange(elevatorThrottle);
-        }*/
+        
         //Automation of setting tote stack then backing up
         /*
         if (mainStick.getRawButton(11) == true) {
@@ -199,22 +212,6 @@ public class Robot extends IterativeRobot {
         }*/
         
         
-        elevator.update();
-        
-        if(secondaryStick.getRawButton(1)) {
-        	if (!toteLimitSwitch.get()
-        		&& (elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
-        		|| elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5)){
-        		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
-        	}
-        	else if (!toteLimitSwitch.get()  
-        		&& (elevator.getHeight() <= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5
-        		|| elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION -0.5)){        		
-        			elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
-        		}
-        	
-        	
-        }
         else if(secondaryStick.getRawButton(3)) {
         	elevator.setDesiredHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
@@ -239,13 +236,6 @@ public class Robot extends IterativeRobot {
         else if(secondaryStick.getRawButton(9)) {
         	
         }
-        
-        if (secondaryStick.getRawButton(6)){
-        	elevator.drive(secondaryStickY);
-        	elevator.setDesiredHeight(elevator.getHeight());
-        }
-        
-        else elevator.goToHeight();
     }
 	
 	public void disabledInit() {
@@ -255,7 +245,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void disabledPeriodic() {
-		driveTrain.gyroSensor.reset();
+		driveTrain.resetGyro();
 	}
     
     public void testPeriodic() {
