@@ -179,22 +179,12 @@ public class Robot extends IterativeRobot {
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
         
-        if(platform.isExtended() != true) {
+        /*if(platform.isExtended() != true) {
         	elevator.driveFullRange(elevatorThrottle);
         }
         else {
         	elevator.driveSmallRange(elevatorThrottle);
-        }
-        
-        elevator.update();
-        
-        if(mainStick.getRawButton(6)) {
-        	elevator.goToHeight(43);
-        }
-        else if(mainStick.getRawButton(7)) {
-        	elevator.goToHeight(23);
-        }
-        
+        }*/
         //Automation of setting tote stack then backing up
         /*
         if (mainStick.getRawButton(11) == true) {
@@ -206,33 +196,43 @@ public class Robot extends IterativeRobot {
         	elevator.setHeight(0);
         }*/
         
+        
+        elevator.update();
+        
         if(secondaryStick.getRawButton(1)) {
         	
         }
-        else if(secondaryStick.getRawButton(2)) {
-        	elevator.goToHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
-        }
         else if(secondaryStick.getRawButton(3)) {
-        	elevator.goToHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+        	elevator.setDesiredHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+        }
+        else if(secondaryStick.getRawButton(2)) {
+        	elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
         else if(secondaryStick.getRawButton(4)) {
-        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
         }
         else if(secondaryStick.getRawButton(5)) {
-         	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
+         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
         }
-        else if(secondaryStick.getRawButton(6)) {
-        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+        else if(secondaryStick.getRawButton(11)) {
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+        }
+        else if(secondaryStick.getRawButton(10)) {
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
         }
         else if(secondaryStick.getRawButton(7)) {
-        	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
-        }
-        else if(secondaryStick.getRawButton(8)) {
         	
         }
         else if(secondaryStick.getRawButton(9)) {
         	
         }
+        
+        if (secondaryStick.getRawButton(6)){
+        	elevator.driveFullRange(secondaryStickY);
+        	elevator.setDesiredHeight(elevator.getHeight());
+        }
+        
+        else elevator.goToHeight();
     }
 	
 	public void disabledInit() {
