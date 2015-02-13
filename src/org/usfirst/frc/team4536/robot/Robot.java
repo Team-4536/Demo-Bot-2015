@@ -14,7 +14,9 @@ public class Robot extends IterativeRobot {
 	Tipper tipper;
 	Elevator elevator;
 	Timer teleopTimer;
-	
+	Timer autoTimer;
+	Auto auto;
+	int autoNumber;
 	Compressor compressor;
 	
 	// Joysticks
@@ -64,16 +66,45 @@ public class Robot extends IterativeRobot {
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
+    	
+    	autoTimer = new Timer();
+    	auto = new Auto(driveTrain);
+    	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
+		autoNumber = (int) auto.autoNumber();
+		
+		autoTimer.start();
     }
 	
 	public void autonomousInit() {
 		compressor.start();
+		autoTimer.reset();
 	}
 
 	public void autonomousPeriodic() {
 		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		System.out.println(driveTrain.gyroGetAngle());
+		//System.out.println(driveTrain.gyroGetAngle());
+		
+		double autoTime = autoTimer.get();
+		
+		//Can't have autoNumber since that would be the value when the code's deployed
+		switch ((int) auto.autoNumber()){
+			case 1: auto.driveForward(autoTime);
+					break;
+			case 2: auto.driveForwardWithRecyclingContainer(autoTime);
+					break;
+			case 3: auto.driveForwardPushingTote(autoTime);
+					break;
+			case 4: auto.twoTote(autoTime);
+					break;
+			case 5: auto.twoRecyclingContainers(autoTime);
+					break;
+			case 6: auto.doNothing();
+					break;
+			default: auto.doNothing();
+					 break;
+		
+		}
     }
 	
 	public void teleopInit() {
@@ -86,8 +117,8 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-    	System.out.println(driveTrain.gyroGetAngle());
+    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+    	//System.out.println(driveTrain.gyroGetAngle());
     	
     	// If button 4 on the main stick is pressed slow mode is enabled
     	/*if(mainStick.getRawButton(4) == true) {
@@ -146,12 +177,13 @@ public class Robot extends IterativeRobot {
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
         
-        if(platform.isExtended() != true) {
-        	elevator.driveFullRange(elevatorThrottle);
-        }
-        else {
-        	elevator.driveSmallRange(elevatorThrottle);
-        }
+        elevator.drive(elevatorThrottle);
+        //if(platform.isExtended() != true) {
+        //	elevator.driveFullRange(elevatorThrottle);
+        //}
+        //else {
+        //	elevator.driveSmallRange(elevatorThrottle);
+        //}
         
         elevator.update();
         
@@ -163,27 +195,64 @@ public class Robot extends IterativeRobot {
         }
         
         //Automation of setting tote stack then backing up
-        /*
+        
         if (mainStick.getRawButton(11) == true) {
+        	driveTrain.gyroSensor.reset();
         	platform.retract();
-        	if (platform.isExtended == false) {
-        	if (elevator.bottomLimitSwitch == true) {
-        	driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME
+        	if (platform.isExtended() == false) {
+        	elevator.drive(-0.1);
+        	if (elevator.bottomLimitSwitchValue() == true) {
+        	driveTrain.driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         	} 
         	}
-        }     */
+        } 
         
-        /*if (teleopTimer.get() > 133){
-        	tipper.extend();
-        	platform.retract();
-        	elevator.setHeight(0);
-        }*/
+               if (teleopTimer.get() > 133){
+        	//tipper.extend();
+        	//platform.retract();
+        	//elevator.setHeight(0);
+               }
+               
+               if(mainStick.getRawButton(6)) {
+               	elevator.goToHeight(43);
+               }
+               else if(mainStick.getRawButton(7)) {
+               	elevator.goToHeight(23);
+               }
+               
+               if(secondaryStick.getRawButton(1)) {
+               	
+               }
+               else if(secondaryStick.getRawButton(2)) {
+               	elevator.goToHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+               }
+               else if(secondaryStick.getRawButton(3)) {
+               	elevator.goToHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+               }
+               else if(secondaryStick.getRawButton(4)) {
+               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
+               }
+               else if(secondaryStick.getRawButton(5)) {
+                	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
+               }
+               else if(secondaryStick.getRawButton(6)) {
+               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
+               }
+               else if(secondaryStick.getRawButton(7)) {
+               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+               }
+               else if(secondaryStick.getRawButton(8)) {
+               	
+               }
+               else if(secondaryStick.getRawButton(9)) {
+               	
+               }
     }
 	
 	public void disabledInit() {
 		System.out.println("DISABLED");
 		compressor.stop();
-		teleopTimer.stop();
+		teleopTimer.reset();
 	}
 	
 	public void disabledPeriodic() {
