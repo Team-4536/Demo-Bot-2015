@@ -68,7 +68,7 @@ public class Robot extends IterativeRobot {
     	prevElevatorThrottle = 0;
     	
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain);
+    	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
 		
@@ -145,6 +145,9 @@ public class Robot extends IterativeRobot {
     	
     	driveTrain.drive(finalThrottleY, finalThrottleX); */
     	
+    	//Dynamic Calibration of the Encoder
+    	
+    	
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
@@ -186,23 +189,17 @@ public class Robot extends IterativeRobot {
         //}
         
         elevator.update();
-        
-        if(mainStick.getRawButton(6)) {
-        	elevator.goToHeight(43);
-        }
-        else if(mainStick.getRawButton(7)) {
-        	elevator.goToHeight(23);
-        }
+        System.out.println(elevator.getHeight());
         
         //Automation of setting tote stack then backing up
         
         if (mainStick.getRawButton(11) == true) {
         	driveTrain.gyroSensor.reset();
         	platform.retract();
-        	if (platform.isExtended() == false) {
-        	elevator.drive(-0.1);
+        	if (platform.timeRetracted() > 1) {
+        		elevator.setDesiredHeight(-30);
         	if (elevator.bottomLimitSwitchValue() == true) {
-        	driveTrain.driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
+        		driveTrain.driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         	} 
         	}
         } 
@@ -211,41 +208,6 @@ public class Robot extends IterativeRobot {
         	//tipper.extend();
         	//platform.retract();
         	//elevator.setHeight(0);
-               }
-               
-               if(mainStick.getRawButton(6)) {
-               	elevator.goToHeight(43);
-               }
-               else if(mainStick.getRawButton(7)) {
-               	elevator.goToHeight(23);
-               }
-               
-               if(secondaryStick.getRawButton(1)) {
-               	
-               }
-               else if(secondaryStick.getRawButton(2)) {
-               	elevator.goToHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
-               }
-               else if(secondaryStick.getRawButton(3)) {
-               	elevator.goToHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
-               }
-               else if(secondaryStick.getRawButton(4)) {
-               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
-               }
-               else if(secondaryStick.getRawButton(5)) {
-                	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
-               }
-               else if(secondaryStick.getRawButton(6)) {
-               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
-               }
-               else if(secondaryStick.getRawButton(7)) {
-               	elevator.goToHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
-               }
-               else if(secondaryStick.getRawButton(8)) {
-               	
-               }
-               else if(secondaryStick.getRawButton(9)) {
-               	
                }
     }
 	

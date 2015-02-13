@@ -78,8 +78,8 @@ public class Constants {
 	public static final double 	ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 22;
 	public static final double 	ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double 	ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
-	public static final double  BOTTOM_LIMIT_SWITCH_HEIGHT = -1;
-	public static final double  MIDDLE_LIMIT_SWITCH_HEIGHT = 8;
-	public static final double  TOP_LIMIT_SWITCH_HEIGHT = 50;
+	public static final double  BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //inches
+	public static final double  MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //inches
+	public static final double  TOP_LIMIT_SWITCH_HEIGHT = 48; //inches
 	
 }

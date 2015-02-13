@@ -15,6 +15,7 @@ public class Elevator {
 	double currentHeight;
 	double correction;
 	double prevElevatorThrottle;
+	double desiredHeight;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -36,6 +37,7 @@ public class Elevator {
 		currentHeight = 0;
 		correction = 0;
 		prevElevatorThrottle = 0;
+		desiredHeight = 0;
 	}
 
 	/*
@@ -54,11 +56,6 @@ public class Elevator {
 			elevatorTalon.set(0);
 		}
 	}
- 	
-	/*
-	 * Returns the boolean value of the top limit switch
-	 * A return value of true indicates that the limit switch is pressed
-	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
 		return !topLimitSwitch.get();
@@ -90,7 +87,16 @@ public class Elevator {
 		return elevatorTalon.get();
 	}
 	
-	public void goToHeight(double desiredHeight){
+	/*public void goToHeight(double desiredHeight){
+		double elevatorThrottle;
+		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
+		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
+		
+		this.drive(elevatorThrottle);
+		
+		prevElevatorThrottle = elevatorThrottle;
+	}*/
+	public void goToHeight(){ // this mthod goes to the height set by setDesiredHeight()
 		double elevatorThrottle;
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
@@ -99,6 +105,11 @@ public class Elevator {
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}
+	
+	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that goToHeight() method goes to.
+		desiredHeight = teleopDesiredHeight;
+	}
+	
 	
 	public double getHeight(){
 		return currentHeight;
@@ -116,6 +127,18 @@ public class Elevator {
 	public void update(){
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
 		System.out.println(currentHeight);
+		
+		if (this.bottomLimitSwitchValue() == true) {
+			setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+		}
+		
+		if (this.middleLimitSwitchValue()) {
+			setActualHeight(Constants.MIDDLE_LIMIT_SWITCH_HEIGHT);
+		}
+			
+		if (this.topLimitSwitchValue()) {
+			setActualHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+		}
 	}
 	
 	public void resetEncoder(){

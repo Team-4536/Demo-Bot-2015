@@ -12,14 +12,17 @@ public class Platform {
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
 	Timer extendedTimer;
+	Timer retractedTimer;
 	
 	//An initial value should be given to the solenoids in this constructor. Otherwise calling isExtended() could throw an error. Caleb
 	public Platform(int rightSolenoidChannel, int leftSolenoidChannel) {	
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
 		extendedTimer = new Timer();
+		retractedTimer = new Timer();
 		
 		extendedTimer.start();
+		retractedTimer.start();
 		
 		// Platform is initial retracted
 		this.retract();	
@@ -48,11 +51,20 @@ public class Platform {
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
 
-	public double timeSinceExtended() {
+	public double timeExtended() {
 		if (this.isExtended() == true) {
 			return extendedTimer.get();
 		} else {
 			extendedTimer.reset();
+			return 0;
+		}
+	}
+	
+	public double timeRetracted() {
+		if (this.isExtended() == false) {
+			return retractedTimer.get();
+		} else {
+			retractedTimer.reset();
 			return 0;
 		}
 	}
