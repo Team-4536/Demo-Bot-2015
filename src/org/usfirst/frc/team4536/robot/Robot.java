@@ -131,7 +131,7 @@ public class Robot extends IterativeRobot {
     		if(elevator.getHeight() < Constants.TOP_LIMIT_SWITCH_HEIGHT - 0.5
         	|| elevator.getHeight() > Constants.TOP_LIMIT_SWITCH_HEIGHT + 0.5) {
     			tipper.extend();
-    			if(tipper.timeSinceExtended() > 1) {
+    			if(tipper.timeExtended() > 1) {
     				elevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
     			}
     		}    	

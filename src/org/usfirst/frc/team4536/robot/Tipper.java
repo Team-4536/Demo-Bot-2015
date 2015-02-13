@@ -7,13 +7,16 @@ public class Tipper {
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
 	Timer extendedTimer;
+	Timer retractedTimer;
 	
 	public Tipper(int rightSolenoidChannel, int leftSolenoidChannel) {
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
 		extendedTimer = new Timer();
+		retractedTimer = new Timer();
 		
 		extendedTimer.start();
+		retractedTimer.start();
 	}
 	
 public boolean isExtended() {
@@ -39,11 +42,20 @@ public boolean isExtended() {
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
 	
-	public double timeSinceExtended() {
+	public double timeExtended() {
 		if (this.isExtended() == true) {
 			return extendedTimer.get();
 		} else {
 			extendedTimer.reset();
+			return 0;
+		}
+	}
+	
+	public double timeRetracted() {
+		if (this.isExtended() == false) { // is Retracted.
+			return retractedTimer.get();
+		} else {
+			retractedTimer.reset();
 			return 0;
 		}
 	}
