@@ -160,4 +160,7 @@ public class Elevator {
 		//System.out.println("Rate " + elevatorEncoder.getRate());
 		System.out.println(elevatorEncoder.getDistance());
 	}
+	public double getDesiredHeight(){
+		return desiredHeight;
+	}
 }
