@@ -45,15 +45,16 @@ public class Elevator {
 	 * Negative values will drive the elevator down
 	 */
 	public void drive(double verticalThrottle) {
-		double elevatorTalonThrottle = -verticalThrottle;
-		
-		elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 		
 		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
 			elevatorTalon.set(0);
 		}
 		else if((!bottomLimitSwitch.get() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
 			elevatorTalon.set(0);
+		} 
+		else {
+			double elevatorTalonThrottle = -verticalThrottle;
+			elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 		}
 	}
 	public boolean topLimitSwitchValue() {
@@ -102,6 +103,7 @@ public class Elevator {
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
 		this.drive(elevatorThrottle);
+		//System.out.println("Elevator Throttle" + elevatorThrottle);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}
@@ -109,7 +111,6 @@ public class Elevator {
 	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that goToHeight() method goes to.
 		desiredHeight = teleopDesiredHeight;
 	}
-	
 	
 	public double getHeight(){
 		return currentHeight;

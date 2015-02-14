@@ -21,8 +21,8 @@ public class Constants {
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
-	public static final int ENCODER_SENSOR_A_CHANNEL = 6;
-	public static final int ENCODER_SENSOR_B_CHANNEL = 5;
+	public static final int ENCODER_SENSOR_A_CHANNEL = 5;
+	public static final int ENCODER_SENSOR_B_CHANNEL = 6;
 	
 	// Analog Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;
@@ -81,5 +81,11 @@ public class Constants {
 	public static final double  BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //inches
 	public static final double  MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //inches
 	public static final double  TOP_LIMIT_SWITCH_HEIGHT = 48; //inches
+	
+	// Buttons for Joysticks
+		//mainStick
+	
+		//secondaryStick
+		public static final int AUTOMATED_STACK_SET = 11; // button for automatically setting a stack and backing up.
 	
 }

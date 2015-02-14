@@ -26,6 +26,7 @@ public class Robot extends IterativeRobot {
 	// Previous values used for toggles for the platform and tipper 
 	boolean prevPlatformControllingButton;
 	boolean prevTipperControllingButton;
+	boolean prevAutoSet;
 	
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
@@ -113,6 +114,11 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
+		
+		// Retracted Timer
+		double retractedTime = platform.timeRetracted();
+		System.out.println(platform.timeRetracted());
+		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
@@ -121,7 +127,7 @@ public class Robot extends IterativeRobot {
     	//System.out.println(driveTrain.gyroGetAngle());
     	
     	// If button 4 on the main stick is pressed slow mode is enabled
-    	/*if(mainStick.getRawButton(4) == true) {
+    	if(mainStick.getRawButton(4) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
     		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
@@ -143,7 +149,7 @@ public class Robot extends IterativeRobot {
     		prevThrottleX = finalThrottleX;
     	}
     	
-    	driveTrain.drive(finalThrottleY, finalThrottleX); */
+    	driveTrain.drive(finalThrottleY, finalThrottleX);
     	
     	//Dynamic Calibration of the Encoder
     	
@@ -153,6 +159,7 @@ public class Robot extends IterativeRobot {
     	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
     		platform.flip();
     	}
+    	
     	prevPlatformControllingButton = mainStick.getRawButton(3);
     	
     	// Uses button 2 on the main stick as a toggle for the tipper
@@ -180,7 +187,6 @@ public class Robot extends IterativeRobot {
          * Suggestion: switch around driveFullRange and driveSmallRange so that you don't have to deal with false values. Caleb
          */
         
-        elevator.drive(elevatorThrottle);
         //if(platform.isExtended() != true) {
         //	elevator.driveFullRange(elevatorThrottle);
         //}
@@ -189,26 +195,44 @@ public class Robot extends IterativeRobot {
         //}
         
         elevator.update();
-        System.out.println(elevator.getHeight());
+        System.out.println("Elevator Height: " + elevator.getHeight());
+        System.out.println("bottomLimitSwitchValue: " + elevator.bottomLimitSwitchValue());
         
         //Automation of setting tote stack then backing up
-        
-        if (mainStick.getRawButton(11) == true) {
-        	driveTrain.gyroSensor.reset();
-        	platform.retract();
-        	if (platform.timeRetracted() > 1) {
-        		elevator.setDesiredHeight(-30);
-        	if (elevator.bottomLimitSwitchValue() == true) {
-        		driveTrain.driveStraight(-0.1, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
-        	} 
+        if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true){
+        	
+        	if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true && prevAutoSet == false) {
+        		driveTrain.resetGyro();
         	}
-        } 
+        	
+        	platform.retract();
+        	
+        	if (retractedTime > 3) {
+        		elevator.setDesiredHeight(-30);
+  
+        		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
+        			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
+        		} 
+        	} 
+        	else {
+        		driveTrain.driveStraight(0, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
+        	}
+        	prevAutoSet = mainStick.getRawButton(Constants.AUTOMATED_STACK_SET);
+        	
+        	System.out.println("Elevator Height:" + elevator.getHeight());
+        }
         
                if (teleopTimer.get() > 133){
         	//tipper.extend();
         	//platform.retract();
         	//elevator.setHeight(0);
                }
+            if (secondaryStick.getRawButton(6) == true){
+            	elevator.drive(elevatorThrottle);
+            	elevator.setDesiredHeight(elevator.getHeight());
+            } else {
+            	elevator.goToHeight(); // (+) up, (-) down.	
+            }
     }
 	
 	public void disabledInit() {
