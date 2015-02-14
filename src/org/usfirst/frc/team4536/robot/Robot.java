@@ -168,10 +168,10 @@ public class Robot extends IterativeRobot {
     	
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
-    	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
+    	if(secondaryStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
     		platform.flip();
     	}
-    	prevPlatformControllingButton = mainStick.getRawButton(3);
+    	prevPlatformControllingButton = secondaryStick.getRawButton(5);
     	
     	// Uses button 2 on the main stick as a toggle for the tipper
     	if(mainStick.getRawButton(2) == true && prevTipperControllingButton == false) {
@@ -224,7 +224,7 @@ public class Robot extends IterativeRobot {
         else if(secondaryStick.getRawButton(4)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
         }
-        else if(secondaryStick.getRawButton(5)) {
+        else if(secondaryStick.getRawButton(8)) {
          	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
         }
         else if(secondaryStick.getRawButton(11)) {
