@@ -190,15 +190,17 @@ public class Robot extends IterativeRobot {
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
        
-        if(secondaryStick.getRawButton(1)) {
-        	if (!toteLimitSwitch.get()
-        		&& (elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
-        		|| elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5)){
-        		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
-        	}
-        	else if (!toteLimitSwitch.get()){        		
-        			elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
-        	}
+        	if(secondaryStick.getRawButton(1) && !toteLimitSwitch.get()) {
+        		 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        		       || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
+        		       && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
+        		         		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+        		 }
+        		 else if (elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        				  && elevator.getHeight() <= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5
+        				  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
+        				       elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
+        		}
         }
         
         //Automation of setting tote stack then backing up
@@ -248,7 +250,7 @@ public class Robot extends IterativeRobot {
         	elevator.drive(elevatorThrottle);
         	elevator.setDesiredHeight(elevator.getHeight());
         }      
-        else elevator.goToHeight();
+        else elevator.goToDesiredHeight();
         
         prevElevatorThrottle = elevatorThrottle;
            

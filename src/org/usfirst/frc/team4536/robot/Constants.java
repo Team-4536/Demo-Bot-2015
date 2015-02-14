@@ -75,7 +75,7 @@ public class Constants {
 	// Elevator Height Constants
 	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20;
 	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
-	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 9;
+	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 10;
 	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
 	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
