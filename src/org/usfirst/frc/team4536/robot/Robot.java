@@ -232,8 +232,8 @@ public class Robot extends IterativeRobot {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
         }
         else if(secondaryStick.getRawButton(7)) {
-        	
-        }
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
+        }	
         else if(secondaryStick.getRawButton(9)) {
         	
         }
@@ -251,7 +251,7 @@ public class Robot extends IterativeRobot {
         else elevator.goToHeight();
         
         prevElevatorThrottle = elevatorThrottle;
-              
+           
         elevator.update();
         System.out.println(elevator.getHeight());
     }

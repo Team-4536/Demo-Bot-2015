@@ -22,8 +22,8 @@ public class Constants {
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
 	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 2;
-	public static final int ENCODER_SENSOR_A_CHANNEL = 6;
-	public static final int ENCODER_SENSOR_B_CHANNEL = 5;
+	public static final int ENCODER_SENSOR_A_CHANNEL = 5;
+	public static final int ENCODER_SENSOR_B_CHANNEL = 6;
 	
 	// Analog Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;
@@ -79,7 +79,7 @@ public class Constants {
 	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
 	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
-	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_BIN = 22;
+	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 11.5;
 	public static final double BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //Inches
 	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
 	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches
