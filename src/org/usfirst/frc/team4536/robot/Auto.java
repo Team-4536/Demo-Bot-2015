@@ -7,11 +7,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class Auto { 
 	DriveTrain autoDriveTrain;
 	Elevator autoElevator;
+	Tipper tipper;
+	
 	
 	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
-	
+		tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
 	}
 	
 	public static double autoNumber(){
@@ -36,16 +38,28 @@ public class Auto {
 
 	public void driveForward(double autoTime){
 		
-		if (autoTime < 1){
+		if (autoTime < 1.8){
 			autoDriveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
 		else
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	public void driveForwardWithRecyclingContainer(double autoTime){
-		if (autoTime < 3){
-			autoDriveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+	public void driveBackwardWithRecyclingContainer(double autoTime){
+		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
+	    		tipper.extend();}
+		
+	    else if (tipper.timeExtended() > 1){
+	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+	    					
+		}	    	
+	    if (autoTime > 3 && tipper.isExtended()){
+	    		tipper.retract();			
+	    }
+		
+	    else if (autoTime > 4 && autoTime < 8 && !tipper.isExtended()){
+			autoDriveTrain.driveStraight(-0.3, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
 		}
 		else
 			autoDriveTrain.drive(0 , 0);

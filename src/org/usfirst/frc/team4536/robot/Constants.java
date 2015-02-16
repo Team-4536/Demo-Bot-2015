@@ -49,6 +49,7 @@ public class Constants {
 	public static final double ELEVATOR_FULL_SPEED_TIME = 0.25;
 	public static final double FORWARD_FULL_SPEED_TIME = 0.25;
 	public static final double TURN_FULL_SPEED_TIME = 0.25;
+	public static final double SLOW_ELEVATOR_FULL_SPEED_TIME = 1;
 	
 	// Normal Speed Limit
 	public static final double FORWARD_SPEED_LIMIT = 1;
@@ -79,7 +80,7 @@ public class Constants {
 	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
 	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
-	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 11.5;
+	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 14.5;
 	public static final double BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //Inches
 	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
 	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches

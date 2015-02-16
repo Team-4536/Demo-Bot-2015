@@ -16,6 +16,7 @@ public class Elevator {
 	double correction;
 	double prevElevatorThrottle;
 	double desiredHeight;
+	double elevatorSpeedLimit;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -38,6 +39,7 @@ public class Elevator {
 		correction = 0;
 		prevElevatorThrottle = 0;
 		desiredHeight = 0;
+		elevatorSpeedLimit = 1;
 	}
 
 	
@@ -106,12 +108,13 @@ public class Elevator {
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}*/
-	public void goToDesiredHeight(){ // this method goes to the height set by desiredHeight
+	public void goToDesiredHeight(double teleopElevatorSpeedLimit){ // this method goes to the height set by desiredHeight
 		double elevatorThrottle;
+		elevatorSpeedLimit = teleopElevatorSpeedLimit;
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
-		this.drive(elevatorThrottle);
+		this.drive(elevatorThrottle*elevatorSpeedLimit);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}

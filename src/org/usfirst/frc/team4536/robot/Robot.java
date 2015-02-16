@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 	double prevThrottleX = 0;
 	double finalThrottleY = 0;
 	double finalThrottleX = 0;
+	double elevatorSpeedLimit = 1;
 	
 	public void robotInit() {
 		// Robot Systems
@@ -82,6 +83,7 @@ public class Robot extends IterativeRobot {
 
 		autoTimer.reset();
 		autoTimer.start();
+		driveTrain.resetGyro();
 	}
 
 	public void autonomousPeriodic() {
@@ -95,7 +97,7 @@ public class Robot extends IterativeRobot {
 		switch ((int) auto.autoNumber()){
 			case 1: auto.driveForward(autoTime);
 					break;
-			case 2: auto.driveForwardWithRecyclingContainer(autoTime);
+			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
 					break;
 			case 3: auto.driveForwardPushingTote(autoTime);
 					break;
@@ -109,6 +111,7 @@ public class Robot extends IterativeRobot {
 					 break;
 		
 		}
+		elevator.goToDesiredHeight(1);
     }
 	
 	public void teleopInit() {
@@ -235,9 +238,6 @@ public class Robot extends IterativeRobot {
         }
         else if(secondaryStick.getRawButton(7)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
-        }	
-        else if(secondaryStick.getRawButton(9)) {
-        	
         }
         
         /*
@@ -246,11 +246,20 @@ public class Robot extends IterativeRobot {
          * desired height as the current height so that it doesn't recoil to the previous desired height
          * when the driver lets off of the button.
          */
+        	
+            
+        else if (secondaryStick.getRawButton(9)){
+        	elevatorSpeedLimit = .5;
+        }
+        else if (secondaryStick.getRawButton(9) == false){
+        	elevatorSpeedLimit = 1;
+        }
+        
         if (secondaryStick.getRawButton(6)){
         	elevator.drive(elevatorThrottle);
         	elevator.setDesiredHeight(elevator.getHeight());
-        }      
-        else elevator.goToDesiredHeight();
+        }
+        else elevator.goToDesiredHeight(elevatorSpeedLimit);
         
         prevElevatorThrottle = elevatorThrottle;
            
