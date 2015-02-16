@@ -170,11 +170,6 @@ public class Robot extends IterativeRobot {
     	}
     	
     	
-    	// Uses button 3 on the main stick as a toggle for the platform 
-    	if(secondaryStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
-    		platform.flip();
-    	}
-    	prevPlatformControllingButton = secondaryStick.getRawButton(5);
     	
     	// Uses button 2 on the main stick as a toggle for the tipper
     	if(mainStick.getRawButton(2) == true && prevTipperControllingButton == false) {
@@ -192,73 +187,74 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-       
-        	if(secondaryStick.getRawButton(1) && !toteLimitSwitch.get()) {
-        		 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
-        		       || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
-        		       && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
-        		         		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
-        		 }
-        		 else if (elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
-        				  && elevator.getHeight() <= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5
-        				  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
-        				       elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
-        		}
-        }
+      
         
-        //Automation of setting tote stack then backing up
         /*
-        if (mainStick.getRawButton(11) == true) {
-        
-        }     */
-        
-        /*if (teleopTimer.get() > 133){
-        	tipper.extend();
-        	elevator.setHeight(0);
-        }*/
-        
-        
+        * When the trigger is held the robot automatically stacks the totes as they slide in and 
+        * hit the limit switch
+        */
+        if(secondaryStick.getRawButton(1) && !toteLimitSwitch.get()) {
+        	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
+        		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
+        		         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+        	 }
+        	 else if (elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
+        			  && elevator.getHeight() <= Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 0.5
+        			  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
+        		      		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
+        	 }
+        }
+        	
+        else if(secondaryStick.getRawButton(2)) {
+            elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
+        }
         else if(secondaryStick.getRawButton(3)) {
         	elevator.setDesiredHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
-        }
-        else if(secondaryStick.getRawButton(2)) {
-        	elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
         else if(secondaryStick.getRawButton(4)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
         }
+        else if(secondaryStick.getRawButton(7)) {
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
+        }
         else if(secondaryStick.getRawButton(8)) {
          	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
-        }
-        else if(secondaryStick.getRawButton(11)) {
-        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
         }
         else if(secondaryStick.getRawButton(10)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
         }
-        else if(secondaryStick.getRawButton(7)) {
-        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
+        else if(secondaryStick.getRawButton(11)) {
+        	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
         }
-        
-        /*
-         * This is code for the override button. When button 6 is pressed it allows the secondary 
-         * driver to manually drive the elevator with the joystick. In this case you need to set the 
-         * desired height as the current height so that it doesn't recoil to the previous desired height
-         * when the driver lets off of the button.
-         */
         	
-            
-        else if (secondaryStick.getRawButton(9)){
+     // Uses button 3 on the main stick as a toggle for the platform 
+       	if(secondaryStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
+       		platform.flip();
+       	}
+       	prevPlatformControllingButton = secondaryStick.getRawButton(5);
+    
+        //Cuts the speed of the elevator in half while button 9 is held
+        if (secondaryStick.getRawButton(9)){
         	elevatorSpeedLimit = .5;
         }
         else if (secondaryStick.getRawButton(9) == false){
         	elevatorSpeedLimit = 1;
         }
         
+        	
+        /*
+         * This is code for the override button. When button 6 is pressed it allows the secondary 
+         * driver to manually drive the elevator with the joystick. In this case you need to set the 
+         * desired height as the current height so that it doesn't recoil to the previous desired height
+         * when the driver lets off of the button.
+         */
+        
         if (secondaryStick.getRawButton(6)){
         	elevator.drive(elevatorThrottle);
         	elevator.setDesiredHeight(elevator.getHeight());
         }
+        
         else elevator.goToDesiredHeight(elevatorSpeedLimit);
         
         prevElevatorThrottle = elevatorThrottle;
