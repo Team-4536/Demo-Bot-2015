@@ -92,7 +92,7 @@ public class Robot extends IterativeRobot {
 		switch ((int) auto.autoNumber()){
 			case 1: auto.driveForward(autoTime);
 					break;
-			case 2: auto.driveForwardWithRecyclingContainer(autoTime);
+			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
 					break;
 			case 3: auto.driveForwardPushingTote(autoTime);
 					break;
@@ -117,7 +117,6 @@ public class Robot extends IterativeRobot {
 		
 		// Retracted Timer
 		double retractedTime = platform.timeRetracted();
-		System.out.println(platform.timeRetracted());
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
@@ -127,7 +126,7 @@ public class Robot extends IterativeRobot {
     	//System.out.println(driveTrain.gyroGetAngle());
     	
     	// If button 4 on the main stick is pressed slow mode is enabled
-    	if(mainStick.getRawButton(4) == true) {
+    	/*if(mainStick.getRawButton(4) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
     		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
@@ -149,11 +148,7 @@ public class Robot extends IterativeRobot {
     		prevThrottleX = finalThrottleX;
     	}
     	
-    	driveTrain.drive(finalThrottleY, finalThrottleX);
-    	
-    	//Dynamic Calibration of the Encoder
-    	
-    	
+    	driveTrain.drive(finalThrottleY, finalThrottleX);*/
     	
     	// Uses button 3 on the main stick as a toggle for the platform 
     	if(mainStick.getRawButton(3) == true && prevPlatformControllingButton == false) {
@@ -195,8 +190,6 @@ public class Robot extends IterativeRobot {
         //}
         
         elevator.update();
-        System.out.println("Elevator Height: " + elevator.getHeight());
-        System.out.println("bottomLimitSwitchValue: " + elevator.bottomLimitSwitchValue());
         
         //Automation of setting tote stack then backing up
         if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true){
@@ -207,20 +200,44 @@ public class Robot extends IterativeRobot {
         	
         	platform.retract();
         	
-        	if (retractedTime > 3) {
+        	if (retractedTime > 6) {
         		elevator.setDesiredHeight(-30);
   
         		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
         			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         		} 
-        	} 
-        	else {
-        		driveTrain.driveStraight(0, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         	}
-        	prevAutoSet = mainStick.getRawButton(Constants.AUTOMATED_STACK_SET);
+        }	//if button 4 is pressed, slow mode is enabled
+        else if (mainStick.getRawButton(4) == true) {
+    		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		driveTrain.drive(finalThrottleY, finalThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    	}
+    	else {
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		driveTrain.drive(finalThrottleY, finalThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    		
+    	}
+    	
+        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATED_STACK_SET);
         	
         	System.out.println("Elevator Height:" + elevator.getHeight());
-        }
         
                if (teleopTimer.get() > 133){
         	//tipper.extend();
@@ -231,9 +248,9 @@ public class Robot extends IterativeRobot {
             	elevator.drive(elevatorThrottle);
             	elevator.setDesiredHeight(elevator.getHeight());
             } else {
-            	elevator.goToHeight(); // (+) up, (-) down.	
+            	elevator.goToDesiredHeight(1); // (+) up, (-) down.	
             }
-    }
+	}
 	
 	public void disabledInit() {
 		System.out.println("DISABLED");

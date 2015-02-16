@@ -16,6 +16,7 @@ public class Elevator {
 	double correction;
 	double prevElevatorThrottle;
 	double desiredHeight;
+	double elevatorSpeedLimit;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -38,25 +39,35 @@ public class Elevator {
 		correction = 0;
 		prevElevatorThrottle = 0;
 		desiredHeight = 0;
+		elevatorSpeedLimit = 1;
 	}
 
+	
 	/*
-	 * Positive values will drive the elevator up
-	 * Negative values will drive the elevator down
-	 */
+     * This function is called in order to make the elevator drive
+     * It takes in one arguments - the amount of vertical throttle (1 to -1)
+     * To go up the value would be 1. To go down the value would be -1
+     */
 	public void drive(double verticalThrottle) {
+		double elevatorTalonThrottle = -verticalThrottle;
+		
+		elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 		
 		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
 			elevatorTalon.set(0);
 		}
 		else if((!bottomLimitSwitch.get() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
 			elevatorTalon.set(0);
-		} 
-		else {
-			double elevatorTalonThrottle = -verticalThrottle;
-			elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 		}
+		else 
+			elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
 	}
+ 	
+ 	
+	/*
+	 * Returns the boolean value of the top limit switch
+	 * A return value of true indicates that the limit switch is pressed
+	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
 		return !topLimitSwitch.get();
@@ -97,20 +108,21 @@ public class Elevator {
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}*/
-	public void goToHeight(){ // this mthod goes to the height set by setDesiredHeight()
+	public void goToDesiredHeight(double teleopElevatorSpeedLimit){ // this method goes to the height set by desiredHeight
 		double elevatorThrottle;
+		elevatorSpeedLimit = teleopElevatorSpeedLimit;
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
-		this.drive(elevatorThrottle);
-		//System.out.println("Elevator Throttle" + elevatorThrottle);
+		this.drive(elevatorThrottle*elevatorSpeedLimit);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}
 	
-	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that goToHeight() method goes to.
+	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that the goToHeight() method goes to
 		desiredHeight = teleopDesiredHeight;
 	}
+	
 	
 	public double getHeight(){
 		return currentHeight;
@@ -150,5 +162,8 @@ public class Elevator {
 		//System.out.println("Raw " + elevatorEncoder.getRaw());
 		//System.out.println("Rate " + elevatorEncoder.getRate());
 		System.out.println(elevatorEncoder.getDistance());
+	}
+	public double getDesiredHeight(){
+		return desiredHeight;
 	}
 }
