@@ -124,6 +124,10 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
+		//Retracted Timer
+		double retractedTime = platform.timeRetracted();
+		System.out.println(platform.timeRetracted());
+		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
@@ -191,7 +195,20 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-      
+        
+      //Automation of setting tote stack then backing up
+        if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true){
+        	
+        	if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true && prevAutoSet == false) {
+        		driveTrain.resetGyro();
+        	}
+        	platform.retract();
+        	if (retractedTime > 6) {
+        		elevator.setDesiredHeight(-30);
+        	   
+        		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
+        			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
+     		} 
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 

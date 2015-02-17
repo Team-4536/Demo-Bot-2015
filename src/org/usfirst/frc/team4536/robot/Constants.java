@@ -85,4 +85,10 @@ public class Constants {
 	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
 	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches
 	
+	// Buttons for Joysticks
+	//mainStick
+	public static final int AUTOMATED_STACK_SET = 11; // button for automatically setting a stack and backing up.
+	
+
+	//secondaryStick
 }
