@@ -79,6 +79,7 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void autonomousInit() {
+		autoNumber = (int) auto.autoNumber();
 		compressor.start();
 
 		autoTimer.reset();
@@ -99,19 +100,22 @@ public class Robot extends IterativeRobot {
 					break;
 			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
 					break;
-			case 3: auto.driveForwardPushingTote(autoTime);
+			case 3: auto.driveBackwardWithTote(autoTime);
 					break;
-			case 4: auto.twoTote(autoTime);
+			case 4: auto.toteAndContainer(autoTime);
 					break;
-			case 5: auto.twoRecyclingContainers(autoTime);
+			case 5: auto.twoTote(autoTime);
 					break;
-			case 6: auto.doNothing();
+			case 6: auto.twoRecyclingContainers(autoTime);
+					break;
+			case 7: auto.doNothing();
 					break;
 			default: auto.doNothing();
 					 break;
 		
 		}
 		elevator.goToDesiredHeight(1);
+		elevator.update();
     }
 	
 	public void teleopInit() {

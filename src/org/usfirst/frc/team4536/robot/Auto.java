@@ -21,11 +21,12 @@ public class Auto {
 		SendableChooser autoChooser;
 		autoChooser = new SendableChooser();
 		autoChooser.addObject("Drive Forward", 1);
-		autoChooser.addObject("Drive Forward pushing Recycling Container", 2);
-		autoChooser.addObject("Drive Forward pushing Tote", 3);
-		autoChooser.addObject("Two Tote Auto", 4);
-		autoChooser.addObject("Two Recycling Container Auto", 5);
-		autoChooser.addDefault("Do Nothing", 6);
+		autoChooser.addObject("Drive Backward with Container", 2);
+		autoChooser.addObject("Drive Backward with Tote", 3);
+		autoChooser.addObject("DriveBackward with Recycling Container and Tote", 4);
+		autoChooser.addObject("Two Tote Auto", 5);
+		autoChooser.addObject("Two Recycling Container Auto", 6);
+		autoChooser.addDefault("Do Nothing", 7);
 		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
@@ -48,8 +49,8 @@ public class Auto {
 	public void driveBackwardWithRecyclingContainer(double autoTime){
 		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
 				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
-	    		tipper.extend();}
-		
+	    		tipper.extend();
+	    }
 	    else if (tipper.timeExtended() > 1){
 	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 	    					
@@ -65,14 +66,23 @@ public class Auto {
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	public void driveForwardPushingTote (double autoTime){
-		if ( autoTime < 3){
-
-			autoDriveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+	public void driveBackwardWithTote (double autoTime){
+	    if (autoTime < 1){
+	    		autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+		}
+	    else if (autoTime > 1 && autoTime < 5){
+	    	autoDriveTrain.turnTo(-90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime > 5 && autoTime < 7 
+	    		&& autoDriveTrain.gyroGetAngle() > -95 && autoDriveTrain.gyroGetAngle() < -85){
+			autoDriveTrain.driveStraight(-0.3, -90, 1);
 		}
 		else
 			autoDriveTrain.drive(0 , 0);
 	}
+	
+	public void toteAndContainer(double autoTime){
+	}	
 	
 	public void twoTote (double autoTime){
 	
