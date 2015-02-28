@@ -3,18 +3,13 @@ package org.usfirst.frc.team4536.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
-/*
-*Suggested improvement: There needs to be comments in this class! Caleb
-*/
-
-public class Platform {
+public class Platform { //This a piston controlled platform to rest stacks on.
 	
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
 	Timer extendedTimer;
 	Timer retractedTimer;
 	
-	//An initial value should be given to the solenoids in this constructor. Otherwise calling isExtended() could throw an error. Caleb
 	public Platform(int rightSolenoidChannel, int leftSolenoidChannel) {	
 		rightSolenoid = new Solenoid(rightSolenoidChannel);
 		leftSolenoid = new Solenoid(leftSolenoidChannel);
@@ -24,8 +19,8 @@ public class Platform {
 		extendedTimer.start();
 		retractedTimer.start();
 		
-		// Platform is initial retracted
-		this.retract();	
+		// Platform is initially retracted
+		this.retract();	//rightSolenoid is set true, leftSolenoid is set false.
 	}	
 	
 	public boolean isExtended() {
@@ -45,14 +40,14 @@ public class Platform {
 		leftSolenoid.set(true);	
 	}
 	
-	public void flip() {
+	public void flip() { //Flips the solenoid states. Example: goes from retracted to extended (or) extended to retracted.
 		
 		rightSolenoid.set(!rightSolenoid.get());
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
 
 	public double timeExtended() {
-		if (this.isExtended() == true) { // is Extended
+		if (this.isExtended() == true) { // if is Extended
 			return extendedTimer.get();
 		} else {
 			extendedTimer.reset();
@@ -61,7 +56,7 @@ public class Platform {
 	}
 	
 	public double timeRetracted() {
-		if (this.isExtended() == false) { // is Retracted.
+		if (this.isExtended() == false) { // if is Retracted.
 			return retractedTimer.get();
 		} else {
 			retractedTimer.reset();
