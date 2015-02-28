@@ -52,7 +52,7 @@ public boolean isExtended() {
 	}
 	
 	public double timeRetracted() {
-		if (this.isExtended() == false) {
+		if (this.isExtended() == false) { // is Retracted.
 			return retractedTimer.get();
 		} else {
 			retractedTimer.reset();

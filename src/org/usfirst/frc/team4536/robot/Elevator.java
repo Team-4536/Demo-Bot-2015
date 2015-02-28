@@ -51,8 +51,6 @@ public class Elevator {
 	public void drive(double verticalThrottle) {
 		double elevatorTalonThrottle = -verticalThrottle;
 		
-		elevatorTalon.set(Utilities.limit(elevatorTalonThrottle));
-		
 		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
 			elevatorTalon.set(0);
 		}

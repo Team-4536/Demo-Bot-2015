@@ -52,7 +52,7 @@ public class Platform {
 	}
 
 	public double timeExtended() {
-		if (this.isExtended() == true) {
+		if (this.isExtended() == true) { // is Extended
 			return extendedTimer.get();
 		} else {
 			extendedTimer.reset();
@@ -61,7 +61,7 @@ public class Platform {
 	}
 	
 	public double timeRetracted() {
-		if (this.isExtended() == false) {
+		if (this.isExtended() == false) { // is Retracted.
 			return retractedTimer.get();
 		} else {
 			retractedTimer.reset();
