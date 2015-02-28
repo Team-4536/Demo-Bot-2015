@@ -91,4 +91,8 @@ public class Auto {
 		
 	}
 	
+	public void threeToteStack(double autoTime){
+		
+	}
+	
 }

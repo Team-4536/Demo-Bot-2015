@@ -25,9 +25,10 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	// Previous values used for toggles for the platform and tipper 
+	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
 	boolean prevTipperControllingButton;
+	boolean prevAutoSet;
 	
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
@@ -79,9 +80,7 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void autonomousInit() {
-		autoNumber = (int) auto.autoNumber();
 		compressor.start();
-
 		autoTimer.reset();
 		autoTimer.start();
 		driveTrain.resetGyro();
@@ -102,20 +101,20 @@ public class Robot extends IterativeRobot {
 					break;
 			case 3: auto.driveBackwardWithTote(autoTime);
 					break;
-			case 4: auto.toteAndContainer(autoTime);
+			case 4: auto.twoTote(autoTime);
 					break;
-			case 5: auto.twoTote(autoTime);
+			case 5: auto.twoRecyclingContainers(autoTime);
 					break;
-			case 6: auto.twoRecyclingContainers(autoTime);
+			case 6: auto.doNothing();
 					break;
-			case 7: auto.doNothing();
+			case 7: auto.threeToteStack(autoTime);
+					break;
+			case 8: auto.toteAndContainer(autoTime);
 					break;
 			default: auto.doNothing();
 					 break;
-		
 		}
 		elevator.goToDesiredHeight(1);
-		elevator.update();
     }
 	
 	public void teleopInit() {
@@ -124,9 +123,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
+		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();
-		System.out.println(platform.timeRetracted());
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
@@ -138,7 +137,8 @@ public class Robot extends IterativeRobot {
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
     	 */
-    	if(mainStick.getRawButton(7)) {	
+    	//Code for automation of recycling container pickup. Tips forward then drives the elevator up to catch on the recycling container.
+    	if(mainStick.getRawButton(Constants.RECYCLING_CONTAINER_PICK_UP)) {	
     		if(elevator.getHeight() < Constants.TOP_LIMIT_SWITCH_HEIGHT - 0.5
         	|| elevator.getHeight() > Constants.TOP_LIMIT_SWITCH_HEIGHT + 0.5) {
     			tipper.extend();
@@ -150,40 +150,73 @@ public class Robot extends IterativeRobot {
     			tipper.retract();
     		}
     	}
-    	else {
-    		// If button 4 on the main stick is pressed slow mode is enabled
-    		if(mainStick.getRawButton(4) == true) {
-        		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
-        		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
-        		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
-        		
-        		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
-        		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
-        		
-        		prevThrottleY = finalThrottleY;
-        		prevThrottleX = finalThrottleX;
-        	}
-        	else {
-        		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
-        		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_SPEED_LIMIT;
-        		
-        		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
-        		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
-        		
-        		prevThrottleY = finalThrottleY;
-        		prevThrottleX = finalThrottleX;
+    	
+    	//Automation of setting tote stack then backing up
+        if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
+        	
+        	if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true && prevAutoSet == false) {
+        		driveTrain.resetGyro();
         	}
         	
-        	driveTrain.drive(finalThrottleY, finalThrottleX); 
+        	platform.retract();
+        	
+        	if (retractedTime > 6) {
+        		elevator.setDesiredHeight(-30);
+  
+        		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
+        			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
+        		} 
+        	}
+        }//if button 7 is pressed, SUPER SLOW MODE is ENABLED
+        else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
+    		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SUPER_SLOW_FORWARD_SPEED_CURVE) * Constants.SUPER_SLOW_FORWARD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SUPER_SLOW_TURN_SPEED_CURVE) * Constants.SUPER_SLOW_TURN_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.SUPER_SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.SUPER_SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		driveTrain.drive(finalThrottleY, finalThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    	}	//if button 6 is pressed, SLOW MODE is ENABLED
+        else if (mainStick.getRawButton(Constants.SLOW_MODE) == true) {
+    		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.SLOW_FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.SLOW_TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		driveTrain.drive(finalThrottleY, finalThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
     	}
+    	else {
+    		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
+    		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_SPEED_LIMIT;
+    		
+    		finalThrottleY = Utilities.accelLimit(Constants.FORWARD_FULL_SPEED_TIME, throttleY, prevThrottleY);
+    		finalThrottleX = Utilities.accelLimit(Constants.TURN_FULL_SPEED_TIME, throttleX, prevThrottleX);
+    		
+    		driveTrain.drive(finalThrottleY, finalThrottleX);
+    		
+    		prevThrottleY = finalThrottleY;
+    		prevThrottleX = finalThrottleX;
+    		
+    	}
+    	
+        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK);
     	
     	
     	
     	// Uses button 2 on the main stick as a toggle for the tipper
-    	if(mainStick.getRawButton(2) == true && prevTipperControllingButton == false) {
+    	if(mainStick.getRawButton(Constants.TIPPER_TOGGLE) == true && prevTipperControllingButton == false) {
     		tipper.flip();
     	}
-    	prevTipperControllingButton = mainStick.getRawButton(2);
+    	prevTipperControllingButton = mainStick.getRawButton(Constants.TIPPER_TOGGLE);
     	    	
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
@@ -195,26 +228,13 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-        
-      //Automation of setting tote stack then backing up
-        if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true){
-        	
-        	if (mainStick.getRawButton(Constants.AUTOMATED_STACK_SET) == true && prevAutoSet == false) {
-        		driveTrain.resetGyro();
-        	}
-        	platform.retract();
-        	if (retractedTime > 6) {
-        		elevator.setDesiredHeight(-30);
-        	   
-        		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
-        			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
-     		} 
+      
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(1) && !toteLimitSwitch.get()) {
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) {
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -225,41 +245,40 @@ public class Robot extends IterativeRobot {
         			  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
         		      		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
         	 }
-        }
-        	
-        else if(secondaryStick.getRawButton(2)) {
+        }    	
+        else if(secondaryStick.getRawButton(Constants.LOWER_ONE_TOTE_LEVEL)) {
             elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
-        else if(secondaryStick.getRawButton(3)) {
+        else if(secondaryStick.getRawButton(Constants.RAISE_ONE_TOTE_LEVEL)) {
         	elevator.setDesiredHeight(elevator.getHeight() + Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
-        else if(secondaryStick.getRawButton(4)) {
+        else if(secondaryStick.getRawButton(Constants.SCORING_PLATFORM_HEIGHT)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM);
         }
-        else if(secondaryStick.getRawButton(7)) {
+        else if(secondaryStick.getRawButton(Constants.RECYCLING_CONTAINER_GROUND_PICKUP_HEIGHT)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
         }
-        else if(secondaryStick.getRawButton(8)) {
+        else if(secondaryStick.getRawButton(Constants.STEP_HEIGHT)) {
          	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_STEP);
         }
-        else if(secondaryStick.getRawButton(10)) {
+        else if(secondaryStick.getRawButton(Constants.FEEDER_STATION_BOTTOM_HEIGHT)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
         }
-        else if(secondaryStick.getRawButton(11)) {
+        else if(secondaryStick.getRawButton(Constants.TOTE_ABOVE_FEEDER_STATION_HEIGHT)) {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
         }
         	
-     // Uses button 3 on the main stick as a toggle for the platform 
-       	if(secondaryStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
+        // Uses button 3 on the main stick as a toggle for the platform 
+       	if(secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE) == true && prevPlatformControllingButton == false) {
        		platform.flip();
        	}
-       	prevPlatformControllingButton = secondaryStick.getRawButton(5);
+       	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
     
         //Cuts the speed of the elevator in half while button 9 is held
-        if (secondaryStick.getRawButton(9)){
+        if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
         	elevatorSpeedLimit = .5;
         }
-        else if (secondaryStick.getRawButton(9) == false){
+        else if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED) == false){
         	elevatorSpeedLimit = 1;
         }
         
@@ -271,8 +290,8 @@ public class Robot extends IterativeRobot {
          * when the driver lets off of the button.
          */
         
-        if (secondaryStick.getRawButton(6)){
-        	elevator.drive(elevatorThrottle);
+        if (secondaryStick.getRawButton(Constants.ELEVATOR_MANUAL_OVERRIDE)){
+        	elevator.drive(elevatorThrottle * elevatorSpeedLimit);
         	elevator.setDesiredHeight(elevator.getHeight());
         }
         
