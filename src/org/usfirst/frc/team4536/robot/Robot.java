@@ -86,35 +86,36 @@ public class Robot extends IterativeRobot {
 		driveTrain.resetGyro();
 	}
 
-	public void autonomousPeriodic() {
-		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		/*driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		System.out.println(driveTrain.gyroGetAngle());*/		
+	public void autonomousPeriodic() {	
 
 		double autoTime = autoTimer.get();
 		
 		//Can't have autoNumber since that would be the value when the code's deployed
 		switch ((int) auto.autoNumber()){
-			case 1: auto.driveForward(autoTime);
-					break;
-			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
-					break;
-			case 3: auto.driveBackwardWithTote(autoTime);
-					break;
-			case 4: auto.twoTote(autoTime);
-					break;
-			case 5: auto.twoRecyclingContainers(autoTime);
-					break;
-			case 6: auto.doNothing();
-					break;
-			case 7: auto.threeToteStack(autoTime);
-					break;
-			case 8: auto.toteAndContainer(autoTime);
-					break;
-			default: auto.doNothing();
-					 break;
+		case 1: auto.driveForward(autoTime);
+				break;
+		case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
+				break;
+		case 3: auto.driveBackwardWithTote(autoTime);
+				break;
+		case 4: auto.toteAndContainer(autoTime);
+				break;
+		case 5: auto.twoTote(autoTime);
+				break;
+		case 6: auto.threeToteStack(autoTime);
+				break;
+		case 7: auto.twoRecyclingContainers(autoTime);
+				break;
+		case 8: auto.driveWithRecyclingContainerToFeederStation(autoTime);
+				break;
+		case 9: auto.doNothing();
+				break;
+		default: auto.doNothing();
+				 break;
 		}
+		// Makes sure the elevator works in auto 
 		elevator.goToDesiredHeight(1);
+		elevator.update();
     }
 	
 	public void teleopInit() {
@@ -130,9 +131,6 @@ public class Robot extends IterativeRobot {
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
-    	
-    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-    	//System.out.println(driveTrain.gyroGetAngle());
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
