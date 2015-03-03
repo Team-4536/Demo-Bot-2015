@@ -77,4 +77,12 @@ public class Utilities {
     	
     	return finalThrottle;
 	}
+	
+	public static double speedLimit (double throttle, double speedLimitFactor) { // Puts a speed limit on the throttle entered.
+		double throttleLimited;
+		
+		throttleLimited = throttle * speedLimitFactor; // Limits throttle by multiplying. The throttle can't be greater than the factor it is multiplied by then.
+		
+		return throttleLimited;
+	}
 }

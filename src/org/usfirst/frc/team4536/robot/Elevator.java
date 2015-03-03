@@ -16,7 +16,7 @@ public class Elevator {
 	double correction;
 	double prevElevatorThrottle;
 	double desiredHeight;
-	double elevatorSpeedLimit;
+	double elevatorSpeedLimited;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -39,7 +39,7 @@ public class Elevator {
 		correction = 0;
 		prevElevatorThrottle = 0;
 		desiredHeight = 0;
-		elevatorSpeedLimit = 1;
+		elevatorSpeedLimited = 1;
 	}
 
 	
@@ -97,22 +97,14 @@ public class Elevator {
 		return elevatorTalon.get();
 	}
 	
-	/*public void goToHeight(double desiredHeight){
+	public void goToDesiredHeight(double teleopElevatorSpeedLimit){ // this method goes to the height set by desiredHeight
 		double elevatorThrottle;
+		
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
+		elevatorThrottle = Utilities.speedLimit(elevatorThrottle, teleopElevatorSpeedLimit);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
 		this.drive(elevatorThrottle);
-		
-		prevElevatorThrottle = elevatorThrottle;
-	}*/
-	public void goToDesiredHeight(double teleopElevatorSpeedLimit){ // this method goes to the height set by desiredHeight
-		double elevatorThrottle;
-		elevatorSpeedLimit = teleopElevatorSpeedLimit;
-		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
-		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-		
-		this.drive(elevatorThrottle*elevatorSpeedLimit);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}

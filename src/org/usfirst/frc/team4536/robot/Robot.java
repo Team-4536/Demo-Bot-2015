@@ -44,10 +44,8 @@ public class Robot extends IterativeRobot {
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
     					    		Constants.RIGHT_TALON_CHANNEL);
     	driveTrain.startGyro();
-    	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
-    	platform.retract();
-    	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
-    	tipper.retract();    	
+    	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL); // Also retracts Platform as part of initialization.
+    	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL); // Also retracts Tipper as part of initialization.	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
     							Constants.ENCODER_SENSOR_A_CHANNEL,
     							Constants.ENCODER_SENSOR_B_CHANNEL,
@@ -125,7 +123,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		//Retracted Timer
-		double retractedTime = platform.timeRetracted();
+		double platformRetractedTime = platform.timeRetracted();
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
@@ -160,7 +158,7 @@ public class Robot extends IterativeRobot {
         	
         	platform.retract();
         	
-        	if (retractedTime > 6) {
+        	if (platformRetractedTime > 6) {
         		elevator.setDesiredHeight(-30);
   
         		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
@@ -217,7 +215,11 @@ public class Robot extends IterativeRobot {
     		tipper.flip();
     	}
     	prevTipperControllingButton = mainStick.getRawButton(Constants.TIPPER_TOGGLE);
-    	    	
+    	
+    	/*
+    	Adjusts input from secondary stick.
+    	Puts on a dead zone, speed curve, and acceleration limit.
+    	*/
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
     	
@@ -234,7 +236,7 @@ public class Robot extends IterativeRobot {
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) {
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) { // If automated stacking button is pressed and a tote is properly loaded on the platform pressing the limit switch.
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -245,7 +247,8 @@ public class Robot extends IterativeRobot {
         			  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
         		      		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
         	 }
-        }    	
+        }
+        // Moves elevator to predetermined elevator heights. They are exclusive so two values may not be sent at once.
         else if(secondaryStick.getRawButton(Constants.LOWER_ONE_TOTE_LEVEL)) {
             elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
@@ -274,12 +277,12 @@ public class Robot extends IterativeRobot {
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
     
-        //Cuts the speed of the elevator in half while button 9 is held
+        //Cuts the speed of the elevator in half while button 9 is held.
         if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
-        	elevatorSpeedLimit = .5;
+        	elevatorSpeedLimit = .5; // half speed
         }
         else if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED) == false){
-        	elevatorSpeedLimit = 1;
+        	elevatorSpeedLimit = 1; // full speed
         }
         
         	
@@ -310,7 +313,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void disabledPeriodic() {
-		driveTrain.resetGyro();
+		driveTrain.resetGyro(); // Constantly resets while disabled so the robot starts the match at a gyro heading of zero.
 	}
     
     public void testPeriodic() {
