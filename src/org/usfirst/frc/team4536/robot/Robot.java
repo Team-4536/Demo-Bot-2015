@@ -109,6 +109,8 @@ public class Robot extends IterativeRobot {
 					break;
 			case 8: auto.toteAndContainer(autoTime);
 					break;
+			case 9: auto.extendPlatform();
+					break;
 			default: auto.doNothing();
 					 break;
 		}
