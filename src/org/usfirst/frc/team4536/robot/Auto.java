@@ -42,7 +42,10 @@ public class Auto {
 
 	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveForward(double autoTime){
-		
+		if (autoTime < .05){
+			//Calibrates the robot to read the initial height correctly
+			autoElevator.setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+		}
 		if (autoTime < 1.8){
 			autoDriveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
@@ -52,7 +55,11 @@ public class Auto {
 	
 	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithRecyclingContainer(double autoTime){
-		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+		//Calibrates the robot to read the initial height correctly
+		if (autoTime < .05){
+			autoElevator.setActualHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
+		}
+		else if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
 				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
 	    		tipper.extend();
 	    }
@@ -73,7 +80,11 @@ public class Auto {
 	
 	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithTote (double autoTime){
-	    if (autoTime < 1){
+		if (autoTime < .05){
+			//Calibrates the robot to read the initial height correctly
+			autoElevator.setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+		}
+		else if (autoTime < 1){
 	    		autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
 		}
 	    else if (autoTime > 1 && autoTime < 5){
