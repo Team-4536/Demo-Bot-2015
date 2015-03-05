@@ -101,7 +101,7 @@ public class Constants {
 		//mainStick
 			//Slow Modes
 			public static final int SLOW_MODE = 6; //Robot enters slow mode with larger acceleration limits and lower speed limits.
-			public static final int SUPER_SLOW_MODE = 7; //Robot enters an even 
+			public static final int SUPER_SLOW_MODE = 7; //Robot enters an even slower mode with larger acceleration limits and lower speed limits.
 			
 			//Automation Buttons
 			public static final int AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK = 1; // Button for automatically setting a stack and backing up.

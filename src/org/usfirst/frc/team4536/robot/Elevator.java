@@ -51,10 +51,10 @@ public class Elevator {
 	public void drive(double verticalThrottle) {
 		double elevatorTalonThrottle = -verticalThrottle;
 		
-		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
+		if(topLimitSwitchValue() == true && verticalThrottle > 0) {
 			elevatorTalon.set(0);
 		}
-		else if((!bottomLimitSwitch.get() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
+		else if((bottomLimitSwitchValue() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
 			elevatorTalon.set(0);
 		}
 		else 
@@ -131,7 +131,7 @@ public class Elevator {
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
 		System.out.println(currentHeight);
 		
-		if (this.bottomLimitSwitchValue() == true) {
+		if (this.bottomLimitSwitchValue()) {
 			setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
 		}
 		

@@ -42,7 +42,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
-    					    		Constants.RIGHT_TALON_CHANNEL);
+    					    		Constants.RIGHT_TALON_CHANNEL,
+    					    		Constants.GYRO_SENSOR_CHANNEL);
     	driveTrain.startGyro();
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL); // Also retracts Platform as part of initialization.
     	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL); // Also retracts Tipper as part of initialization.	

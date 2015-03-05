@@ -22,9 +22,14 @@ public class Tipper { // This is a counter-weight for our robots stacks and also
 				this.retract();	//rightSolenoid is initialized as true, leftSolenoid is initialized as false.
 	}
 	
-public boolean isExtended() {
+	public boolean isExtended() {
 		
 		return rightSolenoid.get(); // true = extended, false = retracted. This code works because the values must be opposite of each other and only come in 2 combinations.
+	}
+	
+	public boolean isRetracted() {
+		
+		return leftSolenoid.get(); // true = retracted, false = extended. This code works because the values must be opposite of each other and only come in 2 combinations.
 	}
 	
 	public void extend() { // Sets the solenoid states to extend the Tipper.
@@ -46,7 +51,7 @@ public boolean isExtended() {
 	}
 	
 	public double timeExtended() { // Returns the time the Tipper has been extended.
-		if (this.isExtended() == true) { // If Tipper is extended.
+		if (this.isExtended()) { // If Tipper is extended.
 			return extendedTimer.get(); // Returns the time the Tipper has been extended.
 		} else {
 			extendedTimer.reset(); // Constantly resets the extendedTimer to zero each cycle of code when not extended. This is so the timer counts up from zero once it becomes extended.
@@ -55,7 +60,7 @@ public boolean isExtended() {
 	}
 	
 	public double timeRetracted() {
-		if (this.isExtended() == false) { // If Tipper is retracted.
+		if (this.isRetracted()) { // If Tipper is retracted.
 			return retractedTimer.get();
 		} else {
 			retractedTimer.reset(); // Constantly resets the retractedTimer to zero each cycle of code when not retracted. This is so the timer counts up from zero once it becomes retracted.
