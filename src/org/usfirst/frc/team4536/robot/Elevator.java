@@ -90,15 +90,6 @@ public class Elevator {
 	}
 	
 	/*
-	 * Returns the boolean value of the bottom limit switch
-	 * A return value of true indicates that the limit switch is pressed
-	 */
-	public boolean bottomLimitSwitchValue() {
-		// Boolean value is reversed because the limit switch outputs false when not pressed
-		return !bottomLimitSwitch.get();
-	}
-	
-	/*
 	 * Returns the double throttle value of the elevator
 	 * Positive return value means the elevator is going up
 	 */
