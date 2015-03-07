@@ -72,22 +72,41 @@ public class Platform { // This a piston controlled platform to rest stacks on.
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
 
-	
-	public double timeExtended() { // Returns the time the platform has been extended.
-		if (this.isExtended() == true) { // if platform is extended.
-			return extendedTimer.get(); // Returns the time the platform has been extended.
+	/*
+	 * Returns the time the Platform has been extended since
+	 * the most recent time the Platform entered the extended state.
+	 */
+	public double timeExtended() {
+		if (this.isExtended()) {
+			return extendedTimer.get();
 		} else {
-			extendedTimer.reset(); // Constantly resets the extendedTimer to zero each cycle of code when not extended. This is so the timer counts up from zero once it becomes extended.
-			return 0; // If not extended it returns a time of zero.
+			/*
+			 * Constantly resets the extendedTimer to zero each cycle
+			 * of code when not extended. This is so the timer counts
+			 * up from zero once it becomes extended. Returns a time
+			 * of zero because it is not extended.
+			 */
+			extendedTimer.reset();
+			return 0;
 		}
 	}
 	
-	public double timeRetracted() { // Returns the time the platform has been retracted.
-		if (this.isExtended() == false) { // if is Retracted.
+	/*
+	 * Returns the time the Platform has been retracted since
+	 * the most recent time the Platform entered the retracted state.
+	 */
+	public double timeRetracted() {
+		if (this.isRetracted()) {
 			return retractedTimer.get();
 		} else {
-			retractedTimer.reset(); // Constantly resets the retractedTimer to zero each cycle of code when not retracted. This is so the timer counts up from zero once it becomes retracted.
-			return 0; //If not retracted it returns a time of zero.
+			/*
+			 * Constantly resets the retractedTimer to zero each cycle
+			 * of code when not retracted. This is so the timer counts
+			 * up from zero once it becomes retracted. Returns a time
+			 * of zero because it is not retracted.
+			 */
+			retractedTimer.reset();
+			return 0;
 		}
 	}
 }

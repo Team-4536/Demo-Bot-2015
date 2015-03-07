@@ -76,7 +76,7 @@ public class Tipper {  /*
 	
 	/*
 	 * Returns the time the tipper has been extended since
-	 * the most recent time the tipper enter the extended state.
+	 * the most recent time the tipper entered the extended state.
 	 */
 	public double timeExtended() {
 		if (this.isExtended()) {
@@ -85,7 +85,7 @@ public class Tipper {  /*
 			/*
 			 * Constantly resets the extendedTimer to zero each cycle
 			 * of code when not extended. This is so the timer counts
-			 * up from zero once it becomes extended. Returns no a time
+			 * up from zero once it becomes extended. Returns a time
 			 * of zero because it is not extended.
 			 */
 			extendedTimer.reset();
@@ -102,9 +102,9 @@ public class Tipper {  /*
 			return retractedTimer.get();
 		} else {
 			/*
-			 * Constantly resets the extendedTimer to zero each cycle
-			 * of code when not extended. This is so the timer counts
-			 * up from zero once it becomes extended. Returns no a time
+			 * Constantly resets the retractedTimer to zero each cycle
+			 * of code when not retracted. This is so the timer counts
+			 * up from zero once it becomes retracted. Returns a time
 			 * of zero because it is not extended.
 			 */
 			retractedTimer.reset();
