@@ -13,6 +13,7 @@ public class Robot extends IterativeRobot {
 	Platform platform;
 	Tipper tipper;
 	Elevator elevator;
+	Tower tower;
 	Timer teleopTimer;
 	Timer autoTimer;
 	Auto auto;
@@ -24,6 +25,7 @@ public class Robot extends IterativeRobot {
 	// Joysticks
 	Joystick mainStick;
 	Joystick secondaryStick;
+	Joystick towerStick;
 	
 	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
@@ -57,10 +59,12 @@ public class Robot extends IterativeRobot {
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
+    	tower = new Tower(Constants.TOWER_MOTOR_CHANNEL); //Initializes the Talon for the tower
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
+    	towerStick = new Joystick(Constants.TOWER_STICK_PORT);
     	
     	compressor = new Compressor();
     	
@@ -86,36 +90,35 @@ public class Robot extends IterativeRobot {
 		driveTrain.resetGyro();
 	}
 
-	public void autonomousPeriodic() {	
+	public void autonomousPeriodic() {
+		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		/*driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		System.out.println(driveTrain.gyroGetAngle());*/		
 
 		double autoTime = autoTimer.get();
 		
 		//Can't have autoNumber since that would be the value when the code's deployed
 		switch ((int) auto.autoNumber()){
-		case 1: auto.driveForward(autoTime);
-				break;
-		case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
-				break;
-		case 3: auto.driveBackwardWithTote(autoTime);
-				break;
-		case 4: auto.toteAndContainer(autoTime);
-				break;
-		case 5: auto.twoTote(autoTime);
-				break;
-		case 6: auto.threeToteStack(autoTime);
-				break;
-		case 7: auto.twoRecyclingContainers(autoTime);
-				break;
-		case 8: auto.driveWithRecyclingContainerToFeederStation(autoTime);
-				break;
-		case 9: auto.doNothing();
-				break;
-		default: auto.doNothing();
-				 break;
+			case 1: auto.driveForward(autoTime);
+					break;
+			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
+					break;
+			case 3: auto.driveBackwardWithTote(autoTime);
+					break;
+			case 4: auto.twoTote(autoTime);
+					break;
+			case 5: auto.twoRecyclingContainers(autoTime);
+					break;
+			case 6: auto.doNothing();
+					break;
+			case 7: auto.threeToteStack(autoTime);
+					break;
+			case 8: auto.toteAndContainer(autoTime);
+					break;
+			default: auto.doNothing();
+					 break;
 		}
-		// Makes sure the elevator works in auto 
 		elevator.goToDesiredHeight(1);
-		elevator.update();
     }
 	
 	public void teleopInit() {
@@ -131,6 +134,9 @@ public class Robot extends IterativeRobot {
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
+    	
+    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+    	//System.out.println(driveTrain.gyroGetAngle());
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
@@ -226,7 +232,9 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-      
+        
+        //Code for the tower
+        tower.setSpeed(towerStick.getY());
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 

@@ -5,11 +5,13 @@ public class Constants {
 	// Joystick ports
 	public static final int LEFT_STICK_PORT = 0;
 	public static final int RIGHT_STICK_PORT = 1;
+	public static final int TOWER_STICK_PORT = 2;
 	
 	// PWM ports
 	public static final int LEFT_TALON_CHANNEL = 1;
 	public static final int RIGHT_TALON_CHANNEL = 0; 
 	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
+	public static final int TOWER_MOTOR_CHANNEL = 3;
 	
 	// Platform solenoid channels
 	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
