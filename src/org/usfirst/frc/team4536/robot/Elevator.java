@@ -10,6 +10,7 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
+	DigitalInput toteLimitSwitch;
 	Encoder elevatorEncoder;
 	
 	double currentHeight;
@@ -64,7 +65,7 @@ public class Elevator {
  	
 	/*
 	 * Returns the boolean value of the top limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -73,7 +74,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the middle limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean middleLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -82,7 +83,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the bottom limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean bottomLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -153,6 +154,7 @@ public class Elevator {
 		//System.out.println("Rate " + elevatorEncoder.getRate());
 		System.out.println(elevatorEncoder.getDistance());
 	}
+	
 	public double getDesiredHeight(){
 		return desiredHeight;
 	}

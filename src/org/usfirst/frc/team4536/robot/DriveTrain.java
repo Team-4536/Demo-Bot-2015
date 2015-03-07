@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4536.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Gyro;
 
@@ -7,35 +8,98 @@ public class DriveTrain {
 	Talon leftTalon;
 	Talon rightTalon;
 	Gyro gyroSensor;
+	DigitalInput toteLimitSwitch;
 	
 	double prevTurnThrottle;
 	double prevForwardThrottle;
 	double angleChangeRate;
+	double currentAngle;
+	double angleCorrection;
+	
+	boolean prevToteLimitSwitchValue;
 		
 	/*
      * This function is the constructor for the DriveTrain class
-     * It takes in two arguments - the two PWM channels for the Talons.
+     * It takes in four arguments - the two PWM channels for the Talons, the gyro analog channel and the digital input of the tote limit switch.
      */
-	public DriveTrain(int leftTalonChannel, int rightTalonChannel, int gyroChannel) {
+	public DriveTrain(int leftTalonChannel, int rightTalonChannel, int gyroChannel, int toteLimitSwitchChannel) {
 		leftTalon = new Talon(leftTalonChannel);
 		rightTalon = new Talon(rightTalonChannel);
 		gyroSensor = new Gyro(gyroChannel);
+		toteLimitSwitch = new DigitalInput(toteLimitSwitchChannel);
 	}
 	
+	/*
+	 * starts the gyro and sets the heading of the gyro to zero.
+	 */
 	public void startGyro() {
-		gyroSensor.initGyro(); // starts the gyro and sets the heading of the gyro to zero.
+		gyroSensor.initGyro();
 	}
 	
+	/*
+	 * sets the current gyro heading as 0 degrees.
+	 */
 	public void resetGyro() {
-		gyroSensor.reset(); // sets the current gyro heading as 0 degrees.
+		gyroSensor.reset();
 	}
 	
+	/*
+	 * Returns as a double the angle of the gyro.
+	 * Note: It has no set bounds so it may return 
+	 * angles greater than 360 and angles less than -360.
+	 */
 	public double gyroGetAngle() {
-		return gyroSensor.getAngle(); // Returns as a double the angle of the gyro. Note: It has no set bounds so it may return angles greater than 360 and angles less than -360.
+		return gyroSensor.getAngle();
 	}
 	
+	/*
+	 * Returns the rate of change of the angle
+	 * (derivative!) as a double.
+	 */
 	public double gyroGetRate() {
-		return gyroSensor.getRate(); // Returns the rate of change of the angle (derivative!) as a double.
+		return gyroSensor.getRate();
+	}
+	
+	/*
+	 * Returns the boolean value of the tote limit switch
+	 * A returned value of true indicates that the limit switch is pressed
+	 */
+	public boolean toteLimitSwitchValue() {
+		// Boolean value is reversed because the limit switch outputs false when not pressed
+		return !toteLimitSwitch.get();
+	}
+	
+	/*
+	 * Defines the current angle of the gyro taking in the
+	 * correction defined by the setActualAngle() method.
+	 * Takes in the argument of the boolean value of a
+	 * calibration button so the current angle can be 
+	 * adjusted by using the setActualAngle() method when
+	 * the calibration button is pressed.
+	 */
+	public void updateAngle (boolean calibrationButton) {
+		
+		currentAngle = angleCorrection + this.gyroGetAngle();
+		
+		if (this.toteLimitSwitchValue() && !prevToteLimitSwitchValue) {
+			setActualAngle(Constants.FEEDER_STATION_ANGLE); // Angle that is required to line up with the feeder station.
+		} else if (calibrationButton) {
+			this.setActualAngle(Constants.FORWARD_HEADING); // angle where robot is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings.
+		}
+		
+		prevToteLimitSwitchValue = this.toteLimitSwitchValue();
+		
+	}
+	
+	/*
+	 * When you know the angle of the robot when something
+	 * happens you can set the angle of the robot to calibrate
+	 * the gyro. It just takes the argument of the actual angle
+	 * of the robot.
+	 */
+	public void setActualAngle (double actualAngle) {
+		
+		angleCorrection = actualAngle - this.gyroGetAngle();
 	}
 	
 	/*
@@ -58,11 +122,12 @@ public class DriveTrain {
 	
 	/*
 	 * This method can be used to make the drive train drive straight at a certain angle. 
-	 * It only works if the angle that is inputed is the current angle of the robot.
+	 * It specializes in mainting angle more than reaching an angle but is otherwise the same
+	 * as the turnTo() method.
 	 */
 	public void driveStraight(double forwardThrottle, double desiredAngle, double fullSpeedTime) {
 		
-		double angleDiff = desiredAngle - gyroSensor.getAngle(); // Finds the difference between the angle its going to and its current angle.
+		double angleDiff = desiredAngle - currentAngle; // Finds the difference between the angle its going to and its current angle.
 		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT; // based on how far off the desired angle the robot is
 		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle); //Puts an acceleration limit on the turn throttle.
 		
@@ -115,7 +180,7 @@ public class DriveTrain {
 		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
 		
 		this.drive(0, turnThrottleAccel);
-		prevTurnThrottle = turnThrottleAccel;	
+		prevTurnThrottle = turnThrottleAccel; // defines the previous throttle value.	
 	}		
 	
 }

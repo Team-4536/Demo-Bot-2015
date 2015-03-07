@@ -3,7 +3,7 @@ package org.usfirst.frc.team4536.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Platform { //This a piston controlled platform to rest stacks on.
+public class Platform { // This a piston controlled platform to rest stacks on.
 	
 	Solenoid rightSolenoid;
 	Solenoid leftSolenoid;
@@ -23,29 +23,56 @@ public class Platform { //This a piston controlled platform to rest stacks on.
 		this.retract();	//rightSolenoid is initialized as true, leftSolenoid is initialized as false.
 	}	
 	
+	/*
+	 * Returns a boolean based on whether the platform is extended.
+	 * true = extended, false = retracted. This code works because the
+	 * values must be opposite of each other and only come in 2 combinations.
+	 */
 	public boolean isExtended() {
 		
-		return rightSolenoid.get(); // true = extended, false = retracted. This code works because the values must be opposite of each other and only come in 2 combinations.
+		return rightSolenoid.get();
 	}
 	
-	public void extend() { // Sets the solenoid states to extend the platform.
+	/*
+	 *  Returns a boolean value base on whether the Tipper is retracted.
+	 *  true = retracted, false = extended. This code works because the
+	 *  values must be opposite of each other and only come in 2 combinations.
+	 */
+	public boolean isRetracted() {
+		
+		return leftSolenoid.get();
+	}
+	
+	/*
+	 * Sets the solenoid states to extend the platform.
+	 */
+	public void extend() {
 		
 		rightSolenoid.set(true);
 		leftSolenoid.set(false);
 	}
 	
-	public void retract() { // Sets the solenoid states to retract the platform.
+	/*
+	 * Sets the solenoid states to retract the platform.
+	 */
+	public void retract() {
 		
 		rightSolenoid.set(false);
 		leftSolenoid.set(true);	
 	}
 	
-	public void flip() { //Flips the solenoid states. Example: goes from retracted to extended (or) extended to retracted.
+	/*
+	 * Flips the solenoid states.
+	 * Example: goes from retracted to extended (or)
+	 * extended to retracted.
+	 */
+	public void flip() {
 		
 		rightSolenoid.set(!rightSolenoid.get());
 		leftSolenoid.set(!leftSolenoid.get());	
 	}
 
+	
 	public double timeExtended() { // Returns the time the platform has been extended.
 		if (this.isExtended() == true) { // if platform is extended.
 			return extendedTimer.get(); // Returns the time the platform has been extended.

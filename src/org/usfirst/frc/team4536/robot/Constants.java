@@ -80,22 +80,26 @@ public class Constants {
 	public static final double SUPER_SLOW_FORWARD_FULL_SPEED_TIME = 2;
 	public static final double SUPER_SLOW_TURN_FULL_SPEED_TIME = 3.4;
 	
+	//Gyro Calibration Angles
+	public static final double FORWARD_HEADING = 0; // Heading of 0 degrees.
+	public static final double FEEDER_STATION_ANGLE = 135; // Angle in degrees for the robot to be lined up with the feeder station.
+	
 	// Auto full speed times (time it takes for something get to full speed during an acceleration limit)
 	// Measured in seconds
 	public static final double AUTO_FORWARD_FULL_SPEED_TIME = 3;
 	public static final double AUTO_TURN_FULL_SPEED_TIME = 0.2;
 	
-	// Elevator Height Constants
-	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 10; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12; //Inches
-	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 14.5; //Inches
-	public static final double BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5; //Inches
-	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
-	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches
+	// Elevator Height Constants in units of inches
+	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20;
+	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
+	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 10;
+	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
+	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
+	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
+	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 14.5;
+	public static final double BOTTOM_LIMIT_SWITCH_HEIGHT = -0.5;
+	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8;
+	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48;
 	
 	//Buttons for Joysticks
 		//mainStick
@@ -118,7 +122,10 @@ public class Constants {
 			public static final int ELEVATOR_SPEED = 9; // When pressed it halves the speed of the elevator.
 			
 			//Elevator Manual Override
-			public static final int ELEVATOR_MANUAL_OVERRIDE = 6; // When pressed, allows manual override by secondary drive of elevator.w3
+			public static final int ELEVATOR_MANUAL_OVERRIDE = 6; // When pressed, allows manual override by secondary drive of elevator.
+			
+			//Gyro Calibration
+			public static final int GYRO_CALIBRATION = 12; // When pressed calibrates the gyro so it is at a heading of zero. This would be when it is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings. 
 		
 			//Elevator Heights	
 			public static final int SCORING_PLATFORM_HEIGHT = 4; //moves elevator to the height required for the scoring platform.
