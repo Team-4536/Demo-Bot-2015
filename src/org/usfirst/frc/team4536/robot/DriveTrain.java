@@ -49,7 +49,7 @@ public class DriveTrain {
 	 * angles greater than 360 and angles less than -360.
 	 */
 	public double gyroGetAngle() {
-		return gyroSensor.getAngle();
+		return currentAngle;
 	}
 	
 	/*
@@ -148,7 +148,7 @@ public class DriveTrain {
 		double angleDiff;
 		double derivative; // rate of change of angle
 		
-		angle = gyroSensor.getAngle();
+		angle = currentAngle;
 		
 		while (angle > desiredAngle + 180) { // Makes the angle within terms of being within 180 degrees of our desired value so the drive train will turn in the most efficient way.
 			angle -= 360;

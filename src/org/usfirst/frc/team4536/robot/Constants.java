@@ -109,7 +109,8 @@ public class Constants {
 			
 			//Automation Buttons
 			public static final int AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK = 1; // Button for automatically setting a stack and backing up.
-			public static final int RECYCLING_CONTAINER_PICK_UP = 3; //Button for picking up recycling conatiner
+			public static final int RECYCLING_CONTAINER_PICK_UP = 3; //Button for picking up recycling container
+			public static final int TURN_TO_FEEDER_STATION = 5; // Button for turning the robot to the angle which lines it up with the feeder station.
 			
 			//Toggles
 			public static final int TIPPER_TOGGLE = 2; //Flips solenoids of tipper, extending or retracting.

@@ -196,6 +196,9 @@ public class Robot extends IterativeRobot {
     		prevThrottleY = finalThrottleY;
     		prevThrottleX = finalThrottleX;
     	}
+        else if (mainStick.getRawButton(Constants.TURN_TO_FEEDER_STATION)) {
+        	driveTrain.turnTo(Constants.FEEDER_STATION_ANGLE, Constants.TURN_FULL_SPEED_TIME);
+        }
     	else {
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
     		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_SPEED_LIMIT;
@@ -280,6 +283,9 @@ public class Robot extends IterativeRobot {
        		platform.flip();
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
+       	
+       	//Gyro Calibration Code
+        driveTrain.updateAngle(secondaryStick.getRawButton(Constants.GYRO_CALIBRATION));
     
         //Cuts the speed of the elevator in half while button 9 is held.
         if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
