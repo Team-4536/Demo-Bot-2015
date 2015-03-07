@@ -116,6 +116,9 @@ public class Robot extends IterativeRobot {
 			default: auto.doNothing();
 					 break;
 		}
+		
+		driveTrain.updateAngle(false); // Doesn't use a calibration button because it's autonomous.
+		
 		elevator.goToDesiredHeight(1);
     }
 	
@@ -154,7 +157,7 @@ public class Robot extends IterativeRobot {
     	}
     	
     	// Automation of setting tote stack then backing up
-        if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
+    	else if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
         	
         	if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true && prevAutoSet == false) {
         		driveTrain.resetGyro();
