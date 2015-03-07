@@ -34,7 +34,7 @@ public class Platform { // This a piston controlled platform to rest stacks on.
 	}
 	
 	/*
-	 *  Returns a boolean value base on whether the Tipper is retracted.
+	 *  Returns a boolean value base on whether the Platform is retracted.
 	 *  true = retracted, false = extended. This code works because the
 	 *  values must be opposite of each other and only come in 2 combinations.
 	 */
