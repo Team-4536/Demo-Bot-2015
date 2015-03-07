@@ -153,7 +153,7 @@ public class Robot extends IterativeRobot {
     		}
     	}
     	
-    	//Automation of setting tote stack then backing up
+    	// Automation of setting tote stack then backing up
         if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
         	
         	if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true && prevAutoSet == false) {
@@ -162,14 +162,19 @@ public class Robot extends IterativeRobot {
         	
         	platform.retract();
         	
-        	if (platformRetractedTime > 6) {
+        	if (platformRetractedTime > 3) {
         		elevator.setDesiredHeight(-30);
   
         		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
         			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         		} 
         	}
-        }//if button 7 is pressed, SUPER SLOW MODE is ENABLED
+        }
+        // If the turn to feeder station button is pressed the robot turns to the angle to line up with the feeder station.
+        else if (mainStick.getRawButton(Constants.TURN_TO_FEEDER_STATION)) {
+        	driveTrain.turnTo(Constants.FEEDER_STATION_ANGLE, Constants.TURN_FULL_SPEED_TIME);
+        }	
+        // If button 7 is pressed, SUPER SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SUPER_SLOW_FORWARD_SPEED_CURVE) * Constants.SUPER_SLOW_FORWARD_SPEED_LIMIT;
@@ -182,7 +187,7 @@ public class Robot extends IterativeRobot {
     		
     		prevThrottleY = finalThrottleY;
     		prevThrottleX = finalThrottleX;
-    	}	//if button 6 is pressed, SLOW MODE is ENABLED
+    	}	// If button 6 is pressed, SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SLOW_MODE) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
@@ -196,9 +201,6 @@ public class Robot extends IterativeRobot {
     		prevThrottleY = finalThrottleY;
     		prevThrottleX = finalThrottleX;
     	}
-        else if (mainStick.getRawButton(Constants.TURN_TO_FEEDER_STATION)) {
-        	driveTrain.turnTo(Constants.FEEDER_STATION_ANGLE, Constants.TURN_FULL_SPEED_TIME);
-        }
     	else {
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.FORWARD_SPEED_CURVE) * Constants.FORWARD_SPEED_LIMIT;
     		double throttleX = Utilities.speedCurve(-mainStickX, Constants.TURN_SPEED_CURVE) * Constants.TURN_SPEED_LIMIT;
@@ -213,11 +215,11 @@ public class Robot extends IterativeRobot {
     		
     	}
     	
-        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK);
+        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK); // Defines the previous automated set button value
     	
     	
     	
-    	// Uses button 2 on the main stick as a toggle for the tipper
+    	// Uses button tipper toggle on the main stick as a toggle for the tipper
     	if(mainStick.getRawButton(Constants.TIPPER_TOGGLE) == true && prevTipperControllingButton == false) {
     		tipper.flip();
     	}
