@@ -42,12 +42,12 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
-    					    		Constants.RIGHT_TALON_CHANNEL);
+    					    		Constants.RIGHT_TALON_CHANNEL,
+    					    		Constants.GYRO_SENSOR_CHANNEL,
+    					    		Constants.TOTE_LIMIT_SWITCH_CHANNEL);
     	driveTrain.startGyro();
-    	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
-    	platform.retract();
-    	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
-    	tipper.retract();    	
+    	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL); // Also retracts Platform as part of initialization.
+    	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL); // Also retracts Tipper as part of initialization.	
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
     							Constants.ENCODER_SENSOR_A_CHANNEL,
     							Constants.ENCODER_SENSOR_B_CHANNEL,
@@ -86,36 +86,40 @@ public class Robot extends IterativeRobot {
 		driveTrain.resetGyro();
 	}
 
-	public void autonomousPeriodic() {	
+	public void autonomousPeriodic() {
+		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		/*driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		System.out.println(driveTrain.gyroGetAngle());*/		
 
 		double autoTime = autoTimer.get();
 		
 		//Can't have autoNumber since that would be the value when the code's deployed
 		switch ((int) auto.autoNumber()){
-		case 1: auto.driveForward(autoTime);
-				break;
-		case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
-				break;
-		case 3: auto.driveBackwardWithTote(autoTime);
-				break;
-		case 4: auto.toteAndContainer(autoTime);
-				break;
-		case 5: auto.twoTote(autoTime);
-				break;
-		case 6: auto.threeToteStack(autoTime);
-				break;
-		case 7: auto.twoRecyclingContainers(autoTime);
-				break;
-		case 8: auto.driveWithRecyclingContainerToFeederStation(autoTime);
-				break;
-		case 9: auto.doNothing();
-				break;
-		default: auto.doNothing();
-				 break;
+			case 1: auto.driveForward(autoTime);
+					break;
+			case 2: auto.driveBackwardWithRecyclingContainer(autoTime);
+					break;
+			case 3: auto.driveBackwardWithTote(autoTime);
+					break;
+			case 4: auto.twoTote(autoTime);
+					break;
+			case 5: auto.twoRecyclingContainers(autoTime);
+					break;
+			case 6: auto.doNothing();
+					break;
+			case 7: auto.threeToteStack(autoTime);
+					break;
+			case 8: auto.toteAndContainer(autoTime);
+					break;
+			case 9: auto.extendPlatform();
+					break;
+			default: auto.doNothing();
+					 break;
 		}
-		// Makes sure the elevator works in auto 
+		
+		driveTrain.updateAngle(false); // Doesn't use a calibration button because it's autonomous.
+		
 		elevator.goToDesiredHeight(1);
-		elevator.update();
     }
 	
 	public void teleopInit() {
@@ -126,11 +130,14 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		//Retracted Timer
-		double retractedTime = platform.timeRetracted();
+		double platformRetractedTime = platform.timeRetracted();
 		
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
+    	
+    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
+    	//System.out.println(driveTrain.gyroGetAngle());
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
@@ -149,8 +156,8 @@ public class Robot extends IterativeRobot {
     		}
     	}
     	
-    	//Automation of setting tote stack then backing up
-        if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
+    	// Automation of setting tote stack then backing up
+    	else if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true){
         	
         	if (mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK) == true && prevAutoSet == false) {
         		driveTrain.resetGyro();
@@ -158,14 +165,19 @@ public class Robot extends IterativeRobot {
         	
         	platform.retract();
         	
-        	if (retractedTime > 6) {
+        	if (platformRetractedTime > 3) {
         		elevator.setDesiredHeight(-30);
   
         		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
         			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         		} 
         	}
-        }//if button 7 is pressed, SUPER SLOW MODE is ENABLED
+        }
+        // If the turn to feeder station button is pressed the robot turns to the angle to line up with the feeder station.
+        else if (mainStick.getRawButton(Constants.TURN_TO_FEEDER_STATION)) {
+        	driveTrain.turnTo(Constants.FEEDER_STATION_ANGLE, Constants.TURN_FULL_SPEED_TIME);
+        }	
+        // If button 7 is pressed, SUPER SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SUPER_SLOW_FORWARD_SPEED_CURVE) * Constants.SUPER_SLOW_FORWARD_SPEED_LIMIT;
@@ -178,7 +190,7 @@ public class Robot extends IterativeRobot {
     		
     		prevThrottleY = finalThrottleY;
     		prevThrottleX = finalThrottleX;
-    	}	//if button 6 is pressed, SLOW MODE is ENABLED
+    	}	// If button 6 is pressed, SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SLOW_MODE) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
@@ -206,16 +218,20 @@ public class Robot extends IterativeRobot {
     		
     	}
     	
-        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK);
+        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK); // Defines the previous automated set button value
     	
     	
     	
-    	// Uses button 2 on the main stick as a toggle for the tipper
+    	// Uses button tipper toggle on the main stick as a toggle for the tipper
     	if(mainStick.getRawButton(Constants.TIPPER_TOGGLE) == true && prevTipperControllingButton == false) {
     		tipper.flip();
     	}
     	prevTipperControllingButton = mainStick.getRawButton(Constants.TIPPER_TOGGLE);
-    	    	
+    	
+    	/*
+    	Adjusts input from secondary stick.
+    	Puts on a dead zone, speed curve, and acceleration limit.
+    	*/
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
     	
@@ -232,7 +248,7 @@ public class Robot extends IterativeRobot {
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) {
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) { // If automated stacking button is pressed and a tote is properly loaded on the platform pressing the limit switch.
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -243,7 +259,8 @@ public class Robot extends IterativeRobot {
         			  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION){    		
         		      		elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);       		  
         	 }
-        }    	
+        }
+        // Moves elevator to predetermined elevator heights. They are exclusive so two values may not be sent at once.
         else if(secondaryStick.getRawButton(Constants.LOWER_ONE_TOTE_LEVEL)) {
             elevator.setDesiredHeight(elevator.getHeight() - Constants.ELEVATOR_HEIGHT_FOR_ONE_TOTE);
         }
@@ -271,13 +288,16 @@ public class Robot extends IterativeRobot {
        		platform.flip();
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
+       	
+       	//Gyro Calibration Code
+        driveTrain.updateAngle(secondaryStick.getRawButton(Constants.GYRO_CALIBRATION));
     
-        //Cuts the speed of the elevator in half while button 9 is held
+        //Cuts the speed of the elevator in half while button 9 is held.
         if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
-        	elevatorSpeedLimit = .5;
+        	elevatorSpeedLimit = .5; // half speed
         }
         else if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED) == false){
-        	elevatorSpeedLimit = 1;
+        	elevatorSpeedLimit = 1; // full speed
         }
         
         	
@@ -308,7 +328,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void disabledPeriodic() {
-		driveTrain.resetGyro();
+		driveTrain.resetGyro(); // Constantly resets while disabled so the robot starts the match at a gyro heading of zero.
 	}
     
     public void testPeriodic() {

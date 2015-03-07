@@ -8,29 +8,30 @@ public class Auto {
 	DriveTrain autoDriveTrain;
 	Elevator autoElevator;
 	Tipper tipper;
+	Platform platform;
 	
 	
 	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
 		tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+		platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL); // Also retracts Platform as part of initialization.
 	}
 	
-	
-	//Creates each auto as an option on the SmartDashboard. The default is doing nothing.
 	public static double autoNumber(){
+
 		SendableChooser autoChooser;
 		autoChooser = new SendableChooser();
 		autoChooser.addObject("Drive Forward", 1);
-		autoChooser.addObject("Drive Backward with Container", 2);
+		autoChooser.addObject("Drive Backward with Recycling Container", 2);
 		autoChooser.addObject("Drive Backward with Tote", 3);
-		autoChooser.addObject("DriveBackward with Recycling Container and Tote", 4);
-		autoChooser.addObject("Two Tote Auto", 5);
-		autoChooser.addObject("Three Tote Stack", 6);
-		autoChooser.addObject("Two Recycling Container Auto", 7);
-		autoChooser.addObject("Drive With Container to Feeder Station", 8);
-		autoChooser.addDefault("Do Nothing", 9);
-		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
+		autoChooser.addObject("Two Totes", 4); //Two tote auto
+		autoChooser.addObject("Two Recycling Containers", 5);
+		autoChooser.addObject("Do Nothing", 6);
+		autoChooser.addDefault("Three Tote Stack", 7);
+		autoChooser.addObject("Tote and Container", 8);
+		autoChooser.addObject("Extend Platform", 9);
+		SmartDashboard.putData("Auto_Chooser" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
 		return autoChooser.getSelected().hashCode();
@@ -39,8 +40,11 @@ public class Auto {
 	public void doNothing(){
 		autoDriveTrain.drive(0, 0);
 	}
+	
+	public void extendPlatform() {
+		platform.extend();
+	}
 
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveForward(double autoTime){
 		
 		if (autoTime < 1.8){
@@ -50,7 +54,6 @@ public class Auto {
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithRecyclingContainer(double autoTime){
 		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
 				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
@@ -71,7 +74,6 @@ public class Auto {
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithTote (double autoTime){
 	    if (autoTime < 1){
 	    		autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
@@ -86,24 +88,18 @@ public class Auto {
 		else
 			autoDriveTrain.drive(0 , 0);
 	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
+	
 	public void toteAndContainer(double autoTime){
-		
 	}	
-	//It takes in autoTime to have the robot do different things at specific times during auto
+	
 	public void twoTote (double autoTime){
 	
 	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
-		public void threeToteStack (double autoTime){
-			
-	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void twoRecyclingContainers(double autoTime){
 		
 	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
-	public void driveWithRecyclingContainerToFeederStation(double autoTime){
+	
+	public void threeToteStack(double autoTime){
 		
 	}
 	

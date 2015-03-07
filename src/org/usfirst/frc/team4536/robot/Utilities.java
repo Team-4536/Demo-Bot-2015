@@ -61,20 +61,38 @@ public class Utilities {
         return output;
     }
 	
-	public static double accelLimit(double fullSpeedTime, double throttle, double prevValue) {		
+	/*
+	 * This is used to limit the increase of throttleTakes in three values - fullSpeedTime, throttle, prevValue. The fullSpeedTime defines 
+	 * the amount of time in seconds it would take for the robot to be driving at full speed.
+	 * The prevValue must be defined after the throttle is input into the drive() method so 
+	 * it records the previous throttle.
+	 */
+	public static double accelLimit(double fullSpeedTime, double throttle, double prevValue) { // Limits acceleration of throttle	
 		double finalThrottle;
     	
     	double throttleDiff = throttle - prevValue;
     	double accelerationLimit = 0.02 / fullSpeedTime; //Sets accelerationLimit to the proper double to make the robot reach its top speed in the given full speed time.    	
-    	//forward throttle of robot can increase only by + or - forwardAccelerationLimit per cycle (20ms)
+    
     	if (throttleDiff > accelerationLimit) {
-    		finalThrottle = prevValue + accelerationLimit;
+    		finalThrottle = prevValue + accelerationLimit; // throttle can only increase by a maximum of the previous throttle value plus the acceleration limit.
     	} else if (throttleDiff < -accelerationLimit) {
-    		finalThrottle = prevValue - accelerationLimit;
+    		finalThrottle = prevValue - accelerationLimit; // throttle can only decrease by a minimum of the previous throttle value plus the acceleration limit.
     	} else {
     		finalThrottle = throttle;
     	}
     	
     	return finalThrottle;
+	}
+	
+	/*
+	 * Puts a speed limit on throttle.
+	 * This could incorporate the limit method later but we don't want to make any drastic changes right now.
+	 */
+	public static double speedLimit (double throttle, double speedLimitFactor) { // Puts a speed limit on the throttle entered.
+		double throttleLimited;
+		
+		throttleLimited = throttle * speedLimitFactor; // Limits throttle by multiplying. The throttle can't be greater than the factor it is multiplied by then.
+		
+		return throttleLimited;
 	}
 }

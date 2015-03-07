@@ -10,13 +10,14 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
+	DigitalInput toteLimitSwitch;
 	Encoder elevatorEncoder;
 	
 	double currentHeight;
 	double correction;
 	double prevElevatorThrottle;
 	double desiredHeight;
-	double elevatorSpeedLimit;
+	double elevatorSpeedLimited;
 	
 	/*
      * This function is the constructor for the Elevator class
@@ -39,7 +40,7 @@ public class Elevator {
 		correction = 0;
 		prevElevatorThrottle = 0;
 		desiredHeight = 0;
-		elevatorSpeedLimit = 1;
+		elevatorSpeedLimited = 1;
 	}
 
 	
@@ -51,10 +52,10 @@ public class Elevator {
 	public void drive(double verticalThrottle) {
 		double elevatorTalonThrottle = -verticalThrottle;
 		
-		if(!topLimitSwitch.get() == true && verticalThrottle > 0) {
+		if(topLimitSwitchValue() == true && verticalThrottle > 0) {
 			elevatorTalon.set(0);
 		}
-		else if((!bottomLimitSwitch.get() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
+		else if((bottomLimitSwitchValue() == true || !middleLimitSwitch.get() == true) && verticalThrottle < 0) {
 			elevatorTalon.set(0);
 		}
 		else 
@@ -64,7 +65,7 @@ public class Elevator {
  	
 	/*
 	 * Returns the boolean value of the top limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean topLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -73,7 +74,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the middle limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean middleLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -82,7 +83,7 @@ public class Elevator {
 	
 	/*
 	 * Returns the boolean value of the bottom limit switch
-	 * A return value of true indicates that the limit switch is pressed
+	 * A returned value of true indicates that the limit switch is pressed
 	 */
 	public boolean bottomLimitSwitchValue() {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
@@ -90,46 +91,30 @@ public class Elevator {
 	}
 	
 	/*
-	 * Returns the double throttle value of the elevator
-	 * Positive return value means the elevator is going up
+	 *  Returns the double throttle value of the elevator
+	 *  Positive return value means the elevator is going up
 	 */
 	public double getThrottle() {
 		return elevatorTalon.get();
 	}
 	
-	/*
-	 * This method takes in the speed you want the Elevator to go 
-	 * The speed limit should be between 0 and 1. 0 is not moving and 1 is full speed.
-	 * It makes the elevator go to the height most recently set by the setElevatorHeight method
-	 */
-	public void goToDesiredHeight(double teleopElevatorSpeedLimit){
+	public void goToDesiredHeight(double teleopElevatorSpeedLimit){ // this method goes to the height set by desiredHeight
 		double elevatorThrottle;
-		elevatorSpeedLimit = teleopElevatorSpeedLimit;
+		
 		elevatorThrottle = Utilities.limit((desiredHeight - currentHeight)*Constants.ELEVATOR_PROPORTIONALITY_CONSTANT);
+		elevatorThrottle = Utilities.speedLimit(elevatorThrottle, teleopElevatorSpeedLimit);
 		elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
 		
-		this.drive(elevatorThrottle*elevatorSpeedLimit);
+		this.drive(elevatorThrottle);
 		
 		prevElevatorThrottle = elevatorThrottle;
 	}
 	
-	/*
-	 * This method takes the height you want the Elevator to go to 
-	 * The height is based off of the height from the bottom of the tote to the ground
-	 * 0 is when the tote is on the ground and -0.5 is the lowest our elevator can 
-	 * go because of the limit switch
-	 * It sends this value to the goToDesiredHeight method to actually drive to that height
-	 * It's done this way so when you push a button it goes to the height instead of having to 
-	 * hold the button to get to said height
-	 */
-	public void setDesiredHeight (double teleopDesiredHeight){
+	public void setDesiredHeight (double teleopDesiredHeight){ //Sets the height that the goToHeight() method goes to
 		desiredHeight = teleopDesiredHeight;
 	}
 	
-	/*
-	 * The currentHeight is not the encoder value. It should be the height in real life in inches
-	 * It's affected by ticks to inches conversion and the correction from the dynamic calibration
-	 */
+	
 	public double getHeight(){
 		return currentHeight;
 	}
@@ -143,15 +128,11 @@ public class Elevator {
 		correction = actualHeight - elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
 	}
 	
-	/*
-	 * This method is the dynamic calibration of the elevatorHeight
-	 * It sets the currentHeight to the actual height when it hits one of the limit switches
-	 */
 	public void update(){
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
 		System.out.println(currentHeight);
 		
-		if (this.bottomLimitSwitchValue() == true) {
+		if (this.bottomLimitSwitchValue()) {
 			setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
 		}
 		
@@ -173,6 +154,7 @@ public class Elevator {
 		//System.out.println("Rate " + elevatorEncoder.getRate());
 		System.out.println(elevatorEncoder.getDistance());
 	}
+	
 	public double getDesiredHeight(){
 		return desiredHeight;
 	}
