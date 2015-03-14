@@ -22,7 +22,7 @@ public class DriveTrain {
      * This function is the constructor for the DriveTrain class
      * It takes in four arguments - the two PWM channels for the Talons, the gyro analog channel and the digital input of the tote limit switch.
      */
-	public DriveTrain(int leftTalonChannel, int rightTalonChannel, int gyroChannel, int toteLimitSwitchChannel) {
+	public DriveTrain(int leftTalonChannel, int rightTalonChannel, int gyroChannel, int toteLimitSwitchChannel) {		
 		leftTalon = new Talon(leftTalonChannel);
 		rightTalon = new Talon(rightTalonChannel);
 		gyroSensor = new Gyro(gyroChannel);

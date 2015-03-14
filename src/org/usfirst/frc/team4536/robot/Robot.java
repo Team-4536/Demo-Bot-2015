@@ -136,9 +136,6 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-    	//System.out.println(driveTrain.gyroGetAngle());
-    	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
     	 */
@@ -291,6 +288,7 @@ public class Robot extends IterativeRobot {
        	
        	//Gyro Calibration Code
         driveTrain.updateAngle(secondaryStick.getRawButton(Constants.GYRO_CALIBRATION));
+        System.out.println("Gyro Angle" + driveTrain.gyroGetAngle());
     
         //Cuts the speed of the elevator in half while button 9 is held.
         if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
@@ -318,7 +316,7 @@ public class Robot extends IterativeRobot {
         prevElevatorThrottle = elevatorThrottle;
            
         elevator.update();
-        System.out.println(elevator.getHeight());
+       // System.out.println(elevator.getHeight());
     }
 	
 	public void disabledInit() {
