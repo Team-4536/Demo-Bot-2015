@@ -167,7 +167,7 @@ public class Robot extends IterativeRobot {
         		} 
         	}
         }
-        // If the turn to feeder station button is pressed the robot turns to the angle to line up with the feeder station.
+        // If the turn from feeder station button is pressed the robot turns from the feeder station toward the scoring platforms.
         else if (mainStick.getRawButton(Constants.TURN_FROM_FEEDER_STATION)) {
         	driveTrain.turnTo(0, Constants.TURN_FULL_SPEED_TIME);
         }	
