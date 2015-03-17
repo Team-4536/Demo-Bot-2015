@@ -52,6 +52,13 @@ public class Constants {
 	public static final double FORWARD_FULL_SPEED_TIME = 0.25;
 	public static final double TURN_FULL_SPEED_TIME = 0.25;
 	public static final double SLOW_ELEVATOR_FULL_SPEED_TIME = 1;
+	public static final double TOWER_FULL_SPEED_TIME_SPEEDING_UP = 3;
+	public static final double TOWER_FULL_SPEED_TIME_STOPPING = 2;
+	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 2;
+	
+	//Tower constants
+	public static final double TOWER_AUTO_SPEED = 1;
+	public static final double TOWER_AUTO_TIME = 3;
 	
 	// Normal Speed Limit
 	public static final double FORWARD_SPEED_LIMIT = 1;

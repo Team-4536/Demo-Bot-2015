@@ -61,6 +61,13 @@ public class Utilities {
         return output;
     }
 	
+	/*
+	 * fullSpeedTime is the amount of time it would take a throttle to reach its top value (top speed).
+	 * throttle is an argument which represents the motor value that you want to run at.
+	 * prevValue is the previous throttle value which must be defined outside of the method after it is called.
+	 * This method limits the acceleration of a given changing throttle value.
+	 * Outputs the new throttle value.
+	 */
 	public static double accelLimit(double fullSpeedTime, double throttle, double prevValue) {		
 		double finalThrottle;
     	

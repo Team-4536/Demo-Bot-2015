@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.Talon;
 public class Tower {
 	
 	Talon towerTalon;
+	double accelThrottle;
+	double prevThrottle;
 
 	public Tower(int towerChannel) { //Constructor for the tower
 		
@@ -12,10 +14,13 @@ public class Tower {
 		
 	}
 	
-	public void setSpeed(double towerMotorSpeed) { //Sets the towers speed
+	public void setSpeed(double fullSpeedTime, double throttle) { //Sets the towers speed
 		
-		towerTalon.set(towerMotorSpeed);
+		accelThrottle = throttle;
+		accelThrottle = Utilities.accelLimit(fullSpeedTime, accelThrottle, prevThrottle);
+		towerTalon.set(accelThrottle);
 		
+		prevThrottle = accelThrottle;
 	}
 
 }

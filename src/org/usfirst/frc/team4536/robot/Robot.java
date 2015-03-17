@@ -236,7 +236,7 @@ public class Robot extends IterativeRobot {
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
         
         //Code for the tower
-        tower.setSpeed(towerStick.getY());
+        tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerStick.getY());
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 

@@ -111,11 +111,13 @@ public class Auto {
 	}
 	
 	public void tower(double autoTime) {
-		if (autoTime < 2) {
-			tower.setSpeed(1);
+		if (autoTime < Constants.TOWER_AUTO_TIME) {
+			
+			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
+			
 		}
 		else {
-			tower.setSpeed(0);
+			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
 		}
 	}
 	
