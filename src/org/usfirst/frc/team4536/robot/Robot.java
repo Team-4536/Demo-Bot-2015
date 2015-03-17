@@ -78,7 +78,7 @@ public class Robot extends IterativeRobot {
     	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain, elevator);
+    	auto = new Auto(driveTrain, elevator, tower);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
     }
@@ -114,6 +114,8 @@ public class Robot extends IterativeRobot {
 			case 7: auto.threeToteStack(autoTime);
 					break;
 			case 8: auto.toteAndContainer(autoTime);
+					break;
+			case 9: auto.tower(autoTime);
 					break;
 			default: auto.doNothing();
 					 break;
