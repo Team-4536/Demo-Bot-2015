@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Gyro;
 
@@ -29,10 +31,25 @@ public class DriveTrain {
 		toteLimitSwitch = new DigitalInput(toteLimitSwitchChannel);
 	}
 	
+	
+	public static int fieldSide() {
+		
+		SendableChooser feederStationChooser;
+		feederStationChooser = new SendableChooser();
+		
+		feederStationChooser.addDefault("Left Feeder Station", 0);
+		feederStationChooser.addObject("Right Feeder Station", 1);
+		
+		SmartDashboard.putData("Feeder Station Chooser", feederStationChooser);
+		
+		//Returns the number of the field side selected on the SmartDashboard.
+		return feederStationChooser.getSelected().hashCode();
+	}
 	/*
 	 * starts the gyro and sets the heading of the gyro to zero.
 	 */
 	public void startGyro() {
+		currentAngle = 0;
 		gyroSensor.initGyro();
 	}
 	
@@ -40,6 +57,7 @@ public class DriveTrain {
 	 * sets the current gyro heading as 0 degrees.
 	 */
 	public void resetGyro() {
+		currentAngle = 0;
 		gyroSensor.reset();
 	}
 	
@@ -79,10 +97,15 @@ public class DriveTrain {
 	 */
 	public void updateAngle (boolean calibrationButton) {
 		
-		currentAngle = angleCorrection + this.gyroGetAngle();
+		currentAngle = angleCorrection + gyroSensor.getAngle();
 		
 		if (this.toteLimitSwitchValue() && !prevToteLimitSwitchValue) {
-			setActualAngle(Constants.FEEDER_STATION_ANGLE); // Angle that is required to line up with the feeder station.
+			
+			if (this.fieldSide() == 0)
+			setActualAngle(Constants.LEFT_FEEDER_STATION_ANGLE); // Angle required to line up with the left feeder station.
+			else
+			setActualAngle(Constants.RIGHT_FEEDER_STATION_ANGLE); // Angle required to line up with the right feeder station.
+			
 		} else if (calibrationButton) {
 			this.setActualAngle(Constants.FORWARD_HEADING); // angle where robot is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings.
 		}
@@ -99,7 +122,7 @@ public class DriveTrain {
 	 */
 	public void setActualAngle (double actualAngle) {
 		
-		angleCorrection = actualAngle - this.gyroGetAngle();
+		angleCorrection = actualAngle - gyroSensor.getAngle();
 	}
 	
 	/*

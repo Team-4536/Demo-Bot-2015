@@ -10,7 +10,6 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
-	DigitalInput toteLimitSwitch;
 	Encoder elevatorEncoder;
 	
 	double currentHeight;
@@ -130,7 +129,7 @@ public class Elevator {
 	
 	public void update(){
 		currentHeight = correction + elevatorEncoder.get()/Constants.TICKS_PER_INCHES;
-		System.out.println("Current Elevator Height: " + currentHeight);
+		//System.out.println("Current Elevator Height: " + currentHeight);
 		
 		if (this.bottomLimitSwitchValue()) {
 			setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
@@ -150,8 +149,6 @@ public class Elevator {
 	}
 	
 	public void printEncoderValue() {
-		//System.out.println("Raw " + elevatorEncoder.getRaw());
-		//System.out.println("Rate " + elevatorEncoder.getRate());
 		System.out.println("Encoder Value: " + elevatorEncoder.getDistance());
 	}
 	

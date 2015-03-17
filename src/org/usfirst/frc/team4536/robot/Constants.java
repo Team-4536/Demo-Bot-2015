@@ -21,7 +21,7 @@ public class Constants {
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
-	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 2;
+	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 0;
 	public static final int ENCODER_SENSOR_A_CHANNEL = 5;
 	public static final int ENCODER_SENSOR_B_CHANNEL = 6;
 	
@@ -82,7 +82,8 @@ public class Constants {
 	
 	//Gyro Calibration Angles
 	public static final double FORWARD_HEADING = 0; // Heading of 0 degrees.
-	public static final double FEEDER_STATION_ANGLE = 135; // Angle in degrees for the robot to be lined up with the feeder station.
+	public static final double LEFT_FEEDER_STATION_ANGLE = -120; // Angle in degrees for the robot to be lined up with the left feeder station (from driver's perspective).
+	public static final double RIGHT_FEEDER_STATION_ANGLE = 120; // Angle in degrees for the robot to be lined up with the right feeder station (from driver's perspective).
 	
 	// Auto full speed times (time it takes for something get to full speed during an acceleration limit)
 	// Measured in seconds
@@ -110,10 +111,13 @@ public class Constants {
 			//Automation Buttons
 			public static final int AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK = 1; // Button for automatically setting a stack and backing up.
 			public static final int RECYCLING_CONTAINER_PICK_UP = 3; //Button for picking up recycling container
-			public static final int TURN_TO_FEEDER_STATION = 5; // Button for turning the robot to the angle which lines it up with the feeder station.
+			public static final int TURN_FROM_FEEDER_STATION = 5; // Button for turning the robot to the angle which lines it up with the feeder station.
 			
 			//Toggles
 			public static final int TIPPER_TOGGLE = 2; //Flips solenoids of tipper, extending or retracting.
+			
+			//Gyro Calibration
+			public static final int GYRO_CALIBRATION = 11; // When pressed calibrates the gyro so it is at a heading of zero. This would be when it is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings. 
 		
 		//secondaryStick
 			//Platform Toggle
@@ -124,9 +128,6 @@ public class Constants {
 			
 			//Elevator Manual Override
 			public static final int ELEVATOR_MANUAL_OVERRIDE = 6; // When pressed, allows manual override by secondary drive of elevator.
-			
-			//Gyro Calibration
-			public static final int GYRO_CALIBRATION = 12; // When pressed calibrates the gyro so it is at a heading of zero. This would be when it is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings. 
 		
 			//Elevator Heights	
 			public static final int SCORING_PLATFORM_HEIGHT = 4; //moves elevator to the height required for the scoring platform.

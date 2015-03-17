@@ -2,7 +2,6 @@ package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class Auto { 
 	DriveTrain autoDriveTrain;
@@ -27,8 +26,8 @@ public class Auto {
 		autoChooser.addObject("Drive Backward with Tote", 3);
 		autoChooser.addObject("Two Totes", 4); //Two tote auto
 		autoChooser.addObject("Two Recycling Containers", 5);
-		autoChooser.addObject("Do Nothing", 6);
-		autoChooser.addDefault("Three Tote Stack", 7);
+		autoChooser.addDefault("Do Nothing", 6);
+		autoChooser.addObject("Three Tote Stack", 7);
 		autoChooser.addObject("Tote and Container", 8);
 		autoChooser.addObject("Extend Platform", 9);
 		SmartDashboard.putData("Auto_Chooser" , autoChooser); 

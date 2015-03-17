@@ -17,7 +17,7 @@ public class Robot extends IterativeRobot {
 	Timer autoTimer;
 	Auto auto;
 	int autoNumber;
-	DigitalInput toteLimitSwitch;
+	int fieldSide;
 	
 	Compressor compressor;
 	
@@ -70,13 +70,12 @@ public class Robot extends IterativeRobot {
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
-    	
-    	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
     	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
+		fieldSide = DriveTrain.fieldSide();
     }
 	
 	public void autonomousInit() {
@@ -116,8 +115,6 @@ public class Robot extends IterativeRobot {
 			default: auto.doNothing();
 					 break;
 		}
-		
-		driveTrain.updateAngle(false); // Doesn't use a calibration button because it's autonomous.
 		
 		elevator.goToDesiredHeight(1);
     }
@@ -171,8 +168,8 @@ public class Robot extends IterativeRobot {
         	}
         }
         // If the turn to feeder station button is pressed the robot turns to the angle to line up with the feeder station.
-        else if (mainStick.getRawButton(Constants.TURN_TO_FEEDER_STATION)) {
-        	driveTrain.turnTo(Constants.FEEDER_STATION_ANGLE, Constants.TURN_FULL_SPEED_TIME);
+        else if (mainStick.getRawButton(Constants.TURN_FROM_FEEDER_STATION)) {
+        	driveTrain.turnTo(0, Constants.TURN_FULL_SPEED_TIME);
         }	
         // If button 7 is pressed, SUPER SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
@@ -245,7 +242,7 @@ public class Robot extends IterativeRobot {
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) { // If automated stacking button is pressed and a tote is properly loaded on the platform pressing the limit switch.
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !driveTrain.toteLimitSwitchValue()) { // If automated stacking button is pressed and a tote is properly loaded on the platform pressing the limit switch.
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -287,8 +284,8 @@ public class Robot extends IterativeRobot {
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
        	
        	//Gyro Calibration Code
-        driveTrain.updateAngle(secondaryStick.getRawButton(Constants.GYRO_CALIBRATION));
-        System.out.println("Gyro Angle" + driveTrain.gyroGetAngle());
+        driveTrain.updateAngle(mainStick.getRawButton(Constants.GYRO_CALIBRATION));
+        System.out.println("Gyro Angle: " + driveTrain.gyroGetAngle());
     
         //Cuts the speed of the elevator in half while button 9 is held.
         if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
