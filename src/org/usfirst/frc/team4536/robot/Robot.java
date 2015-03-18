@@ -53,7 +53,8 @@ public class Robot extends IterativeRobot {
     							Constants.ENCODER_SENSOR_B_CHANNEL,
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
-    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL,
+    							Constants.ELEVATOR_HEIGHT_LEDS_CHANNEL);
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();

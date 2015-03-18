@@ -24,6 +24,7 @@ public class Constants {
 	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 0;
 	public static final int ENCODER_SENSOR_A_CHANNEL = 5;
 	public static final int ENCODER_SENSOR_B_CHANNEL = 6;
+	public static final int ELEVATOR_HEIGHT_LEDS_CHANNEL = 2;
 	
 	// Analog Sensor channel
 	public static final int GYRO_SENSOR_CHANNEL = 0;

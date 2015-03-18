@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -10,6 +11,7 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
+	DigitalOutput elevatorHeightLEDs;
 	Encoder elevatorEncoder;
 	
 	double currentHeight;
@@ -27,13 +29,15 @@ public class Elevator {
 					int encoderBChannel,
 					int topLimitSwitchChannel, 
 					int middleLimitSwitchChannel,
-					int bottomLimitSwitchChannel) 
+					int bottomLimitSwitchChannel,
+					int elevatorHeightChannel) 
 	{
 		elevatorTalon = new Talon(talonChannel);
 		elevatorEncoder = new Encoder(encoderAChannel, encoderBChannel);
 		topLimitSwitch = new DigitalInput(topLimitSwitchChannel);
 		middleLimitSwitch = new DigitalInput(middleLimitSwitchChannel);
 		bottomLimitSwitch = new DigitalInput(bottomLimitSwitchChannel);
+		elevatorHeightLEDs = new DigitalOutput(elevatorHeightChannel);
 		
 		currentHeight = 0;
 		correction = 0;
@@ -142,6 +146,8 @@ public class Elevator {
 		if (this.topLimitSwitchValue()) {
 			setActualHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 		}
+		
+		//elevatorHeightLEDs.(something) what do I do here? How do I send the double of elevator height to the leonardo?
 	}
 	
 	public void resetEncoder(){
