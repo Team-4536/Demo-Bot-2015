@@ -89,10 +89,15 @@ public class Utilities {
 	 * This could incorporate the limit method later but we don't want to make any drastic changes right now.
 	 */
 	public static double speedLimit (double throttle, double speedLimitFactor) { // Puts a speed limit on the throttle entered.
-		double throttleLimited;
+
+		if (throttle > Math.abs(speedLimitFactor)) {
+			
+			throttle = Math.abs(speedLimitFactor);
+		} else if (throttle < -Math.abs(speedLimitFactor)) {
+			
+			throttle = -Math.abs(speedLimitFactor);
+		}
 		
-		throttleLimited = throttle * speedLimitFactor; // Limits throttle by multiplying. The throttle can't be greater than the factor it is multiplied by then.
-		
-		return throttleLimited;
+		return throttle;
 	}
 }

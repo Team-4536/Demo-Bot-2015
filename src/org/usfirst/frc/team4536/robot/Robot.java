@@ -1,7 +1,9 @@
 package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
@@ -16,6 +18,7 @@ public class Robot extends IterativeRobot {
 	Timer teleopTimer;
 	Timer autoTimer;
 	Auto auto;
+	//SerialPort arduino;
 	int autoNumber;
 	int fieldSide;
 	
@@ -39,6 +42,8 @@ public class Robot extends IterativeRobot {
 	double finalThrottleX = 0;
 	double elevatorSpeedLimit = 1;
 	
+	int LEDHeight = 0;
+	
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -58,6 +63,9 @@ public class Robot extends IterativeRobot {
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
+    	
+    	// Arduiino
+    	//arduino = new SerialPort(300, Port.kOnboard);
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -134,6 +142,9 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
+    	// Arduino Communication
+    	LEDHeight = (int) (elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT);
+    	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
     	 */
@@ -170,7 +181,7 @@ public class Robot extends IterativeRobot {
         }
         // If the turn from feeder station button is pressed the robot turns from the feeder station toward the scoring platforms.
         else if (mainStick.getRawButton(Constants.TURN_FROM_FEEDER_STATION)) {
-        	driveTrain.turnTo(0, Constants.TURN_FULL_SPEED_TIME);
+        	driveTrain.slowTurnTo(0, Constants.SUPER_SLOW_TURN_FULL_SPEED_TIME, Constants.SUPER_SLOW_TURN_SPEED_LIMIT);
         }	
         // If button 7 is pressed, SUPER SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
@@ -325,6 +336,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		driveTrain.resetGyro(); // Constantly resets while disabled so the robot starts the match at a gyro heading of zero.
+		driveTrain.setActualAngle(0);
 	}
     
     public void testPeriodic() {

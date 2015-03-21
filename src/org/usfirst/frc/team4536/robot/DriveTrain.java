@@ -204,6 +204,48 @@ public class DriveTrain {
 		
 		this.drive(0, turnThrottleAccel);
 		prevTurnThrottle = turnThrottleAccel; // defines the previous throttle value.	
-	}		
+	}
+	
+	public void slowTurnTo(double desiredAngle, double fullSpeedTime, double speedLimit) {
+		double angle;
+		double angleDiff;
+		double derivative; // rate of change of angle
+		
+		angle = currentAngle;
+		
+		while (angle > desiredAngle + 180) { // Makes the angle within terms of being within 180 degrees of our desired value so the drive train will turn in the most efficient way.
+			angle -= 360;
+		}
+			
+		while (angle < desiredAngle - 180) { // Makes the angle within terms of being within 180 degrees of our desired value so the drive train will turn in the most efficient way.
+			angle += 360;
+		}
+
+		angleDiff = desiredAngle - angle;
+		
+		/* 
+		 * If the driveTrain is off by more than 10 degrees of its desired angle
+		 * it uses the derivative constant and proportionality constant to correct.
+		 * If it is within 10 degrees it uses only the proportionality constant.
+		 */
+		if (angleDiff > 10 || angleDiff < -10) { // if the drive train is off by more than 10 degrees of its desired angle 
+			derivative = this.gyroGetRate() * Constants.DERIVATIVE_CONSTANT;
+		} else {
+			derivative = 0;
+		}
+		
+		/*
+		 * adjusts the difference in angle by a constant so it can become
+		 * a reasonable turn throttle value to reach the desired angle. Uses
+		 * the rate of change of the angle as well to slow down adjustment
+		 */
+		double turnThrottle = angleDiff * Constants.PROPORTIONALITY_CONSTANT - derivative;
+		double turnThrottleAccel = Utilities.accelLimit(fullSpeedTime, turnThrottle, prevTurnThrottle);
+		
+		Utilities.speedLimit(turnThrottleAccel, speedLimit);
+		
+		this.drive(0, turnThrottleAccel);
+		prevTurnThrottle = turnThrottleAccel; // defines the previous throttle value.	
+	}
 	
 }
