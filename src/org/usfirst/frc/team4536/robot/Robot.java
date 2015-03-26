@@ -24,7 +24,6 @@ public class Robot extends IterativeRobot {
 	Auto auto;
 	int autoNumber;
 	DigitalInput toteLimitSwitch;
-	CameraServer camera = CameraServer.getInstance();
 	
 	Compressor compressor;
 	
@@ -32,13 +31,11 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	int session;
-    Image frame;
-	
 	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
 	boolean prevTipperControllingButton;
 	boolean prevAutoSet;
+	boolean prevToteLimitSwitchValue;
 	
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
@@ -48,6 +45,8 @@ public class Robot extends IterativeRobot {
 	double finalThrottleY = 0;
 	double finalThrottleX = 0;
 	double elevatorSpeedLimit = 1;
+	
+	int numberOfTotes = 0;
 	
 	public void robotInit() {
 		// Robot Systems
@@ -63,7 +62,8 @@ public class Robot extends IterativeRobot {
     							Constants.ENCODER_SENSOR_B_CHANNEL,
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
-    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL,
+    							Constants.TOTE_LIMIT_SWITCH_CHANNEL);
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
@@ -80,20 +80,11 @@ public class Robot extends IterativeRobot {
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
-    	
-    	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
     	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
-    	
-    	frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam1") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam1",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
     }
 	
 	public void autonomousInit() {
@@ -141,15 +132,6 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
-		NIVision.IMAQdxStartAcquisition(session);
-	    /**
-	      * grab an image, draw the circle, and provide it for the camera server
-	      * which will in turn send it to the dashboard.
-	      */
-	    NIVision.IMAQdxGrab(session, frame, 1);
-	    CameraServer.getInstance().setImage(frame);
-	        
-	    NIVision.IMAQdxStopAcquisition(session);
 		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();
@@ -258,7 +240,7 @@ public class Robot extends IterativeRobot {
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) {
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && elevator.toteLimitSwitchValue()) {
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -295,15 +277,20 @@ public class Robot extends IterativeRobot {
         // Uses button 3 on the main stick as a toggle for the platform 
        	if(secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE) == true && prevPlatformControllingButton == false) {
        		platform.flip();
+       		numberOfTotes = 0;
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
     
-        //Cuts the speed of the elevator in half while button 9 is held
-        if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
-        	elevatorSpeedLimit = .5;
-        }
-        else if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED) == false){
+        /*Sets the speed of the elevator proportional to the number of totes
+       	* The more totes, the slower the speed
+       	* If there are 3 or fewer totes, the elevator runs at full speed
+       	*/
+        if (numberOfTotes <= 3){
         	elevatorSpeedLimit = 1;
+        }
+        
+        else if (numberOfTotes > 3){
+        	elevatorSpeedLimit = (1/(Math.pow(numberOfTotes, .5)));
         }
         
         	
@@ -315,16 +302,21 @@ public class Robot extends IterativeRobot {
          */
         
         if (secondaryStick.getRawButton(Constants.ELEVATOR_MANUAL_OVERRIDE)){
-        	elevator.drive(elevatorThrottle * elevatorSpeedLimit);
+        	elevator.drive(elevatorThrottle);
         	elevator.setDesiredHeight(elevator.getHeight());
         }
         
-        else elevator.goToDesiredHeight(elevatorSpeedLimit);
+        if (elevator.toteLimitSwitchValue() && !prevToteLimitSwitchValue){
+        	numberOfTotes = (numberOfTotes + 1);
+        }
         
+        prevToteLimitSwitchValue = elevator.toteLimitSwitchValue();
+
         prevElevatorThrottle = elevatorThrottle;
-           
+        
+        elevator.goToDesiredHeight(elevatorSpeedLimit);
         elevator.update();
-        System.out.println(elevator.getHeight());
+        System.out.println(numberOfTotes);
         
         
     }

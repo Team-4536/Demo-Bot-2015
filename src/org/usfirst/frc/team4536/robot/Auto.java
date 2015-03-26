@@ -95,8 +95,84 @@ public class Auto {
 	
 	}
 	//It takes in autoTime to have the robot do different things at specific times during auto
-		public void threeToteStack (double autoTime){
-			
+	public void threeToteStack (double autoTime){
+	  /* For if we can pick up off the ground 
+	   * if (autoTime < 1){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+		}
+	    else if (autoTime >= 1 && autoTime < 3){
+	    	autoDriveTrain.driveStraight(1, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 3 && autoTime < 4){
+	    	autoElevator.setDesiredHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+	    }
+	    else if (autoTime >= 4 && autoTime < 5){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+	    }
+	    else if (autoTime >= 5 && autoTime < 7){
+	    	autoDriveTrain.driveStraight(1, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 7 && autoTime < 8){
+	    	autoElevator.setDesiredHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+	    }
+	    else if (autoTime >= 8 && autoTime < 9){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+	    }
+	    else if (autoTime >= 9 && autoTime < 13){
+	    	autoDriveTrain.turnTo(-90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 13 && autoTime < 15 
+	    		&& autoDriveTrain.gyroGetAngle() > -95 && autoDriveTrain.gyroGetAngle() < -85){
+			autoDriveTrain.driveStraight(-0.3, -90, 1);
+		}
+		If we can't pick up off the ground
+		*/
+		if (autoTime < 1){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+		}
+	    else if (autoTime >= 1 && autoTime < 3){
+	    	autoDriveTrain.driveStraight(1, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 3 && autoTime < 3.5 && !tipper.isExtended()){
+	    	autoElevator.setDesiredHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+	    }
+	    else if (autoTime >= 3.5 && autoTime < 4 && tipper.isExtended()){
+	    	tipper.extend();
+	    }
+	    else if (autoTime >= 4 && autoTime < 4.5 && tipper.isExtended()){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+	    }	    	
+	    else if (autoTime >= 4.5 && autoTime < 5 && tipper.isExtended()){
+	    	tipper.retract();	
+	    }
+	    else if (autoTime >= 5 && autoTime < 7){
+	    	autoDriveTrain.driveStraight(1, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 7 && autoTime < 7.5 && !tipper.isExtended()){
+	    	autoElevator.setDesiredHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
+	    }
+	    else if (autoTime >= 7.5 && autoTime < 8 && tipper.isExtended()){
+	    	tipper.extend();
+	    }
+	    else if (autoTime >= 8 && autoTime < 8.5 && tipper.isExtended()){
+	    	autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
+	    }	    	
+	    else if (autoTime >= 8.5 && autoTime < 9 && tipper.isExtended()){
+	    	tipper.retract();	
+	    }
+	    else if (autoTime >= 9 && autoTime < 13){
+	    	autoDriveTrain.turnTo(-90, Constants.AUTO_TURN_FULL_SPEED_TIME);
+	    }
+	    else if (autoTime >= 13 && autoTime < 15 
+	    		&& autoDriveTrain.gyroGetAngle() > -95 && autoDriveTrain.gyroGetAngle() < -85){
+			autoDriveTrain.driveStraight(-0.3, -90, 1);
+		}
+		
+	    else
+		autoDriveTrain.drive(0 , 0);
+		
+	    
+	    
 	}
 	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void twoRecyclingContainers(double autoTime){
