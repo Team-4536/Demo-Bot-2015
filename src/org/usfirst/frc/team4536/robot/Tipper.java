@@ -19,7 +19,7 @@ public class Tipper {
 		retractedTimer.start();
 	}
 	
-	public boolean isExtended() {
+public boolean isExtended() {
 		
 		return rightSolenoid.get(); // true = extended, false = retracted. This code works because the values must be opposite of each other and only come in 2 combinations.
 	}
