@@ -137,14 +137,13 @@ public class Robot extends IterativeRobot {
     	 */
     	//Code for automation of recycling container pickup. Tips forward then drives the elevator up to catch on the recycling container.
     	if(mainStick.getRawButton(Constants.RECYCLING_CONTAINER_PICK_UP)) {	
-    		if(elevator.getHeight() < Constants.TOP_LIMIT_SWITCH_HEIGHT - 0.5
-        	|| elevator.getHeight() > Constants.TOP_LIMIT_SWITCH_HEIGHT + 0.5) {
+    		if(elevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
     			tipper.extend();
     			if(tipper.timeExtended() > 1) {
     				elevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
     			}
     		}    	
-    		else {
+    		else if (elevator.getHeight() > (Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND + 12)){
     			tipper.retract();
     		}
     	}
