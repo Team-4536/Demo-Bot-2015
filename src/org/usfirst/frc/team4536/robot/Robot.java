@@ -6,12 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.CameraServer; 
-
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ShapeMode;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -24,16 +18,12 @@ public class Robot extends IterativeRobot {
 	Auto auto;
 	int autoNumber;
 	DigitalInput toteLimitSwitch;
-	CameraServer camera = CameraServer.getInstance();
 	
 	Compressor compressor;
 	
 	// Joysticks
 	Joystick mainStick;
 	Joystick secondaryStick;
-	
-	int session;
-    Image frame;
 	
 	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
@@ -87,13 +77,6 @@ public class Robot extends IterativeRobot {
     	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
-    	
-    	frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam1") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam1",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
     }
 	
 	public void autonomousInit() {
@@ -141,15 +124,6 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
-		NIVision.IMAQdxStartAcquisition(session);
-	    /**
-	      * grab an image, draw the circle, and provide it for the camera server
-	      * which will in turn send it to the dashboard.
-	      */
-	    NIVision.IMAQdxGrab(session, frame, 1);
-	    CameraServer.getInstance().setImage(frame);
-	        
-	    NIVision.IMAQdxStopAcquisition(session);
 		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();
@@ -325,8 +299,6 @@ public class Robot extends IterativeRobot {
            
         elevator.update();
         System.out.println(elevator.getHeight());
-        
-        
     }
 	
 	public void disabledInit() {
