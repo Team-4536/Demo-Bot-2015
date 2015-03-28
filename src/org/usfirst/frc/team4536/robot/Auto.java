@@ -2,7 +2,6 @@ package org.usfirst.frc.team4536.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class Auto { 
 	DriveTrain autoDriveTrain;
