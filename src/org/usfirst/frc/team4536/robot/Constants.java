@@ -32,10 +32,6 @@ public class Constants {
 	// This is a conversion between the encoder ticks and inches
 	public static final double TICKS_PER_INCHES = 247.7;
 	
-	
-	//Arduino - Elevator Height to LEDs lit proportionality constant
-	public static final int LED_PROPORTIONALITY_CONSTANT = (48/60); //Check this!
-	
 	// Proportionality Constant for PID loop
 	public static final double PROPORTIONALITY_CONSTANT = 0.05; 
 	public static final double ELEVATOR_PROPORTIONALITY_CONSTANT = .5; //Units of throttle/inch

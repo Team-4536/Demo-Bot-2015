@@ -18,7 +18,6 @@ public class Robot extends IterativeRobot {
 	Timer teleopTimer;
 	Timer autoTimer;
 	Auto auto;
-	//SerialPort arduino;
 	int autoNumber;
 	int fieldSide;
 	
@@ -42,8 +41,6 @@ public class Robot extends IterativeRobot {
 	double finalThrottleX = 0;
 	double elevatorSpeedLimit = 1;
 	
-	int LEDHeight = 0;
-	
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -63,9 +60,6 @@ public class Robot extends IterativeRobot {
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
-    	
-    	// Arduiino
-    	//arduino = new SerialPort(300, Port.kOnboard);
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -141,9 +135,6 @@ public class Robot extends IterativeRobot {
     	// Gets X and Y values from mainStick and puts a dead zone on them
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
-    	
-    	// Arduino Communication
-    	LEDHeight = (int) (elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT);
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability

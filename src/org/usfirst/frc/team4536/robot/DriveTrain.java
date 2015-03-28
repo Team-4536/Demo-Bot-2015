@@ -28,7 +28,7 @@ public class DriveTrain {
 		leftTalon = new Talon(leftTalonChannel);
 		rightTalon = new Talon(rightTalonChannel);
 		gyroSensor = new Gyro(gyroChannel);
-		toteLimitSwitch = new DigitalInput(toteLimitSwitchChannel);
+		toteLimitSwitch = new DigitalInput(toteLimitSwitchChannel); // Use Mairead's elevator tote limit switch when synching.
 	}
 	
 	
