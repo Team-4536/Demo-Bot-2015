@@ -108,9 +108,11 @@ public class Robot extends IterativeRobot {
 				break;
 		case 7: auto.twoRecyclingContainers(autoTime);
 				break;
-		case 8: auto.driveWithRecyclingContainerToFeederStation(autoTime);
+		case 8: auto.driveWithRecyclingContainerToRightFeederStation(autoTime);
 				break;
-		case 9: auto.doNothing();
+		case 9: auto.driveWithRecyclingContainerToLeftFeederStation(autoTime);
+				break;
+		case 10: auto.doNothing();
 				break;
 		default: auto.doNothing();
 				 break;
