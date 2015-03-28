@@ -10,6 +10,7 @@ public class Elevator {
 	DigitalInput topLimitSwitch;
 	DigitalInput middleLimitSwitch;
 	DigitalInput bottomLimitSwitch;
+	DigitalInput toteLimitSwitch;
 	Encoder elevatorEncoder;
 	
 	double currentHeight;
@@ -27,13 +28,15 @@ public class Elevator {
 					int encoderBChannel,
 					int topLimitSwitchChannel, 
 					int middleLimitSwitchChannel,
-					int bottomLimitSwitchChannel) 
+					int bottomLimitSwitchChannel,
+					int toteLimitSwitchChannel) 
 	{
 		elevatorTalon = new Talon(talonChannel);
 		elevatorEncoder = new Encoder(encoderAChannel, encoderBChannel);
 		topLimitSwitch = new DigitalInput(topLimitSwitchChannel);
 		middleLimitSwitch = new DigitalInput(middleLimitSwitchChannel);
 		bottomLimitSwitch = new DigitalInput(bottomLimitSwitchChannel);
+		toteLimitSwitch = new DigitalInput(toteLimitSwitchChannel);
 		
 		currentHeight = 0;
 		correction = 0;
@@ -88,6 +91,15 @@ public class Elevator {
 		// Boolean value is reversed because the limit switch outputs false when not pressed
 		return !bottomLimitSwitch.get();
 	}
+	
+	/* 
+	 * Returns the boolean value of the tote limit switch
+	 * A return value of true indicates that the limit switch is pressed
+	 */
+	 public boolean toteLimitSwitchValue() {
+		 // Boolean value is reversed because the limit switch outputs false when not pressed
+	 	return !toteLimitSwitch.get();
+	 }
 	
 	/*
 	 * Returns the double throttle value of the elevator

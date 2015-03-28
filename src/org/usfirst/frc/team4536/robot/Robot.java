@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot {
 	boolean prevPlatformControllingButton;
 	boolean prevTipperControllingButton;
 	boolean prevAutoSet;
+	boolean prevToteLimitSwitchValue;
 	
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
@@ -38,6 +39,8 @@ public class Robot extends IterativeRobot {
 	double finalThrottleY = 0;
 	double finalThrottleX = 0;
 	double elevatorSpeedLimit = 1;
+	
+	int numberOfTotes = 0;
 	
 	public void robotInit() {
 		// Robot Systems
@@ -53,7 +56,8 @@ public class Robot extends IterativeRobot {
     							Constants.ENCODER_SENSOR_B_CHANNEL,
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
-    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL,
+    							Constants.TOTE_LIMIT_SWITCH_CHANNEL);
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
@@ -70,8 +74,6 @@ public class Robot extends IterativeRobot {
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
-    	
-    	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
     	auto = new Auto(driveTrain, elevator);
@@ -231,7 +233,7 @@ public class Robot extends IterativeRobot {
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
         * hit the limit switch
         */
-        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && !toteLimitSwitch.get()) {
+        if(secondaryStick.getRawButton(Constants.AUTOMATED_TOTE_STACKING) && elevator.toteLimitSwitchValue()) {
         	 if ((elevator.getHeight() < Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION - 0.5
         		  || elevator.getHeight() > Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 4)
         		  && elevator.getDesiredHeight() != Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION){
@@ -268,16 +270,21 @@ public class Robot extends IterativeRobot {
         // Uses button 3 on the main stick as a toggle for the platform 
        	if(secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE) == true && prevPlatformControllingButton == false) {
        		platform.flip();
+       		numberOfTotes = 0;
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
     
-        //Cuts the speed of the elevator in half while button 9 is held
-        if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED)){
-        	elevatorSpeedLimit = .5;
-        }
-        else if (secondaryStick.getRawButton(Constants.ELEVATOR_SPEED) == false){
-        	elevatorSpeedLimit = 1;
-        }
+       	/*Sets the speed of the elevator proportional to the number of totes
+       	 * The more totes, the slower the speed
+       	 * If there are 3 or fewer totes, the elevator runs at full speed
+       	 */
+       	 if (numberOfTotes <= 3){
+       		 	elevatorSpeedLimit = 1;
+       	 }
+       	         
+       	 else if (numberOfTotes > 3){
+       	        elevatorSpeedLimit = (1/(Math.pow(numberOfTotes, .5)));
+       	 }
         
         	
         /*
@@ -288,16 +295,18 @@ public class Robot extends IterativeRobot {
          */
         
         if (secondaryStick.getRawButton(Constants.ELEVATOR_MANUAL_OVERRIDE)){
-        	elevator.drive(elevatorThrottle * elevatorSpeedLimit);
+        	elevator.drive(elevatorThrottle);
         	elevator.setDesiredHeight(elevator.getHeight());
         }
         
-        else elevator.goToDesiredHeight(elevatorSpeedLimit);
-        
+        if (elevator.toteLimitSwitchValue() && !prevToteLimitSwitchValue){
+        	numberOfTotes = (numberOfTotes + 1);
+        }
+        prevToteLimitSwitchValue =elevator.toteLimitSwitchValue();
         prevElevatorThrottle = elevatorThrottle;
-           
+        
+        elevator.goToDesiredHeight(elevatorSpeedLimit);    
         elevator.update();
-        System.out.println(elevator.getHeight());
     }
 	
 	public void disabledInit() {
