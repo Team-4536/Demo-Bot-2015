@@ -181,9 +181,11 @@ public class Elevator {
 	}
 	
 	public void printEncoderValue() {
-		//System.out.println("Raw " + elevatorEncoder.getRaw());
-		//System.out.println("Rate " + elevatorEncoder.getRate());
-		System.out.println(elevatorEncoder.getDistance());
+		System.out.println("Encoder Value: " + elevatorEncoder.getDistance());
+	}
+	
+	public void printEncoderRate() {
+		System.out.println("Rate " + elevatorEncoder.getRate());
 	}
 	public double getDesiredHeight(){
 		return desiredHeight;

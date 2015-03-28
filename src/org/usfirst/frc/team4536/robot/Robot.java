@@ -6,6 +6,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.CameraServer; 
+
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ShapeMode;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -17,13 +23,18 @@ public class Robot extends IterativeRobot {
 	Timer autoTimer;
 	Auto auto;
 	int autoNumber;
+	int fieldSide;
 	DigitalInput toteLimitSwitch;
+	CameraServer camera = CameraServer.getInstance();
 	
 	Compressor compressor;
 	
 	// Joysticks
 	Joystick mainStick;
 	Joystick secondaryStick;
+	
+		int session;
+	    Image frame;
 	
 	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
@@ -45,7 +56,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
-    					    		Constants.RIGHT_TALON_CHANNEL);
+    					    		Constants.RIGHT_TALON_CHANNEL,
+    					    		Constants.GYRO_SENSOR_CHANNEL);
     	driveTrain.startGyro();
     	platform = new Platform(Constants.RIGHT_PLATFORM_SOLENOID_CHANNEL, Constants.LEFT_PLATFORM_SOLENOID_CHANNEL);
     	platform.retract();
@@ -79,6 +91,14 @@ public class Robot extends IterativeRobot {
     	auto = new Auto(driveTrain, elevator);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
+		fieldSide = driveTrain.fieldSide();
+		
+    	frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+        // the camera name (ex "cam1") can be found through the roborio web interface
+        session = NIVision.IMAQdxOpenCamera("cam1",
+        NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        NIVision.IMAQdxConfigureGrab(session);
+
     }
 	
 	public void autonomousInit() {
@@ -129,6 +149,16 @@ public class Robot extends IterativeRobot {
 	
 	public void teleopPeriodic() {
 		
+		NIVision.IMAQdxStartAcquisition(session);
+	     /*
+	      * grab an image, draw the circle, and provide it for the camera server
+	      * which will in turn send it to the dashboard.
+  		  */
+	    NIVision.IMAQdxGrab(session, frame, 1);
+	    CameraServer.getInstance().setImage(frame);
+	        
+		NIVision.IMAQdxStopAcquisition(session);
+		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();
 		
@@ -161,14 +191,19 @@ public class Robot extends IterativeRobot {
         	
         	platform.retract();
         	
-        	if (retractedTime > 6) {
+        	if (retractedTime > 3) {
         		elevator.setDesiredHeight(-30);
   
         		if (elevator.bottomLimitSwitchValue() == true || (elevator.getHeight() < 0 && elevator.getHeight() > -1)) {
         			driveTrain.driveStraight(-0.3, 0, Constants.SLOW_TURN_FULL_SPEED_TIME);
         		} 
         	}
-        }//if button 7 is pressed, SUPER SLOW MODE is ENABLED
+        }
+        // If the turn from feeder station button is pressed the robot turns from the feeder station toward the scoring platforms.
+        else if (mainStick.getRawButton(Constants.TURN_FROM_FEEDER_STATION)) {
+        	driveTrain.slowTurnTo(0, Constants.SUPER_SLOW_TURN_FULL_SPEED_TIME, Constants.SUPER_SLOW_TURN_SPEED_LIMIT);
+        }
+        //if button 7 is pressed, SUPER SLOW MODE is ENABLED
         else if (mainStick.getRawButton(Constants.SUPER_SLOW_MODE) == true) {
     		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
     		double throttleY = Utilities.speedCurve(mainStickY, Constants.SUPER_SLOW_FORWARD_SPEED_CURVE) * Constants.SUPER_SLOW_FORWARD_SPEED_LIMIT;
@@ -209,16 +244,20 @@ public class Robot extends IterativeRobot {
     		
     	}
     	
-        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK);
+        prevAutoSet = mainStick.getRawButton(Constants.AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK); // Defines the previous automated set button value
     	
     	
     	
-    	// Uses button 2 on the main stick as a toggle for the tipper
+     // Uses button tipper toggle on the main stick as a toggle for the tipper
     	if(mainStick.getRawButton(Constants.TIPPER_TOGGLE) == true && prevTipperControllingButton == false) {
     		tipper.flip();
     	}
     	prevTipperControllingButton = mainStick.getRawButton(Constants.TIPPER_TOGGLE);
-    	    	
+    	
+    	/*
+    	Adjusts input from secondary stick.
+    	Puts on a dead zone, speed curve, and acceleration limit.
+    	*/    	
     	// Gets Y value from secondaryStick and puts a dead zone on it
     	double secondaryStickY = Utilities.deadZone(secondaryStick.getY(), Constants.DEAD_ZONE);
     	
@@ -276,6 +315,10 @@ public class Robot extends IterativeRobot {
        	}
        	prevPlatformControllingButton = secondaryStick.getRawButton(Constants.PLATFORM_TOGGLE);
     
+       	//Gyro Calibration Code
+        driveTrain.updateAngle(mainStick.getRawButton(Constants.GYRO_CALIBRATION), elevator.toteLimitSwitchValue());
+        System.out.println("Gyro Angle: " + driveTrain.gyroGetAngle());
+        
        	/*Sets the speed of the elevator proportional to the number of totes
        	 * The more totes, the slower the speed
        	 * If there are 3 or fewer totes, the elevator runs at full speed
@@ -309,6 +352,8 @@ public class Robot extends IterativeRobot {
         
         elevator.goToDesiredHeight(elevatorSpeedLimit);    
         elevator.update();
+        
+        
     }
 	
 	public void disabledInit() {
@@ -318,7 +363,8 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void disabledPeriodic() {
-		driveTrain.resetGyro();
+		driveTrain.resetGyro(); // Constantly resets while disabled so the robot starts the match at a gyro heading of zero.
+		driveTrain.setActualAngle(0);
 	}
     
     public void testPeriodic() {

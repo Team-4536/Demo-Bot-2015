@@ -77,4 +77,21 @@ public class Utilities {
     	
     	return finalThrottle;
 	}
+	
+	/*
+	 * Puts a speed limit on throttle.
+	 * This could incorporate the limit method later but we don't want to make any drastic changes right now.
+	 */
+	public static double speedLimit (double throttle, double speedLimitFactor) { // Puts a speed limit on the throttle entered.
+
+		if (throttle > Math.abs(speedLimitFactor)) {
+			
+			throttle = Math.abs(speedLimitFactor);
+		} else if (throttle < -Math.abs(speedLimitFactor)) {
+			
+			throttle = -Math.abs(speedLimitFactor);
+		}
+		
+		return throttle;
+	}
 }
