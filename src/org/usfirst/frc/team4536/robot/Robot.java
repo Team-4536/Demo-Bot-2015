@@ -8,10 +8,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CameraServer; 
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ShapeMode;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -32,8 +28,8 @@ public class Robot extends IterativeRobot {
 	Joystick mainStick;
 	Joystick secondaryStick;
 	
-	int session;
-    Image frame;
+	int heightForLEDs;
+	int numberOfTotesForLEDs;
 	
 	// Previous values used for toggles for the platform, tipper, and automatic stack setting functionality in that order. 
 	boolean prevPlatformControllingButton;
@@ -88,12 +84,6 @@ public class Robot extends IterativeRobot {
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
     	
-    	frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam1") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam1",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
     }
 	
 	public void autonomousInit() {
@@ -123,9 +113,11 @@ public class Robot extends IterativeRobot {
 				break;
 		case 7: auto.twoRecyclingContainers(autoTime);
 				break;
-		case 8: auto.driveWithRecyclingContainerToFeederStation(autoTime);
+		case 8: auto.driveWithRecyclingContainerToRightFeederStation(autoTime);
 				break;
-		case 9: auto.doNothing();
+		case 9: auto.driveWithRecyclingContainerToLeftFeederStation(autoTime);
+				break;
+		case 10: auto.doNothing();
 				break;
 		default: auto.doNothing();
 				 break;
@@ -141,15 +133,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopPeriodic() {
-		NIVision.IMAQdxStartAcquisition(session);
-	    /**
-	      * grab an image, draw the circle, and provide it for the camera server
-	      * which will in turn send it to the dashboard.
-	      */
-	    NIVision.IMAQdxGrab(session, frame, 1);
-	    CameraServer.getInstance().setImage(frame);
-	        
-	    NIVision.IMAQdxStopAcquisition(session);
+		
+		heightForLEDs = (int) ((elevator.getHeight()+0.5)/48.5*128 + 0.5);
+		numberOfTotesForLEDs = 16*(numberOfTotes) - 2;
 		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();

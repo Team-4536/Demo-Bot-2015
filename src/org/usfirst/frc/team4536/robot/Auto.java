@@ -28,8 +28,9 @@ public class Auto {
 		autoChooser.addObject("Two Tote Auto", 5);
 		autoChooser.addObject("Three Tote Stack", 6);
 		autoChooser.addObject("Two Recycling Container Auto", 7);
-		autoChooser.addObject("Drive With Container to Feeder Station", 8);
-		autoChooser.addDefault("Do Nothing", 9);
+		autoChooser.addObject("Drive With Container to Right Feeder Station", 8);
+		autoChooser.addObject("Drive With Container to Left Feeder Station", 9);
+		autoChooser.addDefault("Do Nothing", 10);
 		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
@@ -103,7 +104,44 @@ public class Auto {
 		
 	}
 	//It takes in autoTime to have the robot do different things at specific times during auto
-	public void driveWithRecyclingContainerToFeederStation(double autoTime){
+	public void driveWithRecyclingContainerToRightFeederStation(double autoTime){
+		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
+	    		tipper.extend();
+	    }
+	    else if (tipper.timeExtended() > 1){
+	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+	    					
+		}	    	
+	    if (autoTime > 3 && tipper.isExtended()){
+	    		tipper.retract();			
+	    }
+		
+	    else if (autoTime > 4 && autoTime < 12 && !tipper.isExtended()){
+			autoDriveTrain.turnTo(-135, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		}
+		else
+			autoDriveTrain.drive(0 , 0);
+		
+	}
+	public void driveWithRecyclingContainerToLeftFeederStation(double autoTime){
+		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
+	    		tipper.extend();
+	    }
+	    else if (tipper.timeExtended() > 1){
+	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
+	    					
+		}	    	
+	    if (autoTime > 3 && tipper.isExtended()){
+	    		tipper.retract();			
+	    }
+		
+	    else if (autoTime > 4 && autoTime < 12 && !tipper.isExtended()){
+			autoDriveTrain.turnTo(135, Constants.AUTO_TURN_FULL_SPEED_TIME);
+		}
+		else
+			autoDriveTrain.drive(0 , 0);
 		
 	}
 	
