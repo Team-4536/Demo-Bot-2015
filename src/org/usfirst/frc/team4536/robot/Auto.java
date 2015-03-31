@@ -7,12 +7,13 @@ public class Auto {
 	DriveTrain autoDriveTrain;
 	Elevator autoElevator;
 	Tipper tipper;
+	Tower tower;
 	
-	
-	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator){		
+	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower autoTower){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
 		tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+		tower = autoTower;
 	}
 	
 	
@@ -29,7 +30,8 @@ public class Auto {
 		autoChooser.addObject("Two Recycling Container Auto", 7);
 		autoChooser.addObject("Drive With Container to Right Feeder Station", 8);
 		autoChooser.addObject("Drive With Container to Left Feeder Station", 9);
-		autoChooser.addDefault("Do Nothing", 10);
+		autoChooser.addObject("Tower Auto", 10);
+		autoChooser.addDefault("Do Nothing", 11);
 		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
@@ -163,5 +165,14 @@ public class Auto {
 				autoDriveTrain.drive(0 , 0);
 	}
 
-	
+	public void tower(double autoTime) {
+		if (autoTime < Constants.TOWER_AUTO_TIME) {
+			
+			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
+			
+		}
+		else {
+			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
+		}
+	}
 }

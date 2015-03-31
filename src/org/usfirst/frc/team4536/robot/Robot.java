@@ -18,6 +18,7 @@ public class Robot extends IterativeRobot {
 	DriveTrain driveTrain;
 	Platform platform;
 	Tipper tipper;
+	Tower tower;
 	Elevator elevator;
 	Timer teleopTimer;
 	Timer autoTimer;
@@ -32,6 +33,7 @@ public class Robot extends IterativeRobot {
 	// Joysticks
 	Joystick mainStick;
 	Joystick secondaryStick;
+	Joystick towerStick;
 	
 		int session;
 	    Image frame;
@@ -73,10 +75,12 @@ public class Robot extends IterativeRobot {
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
     	teleopTimer.start();
+    	tower = new Tower(Constants.TOWER_MOTOR_CHANNEL); 
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
     	secondaryStick = new Joystick(Constants.RIGHT_STICK_PORT);
+    	towerStick = new Joystick(Constants.TOWER_STICK_PORT);
     	
     	compressor = new Compressor();
     	
@@ -88,7 +92,7 @@ public class Robot extends IterativeRobot {
     	prevElevatorThrottle = 0;
 
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain, elevator);
+    	auto = new Auto(driveTrain, elevator, tower);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
 		fieldSide = driveTrain.fieldSide();
@@ -132,7 +136,9 @@ public class Robot extends IterativeRobot {
 				break;
 		case 9: auto.driveWithRecyclingContainerToLeftFeederStation(autoTime);
 				break;
-		case 10: auto.doNothing();
+		case 10: auto.tower(autoTime);
+				break;
+		case 11: auto.doNothing();
 				break;
 		default: auto.doNothing();
 				 break;
@@ -269,6 +275,8 @@ public class Robot extends IterativeRobot {
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
       
+        //Code for the tower
+        tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerStick.getY());
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
