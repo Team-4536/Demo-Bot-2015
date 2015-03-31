@@ -92,7 +92,7 @@ public class Robot extends IterativeRobot {
     	prevElevatorThrottle = 0;
 
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain, elevator, tower);
+    	auto = new Auto(driveTrain, elevator, tower, platform);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
 		fieldSide = driveTrain.fieldSide();
@@ -151,19 +151,18 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		compressor.start();
 		teleopTimer.reset();
+		
+		NIVision.IMAQdxStartAcquisition(session);
 	}
 	
 	public void teleopPeriodic() {
 		
-		NIVision.IMAQdxStartAcquisition(session);
 	     /*
 	      * grab an image, draw the circle, and provide it for the camera server
 	      * which will in turn send it to the dashboard.
   		  */
 	    NIVision.IMAQdxGrab(session, frame, 1);
 	    CameraServer.getInstance().setImage(frame);
-	        
-		NIVision.IMAQdxStopAcquisition(session);
 		
 		//Retracted Timer
 		double retractedTime = platform.timeRetracted();
@@ -365,6 +364,7 @@ public class Robot extends IterativeRobot {
     }
 	
 	public void disabledInit() {
+		NIVision.IMAQdxStopAcquisition(session);
 		System.out.println("DISABLED");
 		compressor.stop();
 		teleopTimer.stop();

@@ -14,10 +14,10 @@ public class Constants {
 	public static final int TOWER_MOTOR_CHANNEL = 3;
 	
 	// Platform solenoid channels
-	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
-	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 3;
-	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 1;
-	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 0;
+	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 0; //usually 2 
+	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 1; //usually 3
+	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 2; //usually 1
+	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 3; //usually 0
 	
 	// Digital Switch channels
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
@@ -54,7 +54,7 @@ public class Constants {
 	public static final double SLOW_ELEVATOR_FULL_SPEED_TIME = 1;
 	public static final double TOWER_FULL_SPEED_TIME_SPEEDING_UP = 3;
 	public static final double TOWER_FULL_SPEED_TIME_STOPPING = 2;
-	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 2;
+	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 0.25;
 	
 	//Tower constants
 	public static final double TOWER_AUTO_SPEED = 1;

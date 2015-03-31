@@ -6,14 +6,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Auto { 
 	DriveTrain autoDriveTrain;
 	Elevator autoElevator;
-	Tipper tipper;
-	Tower tower;
+	Tipper autoTipper;
+	Tower autoTower;
+	Platform autoPlatform;
 	
-	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower autoTower){		
+	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower tower, Platform platform){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
-		tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
-		tower = autoTower;
+		autoTipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+		autoTower = tower;
+		autoPlatform = platform;
 	}
 	
 	
@@ -62,19 +64,19 @@ public class Auto {
 			//Calibrates the robot to read the initial height correctly
 			autoElevator.setActualHeight(Constants.ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND);
 		}
-		else if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+		else if( !autoTipper.isExtended() && (autoTipper.timeExtended() < 1) 
 				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
-	    		tipper.extend();
+	    		autoTipper.extend();
 	    }
-	    else if (tipper.timeExtended() > 1){
+	    else if (autoTipper.timeExtended() > 1){
 	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 	    					
 		}	    	
-	    if (autoTime > 3 && tipper.isExtended()){
-	    		tipper.retract();			
+	    if (autoTime > 3 && autoTipper.isExtended()){
+	    		autoTipper.retract();			
 	    }
 		
-	    else if (autoTime > 4 && autoTime < 8 && !tipper.isExtended()){
+	    else if (autoTime > 4 && autoTime < 8 && !autoTipper.isExtended()){
 			autoDriveTrain.driveStraight(-0.3, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
 		}
 		else
@@ -122,19 +124,19 @@ public class Auto {
 			//Calibrates the robot to read the initial height correctly
 			autoElevator.setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
 		}
-		else if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+		else if( !autoTipper.isExtended() && (autoTipper.timeExtended() < 1) 
 			&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
-				tipper.extend();
+				autoTipper.extend();
 		}
-		else if (tipper.timeExtended() > 1){
+		else if (autoTipper.timeExtended() > 1){
 				autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 					    					
 		}	    	
-		if (autoTime > 3 && tipper.isExtended()){
-				 tipper.retract();			
+		if (autoTime > 3 && autoTipper.isExtended()){
+				 autoTipper.retract();			
 		}
 						
-		else if (autoTime > 4 && autoTime < 12 && !tipper.isExtended()){
+		else if (autoTime > 4 && autoTime < 12 && !autoTipper.isExtended()){
 				autoDriveTrain.turnTo(-135, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
 		else
@@ -146,19 +148,19 @@ public class Auto {
 			//Calibrates the robot to read the initial height correctly
 			autoElevator.setActualHeight(Constants.BOTTOM_LIMIT_SWITCH_HEIGHT);
 		}
-		else if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+		else if( !autoTipper.isExtended() && (autoTipper.timeExtended() < 1) 
 			&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
-				tipper.extend();
+				autoTipper.extend();
 		}
-		else if (tipper.timeExtended() > 1){
+		else if (autoTipper.timeExtended() > 1){
 				autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 					    					
 		}	    	
-		if (autoTime > 3 && tipper.isExtended()){
-				tipper.retract();			
+		if (autoTime > 3 && autoTipper.isExtended()){
+				autoTipper.retract();			
 		}
 						
-		else if (autoTime > 4 && autoTime < 12 && !tipper.isExtended()){
+		else if (autoTime > 4 && autoTime < 12 && !autoTipper.isExtended()){
 				autoDriveTrain.turnTo(135, Constants.AUTO_TURN_FULL_SPEED_TIME);
 		}
 		else
@@ -166,13 +168,15 @@ public class Auto {
 	}
 
 	public void tower(double autoTime) {
+		autoPlatform.extend();
+		
 		if (autoTime < Constants.TOWER_AUTO_TIME) {
 			
-			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
+			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
 			
 		}
 		else {
-			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
+			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
 		}
 	}
 }
