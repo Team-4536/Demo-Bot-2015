@@ -111,7 +111,10 @@ public class Auto {
 	}
 	
 	public void tower(double autoTime) {
-		if (autoTime < Constants.TOWER_AUTO_TIME) {
+		if(autoTime < 1){
+			autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION + 10);
+		}
+		if (1 < autoTime && autoTime < (1 + Constants.TOWER_AUTO_TIME)) {
 			
 			tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
 			
