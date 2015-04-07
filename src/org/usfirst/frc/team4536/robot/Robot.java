@@ -246,10 +246,10 @@ public class Robot extends IterativeRobot {
         }
         	
      // Uses button 3 on the main stick as a toggle for the platform 
-       	if(secondaryStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
+       	if(mainStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
        		platform.flip();
        	}
-       	prevPlatformControllingButton = secondaryStick.getRawButton(5);
+       	prevPlatformControllingButton = mainStick.getRawButton(5);
     
         //Cuts the speed of the elevator in half while button 9 is held
         if (secondaryStick.getRawButton(9)){
