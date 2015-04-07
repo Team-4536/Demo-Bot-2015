@@ -7,18 +7,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class Auto { 
 	DriveTrain autoDriveTrain;
 	Elevator autoElevator;
-	Tipper tipper;
+	Tipper autoTipper;
+	Tower autoTower;
+	Platform autoPlatform;
 	
 	
-	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator){		
+	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower tower, Platform platform){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
-		tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+		autoTipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
+		autoTower = tower;
+		autoPlatform = platform;
 	}
 	
-	
-	//Creates each auto as an option on the SmartDashboard. The default is doing nothing.
 	public static double autoNumber(){
+
 		SendableChooser autoChooser;
 		autoChooser = new SendableChooser();
 		autoChooser.addObject("Drive Forward", 1);
@@ -26,10 +29,9 @@ public class Auto {
 		autoChooser.addObject("Drive Backward with Tote", 3);
 		autoChooser.addObject("DriveBackward with Recycling Container and Tote", 4);
 		autoChooser.addObject("Two Tote Auto", 5);
-		autoChooser.addObject("Three Tote Stack", 6);
-		autoChooser.addObject("Two Recycling Container Auto", 7);
-		autoChooser.addObject("Drive With Container to Feeder Station", 8);
-		autoChooser.addDefault("Do Nothing", 9);
+		autoChooser.addObject("Two Recycling Container Auto", 6);
+		autoChooser.addDefault("Tower Auto", 7);
+		autoChooser.addDefault("Do Nothing", 8);
 		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
@@ -40,7 +42,6 @@ public class Auto {
 		autoDriveTrain.drive(0, 0);
 	}
 
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveForward(double autoTime){
 		
 		if (autoTime < 1.8){
@@ -50,28 +51,26 @@ public class Auto {
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithRecyclingContainer(double autoTime){
-		if( !tipper.isExtended() && (tipper.timeExtended() < 1) 
+		if( !autoTipper.isExtended() && (autoTipper.timeExtended() < 1) 
 				&& autoElevator.getDesiredHeight() != Constants.TOP_LIMIT_SWITCH_HEIGHT) {
-	    		tipper.extend();
+	    		autoTipper.extend();
 	    }
-	    else if (tipper.timeExtended() > 1){
+	    else if (autoTipper.timeExtended() > 1){
 	    		autoElevator.setDesiredHeight(Constants.TOP_LIMIT_SWITCH_HEIGHT);
 	    					
 		}	    	
-	    if (autoTime > 3 && tipper.isExtended()){
-	    		tipper.retract();			
+	    if (autoTime > 3 && autoTipper.isExtended()){
+	    		autoTipper.retract();			
 	    }
 		
-	    else if (autoTime > 4 && autoTime < 8 && !tipper.isExtended()){
+	    else if (autoTime > 4 && autoTime < 8 && !autoTipper.isExtended()){
 			autoDriveTrain.driveStraight(-0.3, 0, Constants.AUTO_FORWARD_FULL_SPEED_TIME);
 		}
 		else
 			autoDriveTrain.drive(0 , 0);
 	}
 	
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void driveBackwardWithTote (double autoTime){
 	    if (autoTime < 1){
 	    		autoElevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION);
@@ -86,24 +85,27 @@ public class Auto {
 		else
 			autoDriveTrain.drive(0 , 0);
 	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
-	public void toteAndContainer(double autoTime){
+	
+	public void tower(double autoTime) {
+		autoPlatform.extend();
 		
+		if (autoTime < Constants.TOWER_AUTO_TIME) {
+			
+			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_SPEEDING_UP, Constants.TOWER_AUTO_SPEED);
+			
+		}
+		else {
+			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
+		}
+	}
+	
+	public void toteAndContainer(double autoTime){
 	}	
-	//It takes in autoTime to have the robot do different things at specific times during auto
+	
 	public void twoTote (double autoTime){
 	
 	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
-		public void threeToteStack (double autoTime){
-			
-	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
 	public void twoRecyclingContainers(double autoTime){
-		
-	}
-	//It takes in autoTime to have the robot do different things at specific times during auto
-	public void driveWithRecyclingContainerToFeederStation(double autoTime){
 		
 	}
 	
