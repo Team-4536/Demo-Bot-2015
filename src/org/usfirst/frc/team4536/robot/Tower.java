@@ -14,7 +14,10 @@ public class Tower {
 		
 	}
 	
-	public void setSpeed(double fullSpeedTime, double throttle) { //Sets the towers speed
+	/*
+	 * Positive values
+	 */
+	public void setSpeed(double fullSpeedTime, double throttle) { //Sets the towers speed. Positive winds it up. Negative drops it down.
 		
 		accelThrottle = throttle;
 		accelThrottle = Utilities.accelLimit(fullSpeedTime, accelThrottle, prevThrottle);

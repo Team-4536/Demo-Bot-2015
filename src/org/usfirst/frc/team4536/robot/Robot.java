@@ -1,3 +1,4 @@
+
 package org.usfirst.frc.team4536.robot;
 
 import com.ni.vision.NIVision;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -23,6 +25,7 @@ public class Robot extends IterativeRobot {
 	Auto auto;
 	int autoNumber;
 	DigitalInput toteLimitSwitch;
+	DigitalOutput arduinoPulse;
 	
 	Compressor compressor;
 	
@@ -45,6 +48,8 @@ public class Robot extends IterativeRobot {
 	double finalThrottleX = 0;
 	double elevatorSpeedLimit = 1;
 	
+	double towerThrottle;
+	
 	public void robotInit() {
 		// Robot Systems
     	driveTrain = new DriveTrain(Constants.LEFT_TALON_CHANNEL, 
@@ -61,9 +66,14 @@ public class Robot extends IterativeRobot {
     							Constants.TOP_LIMIT_SWITCH_CHANNEL, 
     							Constants.MIDDLE_LIMIT_SWITCH_CHANNEL,
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
+    	arduinoPulse = new DigitalOutput(Constants.ARDUINO_CHANNEL);
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
-    	teleopTimer.start();
+    	//teleopTimer.start();
+    	
+    	//Arduino Communication
+    	arduinoPulse.setPWMRate(1000);
+    	arduinoPulse.enablePWM(143.0/255.0); // Sets initial duty cycle. Duty cycles must be in range [0 .. 1] @param double
     	
     	// Joysticks
         mainStick = new Joystick(Constants.LEFT_STICK_PORT);
@@ -97,10 +107,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		//driveTrain.turnTo(90, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		/*driveTrain.driveStraight(0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-		System.out.println(driveTrain.gyroGetAngle());*/		
-
+		
 		double autoTime = autoTimer.get();
 		
 		//Can't have autoNumber since that would be the value when the code's deployed
@@ -131,7 +138,7 @@ public class Robot extends IterativeRobot {
 	
 	public void teleopInit() {
 		compressor.start();
-		teleopTimer.reset();
+		teleopTimer.start();
 	}
 	
 	public void teleopPeriodic() {		
@@ -139,8 +146,8 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	//driveTrain.driveStraight(-0.5, 0, Constants.AUTO_TURN_FULL_SPEED_TIME);
-    	//System.out.println(driveTrain.gyroGetAngle());
+    	System.out.println("Elevator Height: " + (elevator.getHeight() / Constants.TICKS_PER_INCHES));
+        arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
@@ -204,7 +211,17 @@ public class Robot extends IterativeRobot {
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
       
         //Tower Code
-        tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerStick.getY());
+        towerThrottle = Utilities.deadZone(towerStick.getY(), Constants.DEAD_ZONE);
+        
+        System.out.println("Teleop Timer Value: " + teleopTimer.get());
+        
+        if (towerStick.getRawButton(Constants.TOWER_MANUAL_OVERRIDE))
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerThrottle);
+        else if (teleopTimer.get() > 10)
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.SETTING);
+        else
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.HOISTING); // Change this to Holding later.
+        
         
         /*
         * When the trigger is held the robot automatically stacks the totes as they slide in and 
@@ -247,7 +264,9 @@ public class Robot extends IterativeRobot {
         	
      // Uses button 3 on the main stick as a toggle for the platform 
        	if(mainStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
-       		platform.flip();
+       		if(elevator.getHeight() >= 3 || platform.isExtended() == true) {
+       			platform.flip();
+       		}
        	}
        	prevPlatformControllingButton = mainStick.getRawButton(5);
     
@@ -277,7 +296,6 @@ public class Robot extends IterativeRobot {
         prevElevatorThrottle = elevatorThrottle;
            
         elevator.update();
-        System.out.println(elevator.getHeight());
     }
 	
 	public void disabledInit() {
@@ -288,6 +306,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		driveTrain.resetGyro();
+		arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
 	}
     
     public void testPeriodic() {

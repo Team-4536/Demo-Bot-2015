@@ -24,6 +24,7 @@ public class Constants {
 	public static final int MIDDLE_LIMIT_SWITCH_CHANNEL = 1;
 	public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 4;
 	public static final int TOTE_LIMIT_SWITCH_CHANNEL = 2;
+	public static final int ARDUINO_CHANNEL = 7;
 	public static final int ENCODER_SENSOR_A_CHANNEL = 5;
 	public static final int ENCODER_SENSOR_B_CHANNEL = 6;
 	
@@ -37,6 +38,9 @@ public class Constants {
 	public static final double PROPORTIONALITY_CONSTANT = 0.05; 
 	public static final double ELEVATOR_PROPORTIONALITY_CONSTANT = .5; //Units of throttle/inch
 	public static final double DERIVATIVE_CONSTANT = 0.015;
+	
+	// Arduino LED Height Proportionality Constant
+	public static final double LED_PROPORTIONALITY_CONSTANT = 1.0;
 	
 	// Dead zone constant. Currently, a 13% dead zone on the joysticks. 
 	public static final double DEAD_ZONE = 0.13;
@@ -52,14 +56,16 @@ public class Constants {
 	public static final double FORWARD_FULL_SPEED_TIME = 0.25;
 	public static final double TURN_FULL_SPEED_TIME = 0.25;
 	public static final double SLOW_ELEVATOR_FULL_SPEED_TIME = 1;
-	public static final double TOWER_FULL_SPEED_TIME_SPEEDING_UP = 3;
-	public static final double TOWER_FULL_SPEED_TIME_STOPPING = 2;
-	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 2;
+	public static final double TOWER_FULL_SPEED_TIME_SPEEDING_UP = 0.25;
+	public static final double TOWER_FULL_SPEED_TIME_STOPPING = 0.25;
+	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 0.25;
 	
 	//Tower constants
 	public static final double TOWER_AUTO_SPEED = 0.1;
 	public static final double TOWER_AUTO_TIME = 5;
-	
+	public static final double HOISTING = 0.7;
+	public static final double HOLDING = 0.2;
+	public static final double SETTING = -0.1;
 	// Normal Speed Limit
 	public static final double FORWARD_SPEED_LIMIT = 1;
 	public static final double TURN_SPEED_LIMIT = 1;
@@ -86,7 +92,7 @@ public class Constants {
 	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20;
 	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
 	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 10;
-	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 33;
+	public static final double ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION = 32;
 	public static final double ELEVATOR_HEIGHT_FOR_PICKING_OFF_THE_GROUND = 0;
 	public static final double ELEVATOR_HEIGHT_FOR_ONE_TOTE = 12;
 	public static final double ELEVATOR_HEIGHT_FOR_RECYCLING_CONTAINER_PICKING_OFF_THE_GROUND = 14.5;
@@ -94,4 +100,44 @@ public class Constants {
 	public static final double MIDDLE_LIMIT_SWITCH_HEIGHT = 8; //Inches
 	public static final double TOP_LIMIT_SWITCH_HEIGHT = 48; //Inches
 	
+	//Buttons for Joysticks
+			//mainStick
+				//Slow Modes
+				public static final int SLOW_MODE = 6; //Robot enters slow mode with larger acceleration limits and lower speed limits.
+				public static final int SUPER_SLOW_MODE = 7; //Robot enters an even slower mode with larger acceleration limits and lower speed limits.
+				
+				//Automation Buttons
+				public static final int AUTOMATIC_STACK_SET_DOWN_AND_DRIVE_BACK = 1; // Button for automatically setting a stack and backing up.
+				public static final int RECYCLING_CONTAINER_PICK_UP = 3; //Button for picking up recycling container
+				public static final int TURN_FROM_FEEDER_STATION = 5; // Button for turning the robot to the angle which lines it up with the feeder station.
+				
+				//Toggles
+				public static final int TIPPER_TOGGLE = 2; //Flips solenoids of tipper, extending or retracting.
+				
+				//Gyro Calibration
+				public static final int GYRO_CALIBRATION = 11; // When pressed calibrates the gyro so it is at a heading of zero. This would be when it is perpendicular to the alliance wall, perpendicular to the step or parallel to the side railings. 
+			
+			//secondaryStick
+				//Platform Toggle
+				public static final int PLATFORM_TOGGLE = 5; //Flips the solenoids of the platform to operate it on a toggle.
+			
+				//Elevator Speed
+				public static final int ELEVATOR_SPEED = 9; // When pressed it halves the speed of the elevator.
+				
+				//Elevator Manual Override
+				public static final int ELEVATOR_MANUAL_OVERRIDE = 6; // When pressed, allows manual override by secondary drive of elevator.
+			
+				//Elevator Heights	
+				public static final int SCORING_PLATFORM_HEIGHT = 4; //moves elevator to the height required for the scoring platform.
+				public static final int RECYCLING_CONTAINER_GROUND_PICKUP_HEIGHT = 7; //moves the elevator to the height required for recycling container ground pickup.
+				public static final int STEP_HEIGHT = 8; //moves the elevator to the height required for the step.
+				public static final int FEEDER_STATION_BOTTOM_HEIGHT = 10; //moves the elevator to the height of the bottom of the feeder station.
+				public static final int TOTE_ABOVE_FEEDER_STATION_HEIGHT = 11; //moves the elevator to the height it would need to suspend a tote above so another tote may be loaded from the feeder station.
+				public static final int AUTOMATED_TOTE_STACKING = 1; // Automatically stacks totes based on whether the limit switch is pressed while button 1 is held down.
+				public static final int LOWER_ONE_TOTE_LEVEL = 2; // Automatically lower the elevator one tote level.
+				public static final int RAISE_ONE_TOTE_LEVEL = 3; // Automatically raise the elevator one tote level.
+				
+			//Tower Stick
+				//Tower Manual Override
+				public static final int TOWER_MANUAL_OVERRIDE = 1; // When pressed it allows the manual operation of the Tower.
 }
