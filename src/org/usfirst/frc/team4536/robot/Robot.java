@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends IterativeRobot {
 	// Robot Systems
@@ -26,6 +27,7 @@ public class Robot extends IterativeRobot {
 	int autoNumber;
 	DigitalInput toteLimitSwitch;
 	DigitalOutput arduinoPulse;
+	PowerDistributionPanel powerDistributionPanel;
 	
 	Compressor compressor;
 	
@@ -69,7 +71,7 @@ public class Robot extends IterativeRobot {
     	arduinoPulse = new DigitalOutput(Constants.ARDUINO_CHANNEL);
     	elevator.setActualHeight(0);
     	teleopTimer = new Timer();
-    	//teleopTimer.start();
+    	powerDistributionPanel = new PowerDistributionPanel();
     	
     	//Arduino Communication
     	arduinoPulse.setPWMRate(1000);
@@ -209,7 +211,10 @@ public class Robot extends IterativeRobot {
         double elevatorThrottle = secondaryStickY;
         
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
-      
+        
+        // Power Distribution Panel Current Sensiing
+        System.out.println(powerDistributionPanel.getCurrent(13));
+        
         //Tower Code
         towerThrottle = Utilities.deadZone(towerStick.getY(), Constants.DEAD_ZONE);
         
