@@ -218,9 +218,9 @@ public class Robot extends IterativeRobot {
         if (towerStick.getRawButton(Constants.TOWER_MANUAL_OVERRIDE))
         	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerThrottle);
         else if (teleopTimer.get() > 140)
-        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.SETTING);
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TOWER_SETTING_DOWN);
         else
-        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.HOISTING); // Change this to Holding later.
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TOWER_CAN_HOISTING); // Change this to Holding later.
         
         
         /*
