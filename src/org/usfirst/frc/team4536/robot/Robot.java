@@ -133,6 +133,7 @@ public class Robot extends IterativeRobot {
 		
 		}
 		elevator.goToDesiredHeight(0.25);
+		arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
 		elevator.update(); 
     }
 	
@@ -306,7 +307,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		driveTrain.resetGyro();
-		arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
+		arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0));
 	}
     
     public void testPeriodic() {
