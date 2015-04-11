@@ -146,8 +146,8 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	System.out.println("Elevator Height: " + (elevator.getHeight() / Constants.TICKS_PER_INCHES));
-        arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
+    	System.out.println("Elevator Height: " + (elevator.getHeight()));
+        arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
