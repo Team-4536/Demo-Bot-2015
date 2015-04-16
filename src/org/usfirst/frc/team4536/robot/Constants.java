@@ -61,11 +61,14 @@ public class Constants {
 	public static final double TOWER_FULL_SPEED_TIME_TELEOP = 0.25;
 	
 	//Tower constants
-	public static final double TOWER_AUTO_SPEED = 0.1;
-	public static final double TOWER_AUTO_TIME = 5;
+	public static final double TOWER_AUTO_SPEED = 0.7;
+	public static final double TOWER_AUTO_TIME = 15;
 	public static final double TOWER_CAN_HOISTING = 0.7;
-	public static final double TOWER_CAN_HOLDING = 0.2;
+	public static final double TOWER_CAN_HOLDING = 0.1;
 	public static final double TOWER_SETTING_DOWN = -0.1;
+	public static final double TELEOP_TOWER_HOISTING = 0.7;
+	public static final double TELEOP_TOWER_HOLDING = 0.1;
+	
 	// Normal Speed Limit
 	public static final double FORWARD_SPEED_LIMIT = 1;
 	public static final double TURN_SPEED_LIMIT = 1;

@@ -95,7 +95,7 @@ public class Auto {
 			
 		}
 		else {
-			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
+			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, Constants.TOWER_CAN_HOLDING);
 		}
 	}
 	

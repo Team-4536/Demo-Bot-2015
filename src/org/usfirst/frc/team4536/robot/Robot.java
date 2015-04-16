@@ -148,7 +148,6 @@ public class Robot extends IterativeRobot {
       	double mainStickY = Utilities.deadZone(-mainStick.getY(), Constants.DEAD_ZONE);
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
-    	System.out.println("Elevator Height: " + (elevator.getHeight() / Constants.TICKS_PER_INCHES));
         arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
     	
     	/*
@@ -213,19 +212,21 @@ public class Robot extends IterativeRobot {
         elevatorThrottle = Utilities.accelLimit(Constants.ELEVATOR_FULL_SPEED_TIME, elevatorThrottle, prevElevatorThrottle);
         
         // Power Distribution Panel Current Sensiing
-        System.out.println(powerDistributionPanel.getCurrent(13));
+        System.out.println("Current: " + powerDistributionPanel.getCurrent(13));
         
         //Tower Code
         towerThrottle = Utilities.deadZone(towerStick.getY(), Constants.DEAD_ZONE);
         
-        System.out.println("Teleop Timer Value: " + teleopTimer.get());
+        //System.out.println("Teleop Timer Value: " + teleopTimer.get());
         
         if (towerStick.getRawButton(Constants.TOWER_MANUAL_OVERRIDE))
         	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, towerThrottle);
+        else if (teleopTimer.get() < 10)
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TELEOP_TOWER_HOISTING);
         else if (teleopTimer.get() > 140)
         	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TOWER_SETTING_DOWN);
         else
-        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TOWER_CAN_HOISTING); // Change this to Holding later.
+        	tower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_TELEOP, Constants.TELEOP_TOWER_HOLDING); // Change this to Holding later.
         
         
         /*
