@@ -26,7 +26,6 @@ public class Robot extends IterativeRobot {
 	int autoNumber;
 	DigitalInput toteLimitSwitch;
 	DigitalOutput arduinoPulse;
-	Burgler canBurgler;
 	
 	Compressor compressor;
 	
@@ -69,7 +68,6 @@ public class Robot extends IterativeRobot {
     							Constants.BOTTOM_LIMIT_SWITCH_CHANNEL);
     	arduinoPulse = new DigitalOutput(Constants.ARDUINO_CHANNEL);
     	teleopTimer = new Timer();
-    	canBurgler = new Burgler(Constants.BURGLER_TALON_CHANNEL);
     	
     	elevator.setActualHeight(0);
     	
@@ -152,12 +150,6 @@ public class Robot extends IterativeRobot {
     	
     	System.out.println("Elevator Height: " + (elevator.getHeight() / Constants.TICKS_PER_INCHES));
         arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
-    	
-        
-        /*
-         * Can Burgler Test Code
-         */
-        canBurgler.deploy();
         
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
