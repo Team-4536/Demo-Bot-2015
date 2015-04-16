@@ -3,7 +3,6 @@ package org.usfirst.frc.team4536.robot;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -148,7 +147,7 @@ public class Robot extends IterativeRobot {
     	double mainStickX = Utilities.deadZone(-mainStick.getX(), Constants.DEAD_ZONE);
     	
     	System.out.println("Elevator Height: " + (elevator.getHeight()));
-        arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
+        arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT) * Constants.LED_RESOLUTION_CONSTANT/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
     	
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
@@ -308,6 +307,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		driveTrain.resetGyro();
 		arduinoPulse.updateDutyCycle(((elevator.getHeight() * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0));
+		System.out.println("Elevator Height: " + (elevator.getHeight()));
 	}
     
     public void testPeriodic() {

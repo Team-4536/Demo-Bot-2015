@@ -41,6 +41,7 @@ public class Constants {
 	
 	// Arduino LED Height Proportionality Constant
 	public static final double LED_PROPORTIONALITY_CONSTANT = 1.0;
+	public static final double LED_RESOLUTION_CONSTANT = 5.3125;
 	
 	// Dead zone constant. Currently, a 13% dead zone on the joysticks. 
 	public static final double DEAD_ZONE = 0.13;
