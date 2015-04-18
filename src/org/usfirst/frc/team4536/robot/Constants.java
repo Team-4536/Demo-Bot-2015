@@ -71,9 +71,6 @@ public class Constants {
 	public static final double TOWER_CAN_HOLDING = 0.2;
 	public static final double TOWER_SETTING_DOWN = -0.1;
 	
-	// Can Burgler Constants
-	public static final double DEPLOYMENT_SPEED = 1.0;
-	public static final double RETRACTING_SPEED = 1.0;
 	// Normal Speed Limit
 	public static final double FORWARD_SPEED_LIMIT = 1;
 	public static final double TURN_SPEED_LIMIT = 1;
