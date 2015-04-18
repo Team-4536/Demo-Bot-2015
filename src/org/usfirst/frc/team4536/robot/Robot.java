@@ -19,6 +19,7 @@ public class Robot extends IterativeRobot {
 	Platform platform;
 	Tipper tipper;
 	Tower tower;
+	Burgler burgler;
 	Elevator elevator;
 	Timer teleopTimer;
 	Timer autoTimer;
@@ -38,6 +39,7 @@ public class Robot extends IterativeRobot {
 	// Previous values used for toggles for the platform and tipper 
 	boolean prevPlatformControllingButton;
 	boolean prevTipperControllingButton;
+	boolean prevBurglerControllingButton;
 	
 	// This value is necessary for our acceleration limit on the elevator
 	double prevElevatorThrottle;
@@ -60,6 +62,7 @@ public class Robot extends IterativeRobot {
     	tipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
     	tipper.retract();    	
     	tower = new Tower(Constants.TOWER_MOTOR_CHANNEL);
+    	burgler = new Burgler(Constants.RIGHT_BURGLER_SOLENOID_CHANEL, Constants.LEFT_BURGLER_SOLENOID_CHANNEL);
     	elevator = new Elevator(Constants.ELEVATOR_MOTOR_CHANNEL, 
     							Constants.ENCODER_SENSOR_A_CHANNEL,
     							Constants.ENCODER_SENSOR_B_CHANNEL,
@@ -87,6 +90,7 @@ public class Robot extends IterativeRobot {
     	// Previous values used for toggles for the platform and tipper  
     	prevPlatformControllingButton = false;
     	prevTipperControllingButton = false;
+    	prevBurglerControllingButton = false;
     	
     	// This value is necessary for our acceleration limit on the elevator
     	prevElevatorThrottle = 0;
@@ -94,7 +98,7 @@ public class Robot extends IterativeRobot {
     	toteLimitSwitch = new DigitalInput(Constants.TOTE_LIMIT_SWITCH_CHANNEL);
 
     	autoTimer = new Timer();
-    	auto = new Auto(driveTrain, elevator, tower, platform);
+    	auto = new Auto(driveTrain, elevator, tower, platform, burgler);
     	//This gets the stuff on the SmartDashboard, it's like a dummy variable. Ask and I shall explain more
 		autoNumber = (int) auto.autoNumber();
     }
@@ -106,6 +110,10 @@ public class Robot extends IterativeRobot {
 		autoTimer.reset();
 		autoTimer.start();
 		driveTrain.resetGyro();
+		
+		if(auto.autoNumber() == 8) {
+			burgler.grabRecyclingContainer();
+		}
 	}
 
 	public void autonomousPeriodic() {
@@ -128,7 +136,9 @@ public class Robot extends IterativeRobot {
 					break;
 			case 7: auto.tower(autoTime);
 					break;
-			case 8: auto.doNothing();
+			case 8: auto.burgler(autoTime);
+					break;
+			case 9: auto.doNothing();
 					break;
 			default: auto.doNothing();
 					 break;
@@ -154,7 +164,7 @@ public class Robot extends IterativeRobot {
     	/*
     	 * If the tipper (back piston) is extended, we don't want the driver to have full driving ability
     	 */
-    	if(mainStick.getRawButton(7)) {	
+    	if(mainStick.getRawButton(4)) {	
     		if(elevator.getHeight() < Constants.TOP_LIMIT_SWITCH_HEIGHT - 0.5
         	|| elevator.getHeight() > Constants.TOP_LIMIT_SWITCH_HEIGHT + 0.5) {
     			tipper.extend();
@@ -168,7 +178,7 @@ public class Robot extends IterativeRobot {
     	}
     	else {
     		// If button 4 on the main stick is pressed slow mode is enabled
-    		if(mainStick.getRawButton(4) == true) {
+    		if(mainStick.getRawButton(6) == true) {
         		// Multiplying by the speed limit puts a speed limit on the forward and turn throttles
         		double throttleY = Utilities.speedCurve(mainStickY, Constants.SLOW_FORWARD_SPEED_CURVE) * Constants.SLOW_FORAWRD_SPEED_LIMIT;
         		double throttleX = Utilities.speedCurve(-mainStickX, Constants.SLOW_TURN_SPEED_CURVE) * Constants.SLOW_TURN_SPEED_LIMIT;
@@ -264,13 +274,19 @@ public class Robot extends IterativeRobot {
         	elevator.setDesiredHeight(Constants.ELEVATOR_HEIGHT_FOR_A_TOTE_ABOVE_FEEDER_STATION);
         }
         	
-     // Uses button 3 on the main stick as a toggle for the platform 
+        // Uses button 5 on the main stick as a toggle for the platform 
        	if(mainStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
        		if(elevator.getHeight() >= 3 || platform.isExtended() == true) {
        			platform.flip();
        		}
        	}
        	prevPlatformControllingButton = mainStick.getRawButton(5);
+       	
+       	// Uses button 5 on the secondary stick as a toggle for the burgler
+       	if(secondaryStick.getRawButton(5) == true && prevBurglerControllingButton == false) {
+       		burgler.flip();
+       	}
+       	prevBurglerControllingButton = secondaryStick.getRawButton(5);
     
         //Cuts the speed of the elevator in half while button 9 is held
         if (secondaryStick.getRawButton(9)){

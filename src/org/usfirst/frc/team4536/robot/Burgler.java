@@ -25,24 +25,41 @@ public class Burgler {
 		retractedTimer.start();
 		
 		// Platform is initial retracted
-		this.retract();	
+		this.extend();	
 	}	
 	
-	public boolean isExtended() {
+	public boolean isReleasingRecyclingContainer() {
 		
 		return rightSolenoid.get(); // true = extended, false = retracted. This code works because the values must be opposite of each other and only come in 2 combinations.x
 	}
 	
+	public boolean isGrabbingRecyclingContainer() {
+		
+		return leftSolenoid.get();
+	}
+	
+	// extending the burgler means retracting the actual piston
 	public void extend() {
 		
 		rightSolenoid.set(true);
 		leftSolenoid.set(false);
 	}
 	
+	// retracting the burgler means extending the actual piston
 	public void retract() {
 		
 		rightSolenoid.set(false);
 		leftSolenoid.set(true);	
+	}
+	
+	public void grabRecyclingContainer() {
+		
+		this.retract();
+	}
+	
+	public void releaseRecyclingContainer() {
+		
+		this.extend();
 	}
 	
 	public void flip() {
@@ -52,7 +69,7 @@ public class Burgler {
 	}
 
 	public double timeExtended() {
-		if (this.isExtended() == true) { // is Extended
+		if (this.isReleasingRecyclingContainer() == true) { // is Extended
 			return extendedTimer.get();
 		} else {
 			extendedTimer.reset();
@@ -61,7 +78,7 @@ public class Burgler {
 	}
 	
 	public double timeRetracted() {
-		if (this.isExtended() == false) { // is Retracted.
+		if (this.isGrabbingRecyclingContainer()) { // is Retracted.
 			return retractedTimer.get();
 		} else {
 			retractedTimer.reset();

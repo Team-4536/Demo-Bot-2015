@@ -12,13 +12,16 @@ public class Constants {
 	public static final int RIGHT_TALON_CHANNEL = 0; 
 	public static final int ELEVATOR_MOTOR_CHANNEL = 2;
 	public static final int TOWER_MOTOR_CHANNEL = 3;
-	public static final int BURGLER_TALON_CHANNEL = 4;
 	
 	// Platform solenoid channels
 	public static final int RIGHT_PLATFORM_SOLENOID_CHANNEL = 2;
 	public static final int LEFT_PLATFORM_SOLENOID_CHANNEL = 3;
 	public static final int RIGHT_TIPPER_SOLENOID_CHANNEL = 1;
 	public static final int LEFT_TIPPER_SOLENOID_CHANNEL = 0;
+	
+	// Burgler solenoid channels
+	public static final int LEFT_BURGLER_SOLENOID_CHANNEL = 4;
+	public static final int RIGHT_BURGLER_SOLENOID_CHANEL = 5;
 	
 	// Digital Switch channels
 	public static final int TOP_LIMIT_SWITCH_CHANNEL = 3;
