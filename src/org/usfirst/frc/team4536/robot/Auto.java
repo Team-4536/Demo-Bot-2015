@@ -10,14 +10,16 @@ public class Auto {
 	Tipper autoTipper;
 	Tower autoTower;
 	Platform autoPlatform;
+	Burgler autoBurgler;
 	
 	
-	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower tower, Platform platform){		
+	public Auto(DriveTrain autoConstructerDriveTrain, Elevator elevator, Tower tower, Platform platform, Burgler burgler){		
 		autoDriveTrain = autoConstructerDriveTrain;
 		autoElevator = elevator;
 		autoTipper = new Tipper(Constants.RIGHT_TIPPER_SOLENOID_CHANNEL, Constants.LEFT_TIPPER_SOLENOID_CHANNEL);
 		autoTower = tower;
 		autoPlatform = platform;
+		autoBurgler = burgler;
 	}
 	
 	public static double autoNumber(){
@@ -30,8 +32,9 @@ public class Auto {
 		autoChooser.addObject("DriveBackward with Recycling Container and Tote", 4);
 		autoChooser.addObject("Two Tote Auto", 5);
 		autoChooser.addObject("Two Recycling Container Auto", 6);
-		autoChooser.addDefault("Tower Auto", 7);
-		autoChooser.addDefault("Do Nothing", 8);
+		autoChooser.addObject("Tower Auto", 7);
+		autoChooser.addObject("Burgler Auto", 8);
+		autoChooser.addDefault("Do Nothing", 9);
 		SmartDashboard.putData("Auto_Chooser_Thing" , autoChooser); 
 		
 		//Returns the number of the auto selected auto on the SmartDashboard
@@ -96,6 +99,17 @@ public class Auto {
 		}
 		else {
 			autoTower.setSpeed(Constants.TOWER_FULL_SPEED_TIME_STOPPING, 0);
+		}
+	}
+	
+	public void burgler(double autoTime) {
+		autoBurgler.grabRecyclingContainer();
+		
+		if(autoTime > 2 && autoTime < 4) {
+			autoDriveTrain.drive(1, 0);
+		}
+		else if(autoTime > 4) {
+			autoDriveTrain.drive(0, 0);
 		}
 	}
 	
