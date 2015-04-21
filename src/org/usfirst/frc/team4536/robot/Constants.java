@@ -94,6 +94,7 @@ public class Constants {
 	public static final double AUTO_TURN_FULL_SPEED_TIME = 0.2;
 	
 	// Elevator Height Constants
+	public static final double ELEVATOR_HEIGHT_HOOK_AT_PLATFORM = 8;
 	public static final double ELEVATOR_HEIGHT_FOR_STEP = 20;
 	public static final double ELEVATOR_HEIGHT_FOR_SCORING_PLATFORM = 5;
 	public static final double ELEVATOR_HEIGHT_FOR_BOTTOM_OF_FEEDER_STATION = 10;

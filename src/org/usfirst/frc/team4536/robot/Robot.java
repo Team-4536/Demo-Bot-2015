@@ -278,7 +278,7 @@ public class Robot extends IterativeRobot {
         	
         // Uses button 5 on the main stick as a toggle for the platform 
        	if(mainStick.getRawButton(5) == true && prevPlatformControllingButton == false) {
-       		if(elevator.getHeight() >= 3 || platform.isExtended() == true) {
+       		if(elevator.getHeight() >= Constants.ELEVATOR_HEIGHT_HOOK_AT_PLATFORM || platform.isExtended() == true) {
        			platform.flip();
        		}
        	}
