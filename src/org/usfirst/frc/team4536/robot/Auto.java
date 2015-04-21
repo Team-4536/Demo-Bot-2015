@@ -105,10 +105,10 @@ public class Auto {
 	public void burgler(double autoTime) {
 		autoBurgler.grabRecyclingContainer();
 		
-		if(autoTime > 2 && autoTime < 4) {
-			autoDriveTrain.drive(1, 0);
+		if(autoTime > 1 && autoTime < 1.75) {
+			autoDriveTrain.drive(-1, 0);
 		}
-		else if(autoTime > 4) {
+		else if(autoTime > 1.75) {
 			autoDriveTrain.drive(0, 0);
 		}
 	}

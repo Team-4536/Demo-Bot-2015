@@ -146,6 +146,8 @@ public class Robot extends IterativeRobot {
 		}
 		elevator.goToDesiredHeight(0.25);
 		elevator.update(); 
+		
+		arduinoPulse.updateDutyCycle(((elevator.getHeight()/ Constants.TICKS_PER_INCHES * Constants.LED_PROPORTIONALITY_CONSTANT)/255.0)); //Taking in the elevator height it sets the number of LEDs to light yellow.
     }
 	
 	public void teleopInit() {
